@@ -12,6 +12,11 @@ class CoachBottomNavigationBar extends StatefulWidget {
 class _CoachBottomNavigationBarState extends State<CoachBottomNavigationBar> {
   var currentPageIndex = 0;
   var pressed = false;
+
+  int coachPageIndex(){
+    return currentPageIndex;
+  }
+
   @override
   Widget build(BuildContext context) {
     return NavigationBar(
