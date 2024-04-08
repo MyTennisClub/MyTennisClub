@@ -15,10 +15,7 @@ class MainClass extends StatefulWidget {
 class Main_Class extends State<MainClass> {
   @override
   Widget build(BuildContext context) {
-    return MaterialApp(
-        debugShowCheckedModeBanner: false,
-        home: MainRoute()
-    );
+    return MaterialApp(debugShowCheckedModeBanner: false, home: MainRoute());
   }
 }
 
@@ -29,6 +26,7 @@ class MainRoute extends StatelessWidget {
   Widget build(BuildContext context) {
     return SafeArea(
       child: Scaffold(
+        resizeToAvoidBottomInset: false,
         body: Center(
           child: Column(
             mainAxisSize: MainAxisSize.min,
@@ -89,8 +87,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => CoachHomePage()),
+                    MaterialPageRoute(builder: (context) => CoachHomePage()),
                   );
                 },
                 child: const Text(

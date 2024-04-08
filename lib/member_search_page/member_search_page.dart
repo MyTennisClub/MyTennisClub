@@ -23,6 +23,7 @@ class MemberAppBar extends StatelessWidget {
     return MaterialApp(
       home: SafeArea(
         child: Scaffold(
+          resizeToAvoidBottomInset: false,
           appBar: AppBar(
             //leadingWidth: 35.0,
             title: const Text(
