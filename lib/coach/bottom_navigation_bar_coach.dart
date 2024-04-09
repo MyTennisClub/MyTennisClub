@@ -28,7 +28,7 @@ class _CoachBottomNavigationBarState extends State<CoachBottomNavigationBar> {
       indicatorColor: Colors.white10,
       selectedIndex: currentPageIndex,
       backgroundColor: Colors.white,
-      destinations: [
+      destinations: const [
         NavigationDestination(
           selectedIcon: Icon(Icons.home, color: Colors.black),
           icon: Icon(Icons.home, color: Colors.grey),
