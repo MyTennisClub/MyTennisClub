@@ -1,20 +1,17 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class LatestAnnouncement extends StatelessWidget {
   const LatestAnnouncement({super.key});
 
   @override
   Widget build(BuildContext context) {
-    const items = 20;
+    const items = 4;
     return LayoutBuilder(builder: (context, constraints) {
       return SingleChildScrollView(
         child: ConstrainedBox(
           constraints: BoxConstraints(minHeight: constraints.maxHeight),
           child: Column(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            crossAxisAlignment: CrossAxisAlignment.stretch,
+            mainAxisAlignment: MainAxisAlignment.start,
             children: List.generate(
                 items, (index) => ItemWidget(text: 'Item $index')),
           ),
@@ -34,7 +31,7 @@ class ItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Card(
         color: Color.fromRGBO(141, 182, 219, 1),
@@ -42,7 +39,7 @@ class ItemWidget extends StatelessWidget {
             height: 70,
             child: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                  EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: <Widget>[
