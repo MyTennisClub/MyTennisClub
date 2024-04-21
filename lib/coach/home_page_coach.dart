@@ -122,7 +122,7 @@ class CoachHomePage extends StatelessWidget {
                             ),
                           ],
                         ),
-                        child: const LatestAnnouncement(),
+                        child: LatestAnnouncement(),
                       ),
                     ),
                   ],

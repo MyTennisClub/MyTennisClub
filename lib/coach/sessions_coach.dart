@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'current_card_coach.dart';
 import 'next_card_coach.dart';
 
@@ -70,55 +72,59 @@ class _SessionsCoachState extends State<SessionsCoach> {
               ],
             ),
           ),
-          Container(
-            child: Expanded(
+          Expanded(
+            flex: 7,
+            child: Container(
               child: currentIsPressed ? Card1_Coach():const Card2_Coach(),
             ),
           ),
-          Row(
-            mainAxisAlignment: MainAxisAlignment.center,
-            children: <Widget>[
-              Expanded(
-                child: Card(
-                  child: SizedBox(
-                    height: 35,
-                    child: ElevatedButton(
-                      onPressed: () => {},
-                      child: const Text(
-                        'Attendance Book',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF3C70A0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+          Expanded(
+            flex: 1,
+            child: Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              children: <Widget>[
+                Expanded(
+                  child: Card(
+                    child: SizedBox(
+                      height: 35,
+                      child: ElevatedButton(
+                        onPressed: () => {},
+                        child: const Text(
+                          'Attendance Book',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF3C70A0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-              Expanded(
-                child: Card(
-                  child: SizedBox(
-                    height: 35,
-                    child: ElevatedButton(
-                      onPressed: () => {},
-                      child: const Text(
-                        'Training Program',
-                        style: TextStyle(color: Colors.white),
-                      ),
-                      style: ElevatedButton.styleFrom(
-                        backgroundColor: const Color(0xFFFF3C70A0),
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(8.0),
+                Expanded(
+                  child: Card(
+                    child: SizedBox(
+                      height: 35,
+                      child: ElevatedButton(
+                        onPressed: () => {},
+                        child: const Text(
+                          'Training Program',
+                          style: TextStyle(color: Colors.white),
+                        ),
+                        style: ElevatedButton.styleFrom(
+                          backgroundColor: const Color(0xFFFF3C70A0),
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
-              ),
-            ],
+              ],
+            ),
           )
         ],
       ),
