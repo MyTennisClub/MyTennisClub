@@ -43,7 +43,7 @@ class MainRoute extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              /*ElevatedButton(
+              ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(330, 30),
                   backgroundColor: const Color.fromRGBO(60, 111, 159, 1),
@@ -56,11 +56,11 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ClubInfo()),
+                    MaterialPageRoute(builder: (context) => DummyScreen()),
                   );
                 },
                 child: const Text(
-                  "Club Profile",
+                  "Secretary App",
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),
@@ -77,15 +77,56 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const MemberSearchPage()),
+                    MaterialPageRoute(builder: (context) => DummyScreen()),
                   );
                 },
                 child: const Text(
-                  "Member Search Page",
+                  "Athlete App",
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
-              ),*/
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(330, 30),
+                  backgroundColor: const Color.fromRGBO(60, 111, 159, 1),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                  );
+                },
+                child: const Text(
+                  "Member App",
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(330, 30),
+                  backgroundColor: const Color.fromRGBO(60, 111, 159, 1),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>DummyScreen()),
+                  );
+                },
+                child: const Text(
+                  "Guest App",
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(330, 30),
@@ -103,7 +144,7 @@ class MainRoute extends StatelessWidget {
                   );
                 },
                 child: const Text(
-                  "Coach Home Page Page",
+                  "Coach App",
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),
@@ -111,6 +152,15 @@ class MainRoute extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class DummyScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Dummy Screen'),
     );
   }
 }
