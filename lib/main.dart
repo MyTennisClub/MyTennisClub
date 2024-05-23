@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mytennisclub/guest_android_app/guest_home_page.dart';
 
 void main() => runApp(const MainClass());
@@ -13,6 +14,11 @@ class MainClass extends StatefulWidget {
 class Main_Class extends State<MainClass> {
   @override
   Widget build(BuildContext context) {
+    //the screen can't be rotated
+    WidgetsFlutterBinding.ensureInitialized();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return MaterialApp(
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -50,12 +56,95 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const GuestHomePage()),
+                    MaterialPageRoute(builder: (context) => DummyScreen()),
                   );
                 },
                 child: const Text(
-                  "Guest Home Page",
+                  "Secretary App",
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(330, 30),
+                  backgroundColor: const Color.fromRGBO(60, 111, 159, 1),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                  );
+                },
+                child: const Text(
+                  "Athlete App",
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(330, 30),
+                  backgroundColor: const Color.fromRGBO(60, 111, 159, 1),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                  );
+                },
+                child: const Text(
+                  "Member App",
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(330, 30),
+                  backgroundColor: const Color.fromRGBO(60, 111, 159, 1),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) =>GuestHomePage()),
+                  );
+                },
+                child: const Text(
+                  "Guest App",
+                  style: TextStyle(fontSize: 14, color: Colors.white),
+                ),
+              ),
+              ElevatedButton(
+                style: ElevatedButton.styleFrom(
+                  fixedSize: const Size(330, 30),
+                  backgroundColor: const Color.fromRGBO(60, 111, 159, 1),
+                  shape: const RoundedRectangleBorder(
+                    borderRadius: BorderRadius.all(
+                      Radius.circular(10),
+                    ),
+                  ),
+                ),
+                onPressed: () {
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                  );
+                },
+                child: const Text(
+                  "Coach App",
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),
@@ -63,6 +152,15 @@ class MainRoute extends StatelessWidget {
           ),
         ),
       ),
+    );
+  }
+}
+
+class DummyScreen extends StatelessWidget {
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Dummy Screen'),
     );
   }
 }
