@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'coach_app_android/HomePage_coach_android.dart';
+import 'package:mytennisclub/guest_android_app/guest_home_page.dart';
 
 void main() => runApp(const MainClass());
 
@@ -119,7 +120,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) =>DummyScreen()),
+                    MaterialPageRoute(builder: (context) =>GuestHomePage()),
                   );
                 },
                 child: const Text(
@@ -163,4 +164,3 @@ class DummyScreen extends StatelessWidget {
       child: Text('Dummy Screen'),
     );
   }
-}
