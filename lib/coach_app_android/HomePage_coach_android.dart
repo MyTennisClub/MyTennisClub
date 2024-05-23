@@ -50,9 +50,9 @@ class _CoachHomePageState extends State<CoachHomePage> {
       ),
       body: _tabs[_currentIndex],
       bottomNavigationBar: NavigationBar(
-        indicatorColor: Colors.white10,
+        // indicatorColor: Colors.white10,
         selectedIndex: _currentIndex,
-        backgroundColor: Colors.white,
+        // backgroundColor: Colors.white,
         onDestinationSelected: (int index) {
           setState(() {
             _currentIndex = index;
