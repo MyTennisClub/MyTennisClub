@@ -164,3 +164,4 @@ class DummyScreen extends StatelessWidget {
       child: Text('Dummy Screen'),
     );
   }
+}
