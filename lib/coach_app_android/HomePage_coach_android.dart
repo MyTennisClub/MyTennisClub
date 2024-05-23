@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'HomeScreen_coach_android.dart';
+import 'package:mytennisclub/coach_schedule_screen/coach_schedule_screen.dart';
 
 class CoachHomePage extends StatefulWidget {
   @override
@@ -23,13 +24,13 @@ class _CoachHomePageState extends State<CoachHomePage> {
       appBar: AppBar(
         title: Row(
           children: [
-            Text(
+            const Text(
               'Patras Tennis Club',
               style: TextStyle(fontWeight: FontWeight.bold),
             ),
             IconButton(
               onPressed: () => {},
-              icon: Icon(Icons.arrow_drop_down, size: 35.0),
+              icon: const Icon(Icons.arrow_drop_down, size: 35.0),
               splashColor: Colors.transparent,
               highlightColor: Colors.transparent,
             ),
@@ -39,7 +40,7 @@ class _CoachHomePageState extends State<CoachHomePage> {
         actions: [
           IconButton(
             onPressed: () => {},
-            icon: Icon(
+            icon: const Icon(
               Icons.notifications,
             ),
             splashColor: Colors.transparent,
@@ -58,23 +59,23 @@ class _CoachHomePageState extends State<CoachHomePage> {
           });
         },
         destinations: [
-          NavigationDestination(
+          const NavigationDestination(
               selectedIcon: Icon(Icons.home, color: Colors.black),
               icon: Icon(Icons.home, color: Colors.grey),
               label: 'Home'),
-          NavigationDestination(
+          const NavigationDestination(
               selectedIcon: Icon(Icons.calendar_month, color: Colors.black),
               icon: Icon(Icons.calendar_month, color: Colors.grey),
               label: 'Schedule'),
-          NavigationDestination(
+          const NavigationDestination(
               selectedIcon: Icon(Icons.sports_tennis, color: Colors.black),
               icon: Icon(Icons.sports_tennis, color: Colors.grey),
               label: 'Trainning'),
-          NavigationDestination(
+          const NavigationDestination(
               selectedIcon: Icon(Icons.people, color: Colors.black),
               icon: Icon(Icons.people, color: Colors.grey),
               label: 'Athletes'),
-          NavigationDestination(
+          const NavigationDestination(
               selectedIcon: Icon(Icons.person, color: Colors.black),
               icon: Icon(Icons.person, color: Colors.grey),
               label: 'Profile')
@@ -87,23 +88,21 @@ class _CoachHomePageState extends State<CoachHomePage> {
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return CoachHomeScreen();
+    return const CoachHomeScreen();
   }
 }
 
 class ScheduleScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Schedule Screen'),
-    );
+    return const CoachScheduleScreen();
   }
 }
 
 class TrainningScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('Trainning Screen'),
     );
   }
@@ -112,7 +111,7 @@ class TrainningScreen extends StatelessWidget {
 class AthletesScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('Athetes Screen'),
     );
   }
@@ -121,7 +120,7 @@ class AthletesScreen extends StatelessWidget {
 class ProfileScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
+    return const Center(
       child: Text('Profile Screen'),
     );
   }

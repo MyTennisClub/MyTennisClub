@@ -2,9 +2,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'coach_app_android/HomePage_coach_android.dart';
 
-void main() => runApp(
-    const MainClass()
-);
+void main() => runApp(const MainClass());
 
 class MainClass extends StatefulWidget {
   const MainClass({super.key});
@@ -14,16 +12,22 @@ class MainClass extends StatefulWidget {
 }
 
 class Main_Class extends State<MainClass> {
-
   @override
   Widget build(BuildContext context) {
-
     //the screen can't be rotated
     WidgetsFlutterBinding.ensureInitialized();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitUp,
     ]);
-    return MaterialApp(debugShowCheckedModeBanner: false, home: MainRoute());
+    return MaterialApp(
+        debugShowCheckedModeBanner: false,
+        theme: ThemeData(
+          useMaterial3: true,
+          colorScheme: ColorScheme.fromSeed(
+            seedColor: const Color.fromRGBO(0, 83, 135, 1),
+          ),
+        ),
+        home: const MainRoute());
   }
 }
 
