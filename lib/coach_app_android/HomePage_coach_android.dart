@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-
+import 'HomeScreen_coach_android.dart';
 
 class CoachHomePage extends StatefulWidget {
   @override
@@ -87,9 +87,7 @@ class _CoachHomePageState extends State<CoachHomePage> {
 class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
-    return Center(
-      child: Text('Home Screen'),
-    );
+    return CoachHomeScreen();
   }
 }
 
