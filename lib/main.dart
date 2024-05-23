@@ -1,9 +1,10 @@
 import 'package:flutter/material.dart';
-import 'member_search_page/member_search_page.dart';
-import 'clubs_profile_info/guest_club_info.dart';
-import 'coach/home_page_coach.dart';
+import 'package:flutter/services.dart';
+import 'coach_app_android/HomePage_coach_android.dart';
 
-void main() => runApp(const MainClass());
+void main() => runApp(
+    const MainClass()
+);
 
 class MainClass extends StatefulWidget {
   const MainClass({super.key});
@@ -13,8 +14,15 @@ class MainClass extends StatefulWidget {
 }
 
 class Main_Class extends State<MainClass> {
+
   @override
   Widget build(BuildContext context) {
+
+    //the screen can't be rotated
+    WidgetsFlutterBinding.ensureInitialized();
+    SystemChrome.setPreferredOrientations([
+      DeviceOrientation.portraitUp,
+    ]);
     return MaterialApp(debugShowCheckedModeBanner: false, home: MainRoute());
   }
 }
@@ -31,7 +39,7 @@ class MainRoute extends StatelessWidget {
           child: Column(
             mainAxisSize: MainAxisSize.min,
             children: <Widget>[
-              ElevatedButton(
+              /*ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(330, 30),
                   backgroundColor: const Color.fromRGBO(60, 111, 159, 1),
@@ -73,7 +81,7 @@ class MainRoute extends StatelessWidget {
                   "Member Search Page",
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
-              ),
+              ),*/
               ElevatedButton(
                 style: ElevatedButton.styleFrom(
                   fixedSize: const Size(330, 30),
