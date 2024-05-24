@@ -13,8 +13,8 @@ class _CoachScheduleScreenState extends State<CoachScheduleScreen> {
   Widget build(BuildContext context) {
     return Center(
       child: FilledButton(
-          onPressed: () async {
-            await Navigator.of(context).push(MaterialPageRoute(
+          onPressed: () {
+            Navigator.of(context).push(MaterialPageRoute(
                 builder: (context) => const BookSession_Main()));
           },
           child: const Text('Book Private Session')),

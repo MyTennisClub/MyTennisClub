@@ -27,6 +27,8 @@ class Main_Class extends State<MainClass> {
             seedColor: const Color.fromRGBO(0, 83, 135, 1),
           ),
         ),
+        initialRoute: '/',
+        routes: {'/coach_home': (context) => CoachHomePage()},
         home: const MainRoute());
   }
 }
@@ -97,13 +99,11 @@ class MainRoute extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CoachHomePage()),
-                  );
+                  Navigator.pushNamed(context, '/coach_home');
+                  ;
                 },
                 child: const Text(
-                  "Coach Home Page Page",
+                  "Coach Home Page",
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),
