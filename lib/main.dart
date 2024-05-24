@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'coach_app_android/HomePage_coach_android.dart';
+import 'coach_app_android/coach_home_page.dart';
 
 void main() => runApp(const MainClass());
 
@@ -27,6 +27,8 @@ class Main_Class extends State<MainClass> {
             seedColor: const Color.fromRGBO(0, 83, 135, 1),
           ),
         ),
+        initialRoute: '/',
+        routes: {'/coach_home': (context) => CoachHomePage()},
         home: const MainRoute());
   }
 }
@@ -138,10 +140,8 @@ class MainRoute extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CoachHomePage()),
-                  );
+                  Navigator.pushNamed(context, '/coach_home');
+                  ;
                 },
                 child: const Text(
                   "Coach App",

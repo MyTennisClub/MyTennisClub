@@ -13,7 +13,8 @@ class Details_Section extends StatefulWidget {
 
 class DetailsSection extends State<Details_Section> {
   late TextEditingController _controller;
-  bool number = true;
+  bool numberCheck = true;
+  int memberNumber = 3;
 
   @override
   void initState() {
@@ -47,14 +48,14 @@ class DetailsSection extends State<Details_Section> {
                   if (value.isEmpty) {
                     widget.checkNumber(false, 0);
                   }
-                  if (int.parse(value) > 4) {
-                    _errorText = 'Must be less than 4';
+                  if (int.parse(value) > memberNumber) {
+                    _errorText = 'Must be less than ${memberNumber.toString()}';
                     widget.checkNumber(false, 0);
                   } else {
                     _errorText = '';
                     widget.checkNumber(true, int.parse(value));
                   }
-                  widget.checkNumber(number);
+                  widget.checkNumber(numberCheck);
                 });
               },
               decoration: InputDecoration(

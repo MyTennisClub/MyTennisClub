@@ -41,7 +41,7 @@ class BookSession extends State<BookSession_Main> {
   List<bool> visible = [false, false, false, false];
 
   int number = 1;
-  int payment = 5;
+  double payment = 5;
   final List<String> courts = <String>['A', 'B', 'C', 'D'];
   String? duration = '1:00 h';
   String? date = DateFormat.yMd().format(DateTime.now());
@@ -179,8 +179,11 @@ class BookSession extends State<BookSession_Main> {
                     ),
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
-                      child: Duration_Section(
-                        checkDuration: checkDuration,
+                      child: SizedBox(
+                        width: contraints.maxWidth,
+                        child: Duration_Section(
+                          checkDuration: checkDuration,
+                        ),
                       ),
                     ),
                     const Divider(
@@ -217,6 +220,7 @@ class BookSession extends State<BookSession_Main> {
                       children: [
                         Expanded(
                           child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             padding: const EdgeInsets.all(8),
                             itemCount: courts.length,

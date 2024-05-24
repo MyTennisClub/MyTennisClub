@@ -16,7 +16,7 @@ class AvailableHours extends State<Available_Hours> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
-      child: ListView(children: [
+      child: ListView(physics: const NeverScrollableScrollPhysics(), children: [
         Wrap(
           direction: Axis.horizontal,
           spacing: 8.0,
