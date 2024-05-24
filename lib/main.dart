@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'coach_app_android/HomePage_coach_android.dart';
+import 'coach_app_android/coach_home_page.dart';
 
 void main() => runApp(const MainClass());
 
