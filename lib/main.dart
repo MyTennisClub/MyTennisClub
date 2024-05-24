@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'member_search_page/member_search_page.dart';
-import 'clubs_profile_info/guest_club_info.dart';
-import 'coach/home_page_coach.dart';
+import 'package:mytennisclub/secretary_android_app/secretary_home.dart';
 
 void main() => runApp(const MainClass());
 
@@ -44,54 +42,11 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const ClubInfo()),
+                    MaterialPageRoute(builder: (context) => Secretary_Scan()),
                   );
                 },
                 child: const Text(
-                  "Club Profile",
-                  style: TextStyle(fontSize: 14, color: Colors.white),
-                ),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(330, 30),
-                  backgroundColor: const Color.fromRGBO(60, 111, 159, 1),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const MemberSearchPage()),
-                  );
-                },
-                child: const Text(
-                  "Member Search Page",
-                  style: TextStyle(fontSize: 14, color: Colors.white),
-                ),
-              ),
-              ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(330, 30),
-                  backgroundColor: const Color.fromRGBO(60, 111, 159, 1),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
-                    ),
-                  ),
-                ),
-                onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => CoachHomePage()),
-                  );
-                },
-                child: const Text(
-                  "Coach Home Page Page",
+                  "Secretary Home Page ",
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),
