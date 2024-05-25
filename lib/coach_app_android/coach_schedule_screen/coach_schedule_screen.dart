@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:mytennisclub/coach_book_session/book_session_page.dart';
+import 'coach_book_session/book_session_page.dart';
 
 class CoachScheduleScreen extends StatefulWidget {
   const CoachScheduleScreen({super.key});

@@ -3,7 +3,6 @@ import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'current_card_coach.dart';
 import 'next_card_coach.dart';
-
 class SessionsCoach extends StatefulWidget {
   const SessionsCoach({super.key});
 
@@ -17,7 +16,6 @@ class _SessionsCoachState extends State<SessionsCoach> {
 
   @override
   Widget build(BuildContext context) {
-    const items = 20;
     return Column(
       children: <Widget>[
         Padding(

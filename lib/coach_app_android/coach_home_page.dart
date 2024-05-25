@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
-import 'HomeScreen_coach_android.dart';
-import 'package:mytennisclub/coach_schedule_screen/coach_schedule_screen.dart';
+import 'coach_home_screen/coach_home_screen.dart';
+import 'coach_schedule_screen/coach_schedule_screen.dart';
 
 class CoachHomePage extends StatefulWidget {
   @override
