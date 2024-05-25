@@ -36,6 +36,7 @@ class QRInfo extends State<QR_Info> {
     return SafeArea(
       child: Scaffold(
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           backgroundColor: const Color.fromRGBO(236, 238, 243, 1),
           title: const Text('QR Info',
               style: TextStyle(fontWeight: FontWeight.normal, fontSize: 21)),
