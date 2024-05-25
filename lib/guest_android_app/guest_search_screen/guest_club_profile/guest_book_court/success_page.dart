@@ -171,7 +171,10 @@ class SuccessMain extends State<Success_Main> {
                         backgroundColor: const Color.fromRGBO(0, 83, 135, 1)
                         // This is what you need!
                         ),
-                    onPressed: () {},
+                    onPressed: () {
+                      Navigator.of(context)
+                          .popUntil(ModalRoute.withName('/guest_home'));
+                    },
                     child: const Text('Close'),
                   ),
                 ),

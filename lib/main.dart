@@ -20,6 +20,8 @@ class Main_Class extends State<MainClass> {
       DeviceOrientation.portraitUp,
     ]);
     return MaterialApp(
+        initialRoute: '/',
+        routes: {'/guest_home': (context) => const GuestHomePage()},
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
@@ -117,11 +119,7 @@ class MainRoute extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                        builder: (context) => const GuestHomePage()),
-                  );
+                  Navigator.pushNamed(context, '/guest_home');
                 },
                 child: const Text(
                   "Guest App",
