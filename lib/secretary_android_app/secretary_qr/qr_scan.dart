@@ -43,15 +43,22 @@ class QRScan extends State<QR_Scan> {
             ),
             Flexible(
               flex: 1,
+              child: Center(
+                  child: (result != null)
+                      ? Text('Data = ${result!.code}')
+                      : const Text('Scan QR Code')),
+            ),
+            Flexible(
+              flex: 1,
               child: FilledButton(
                 onPressed: () {
                   setState(() {
                     Navigator.of(context).pop('qr');
                   });
                 },
-                child: const Text('Scan a QR code'),
+                child: const Text('Check Info'),
               ),
-            ),
+            )
           ],
         ),
       ),
