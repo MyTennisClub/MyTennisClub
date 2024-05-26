@@ -57,7 +57,7 @@ class BookCourt extends State<BookCourt_Main> {
         if (hourCheck[key] && durationCheck && numberCheck) {
           visible[key] = true;
           calcuateDuration(hour, duration);
-          court = 'Court ' + courts[key];
+          court = 'Court ${courts[key]}';
         } else {
           visible[key] = false;
         }
@@ -320,7 +320,7 @@ class BookCourt extends State<BookCourt_Main> {
                                                       ),
                                                     );
                                                   },
-                                                  child: Text('Book ${cost}€'),
+                                                  child: Text('Book $cost€'),
                                                 )
                                               : Container(),
                                         ],

@@ -257,7 +257,7 @@ class ApplyClub extends State<ApplyClub_Main> {
                           child: FilledButton(
                             onPressed: () {},
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
+                              backgroundColor: WidgetStateProperty.all<Color>(
                                   const Color.fromRGBO(24, 28, 32, 0.12)),
                             ),
                             child: const Text(

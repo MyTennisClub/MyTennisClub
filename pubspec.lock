@@ -110,6 +110,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.0.19"
+  flutter_slidable:
+    dependency: "direct main"
+    description:
+      name: flutter_slidable
+      sha256: "673403d2eeef1f9e8483bd6d8d92aae73b1d8bd71f382bc3930f699c731bc27c"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.1.0"
   flutter_test:
     dependency: "direct dev"
     description: flutter
@@ -183,10 +191,7 @@ packages:
       sha256: "976c774dd944a42e83e2467f4cc670daef7eed6295b10b36ae8c85bcbf828235"
       url: "https://pub.dev"
     source: hosted
-<<<<<<< HEAD
     version: "4.0.0"
-=======
-    version: "3.0.0"
   mask_text_input_formatter:
     dependency: "direct main"
     description:
@@ -195,7 +200,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.9.0"
->>>>>>> guest_android_app_fixes
   matcher:
     dependency: transitive
     description:
@@ -236,6 +240,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "2.1.8"
+  qr:
+    dependency: transitive
+    description:
+      name: qr
+      sha256: "64957a3930367bf97cc211a5af99551d630f2f4625e38af10edd6b19131b64b3"
+      url: "https://pub.dev"
+    source: hosted
+    version: "3.0.1"
   qr_code_scanner:
     dependency: "direct main"
     description:
@@ -244,6 +256,14 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.0.1"
+  qr_flutter:
+    dependency: "direct main"
+    description:
+      name: qr_flutter
+      sha256: "5095f0fc6e3f71d08adef8feccc8cea4f12eec18a2e31c2e8d82cb6019f4b097"
+      url: "https://pub.dev"
+    source: hosted
+    version: "4.1.0"
   sky_engine:
     dependency: transitive
     description: flutter
@@ -338,9 +358,5 @@ packages:
     source: hosted
     version: "5.5.1"
 sdks:
-<<<<<<< HEAD
   dart: ">=3.4.0 <4.0.0"
-=======
-  dart: ">=3.3.3 <4.0.0"
->>>>>>> guest_android_app_fixes
   flutter: ">=3.18.0-18.0.pre.54"

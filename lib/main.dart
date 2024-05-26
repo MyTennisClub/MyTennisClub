@@ -58,7 +58,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -79,7 +79,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -100,7 +100,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -120,6 +120,7 @@ class MainRoute extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/guest_home');
+
                 },
                 child: const Text(
                   "Guest App",
@@ -139,7 +140,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -156,6 +157,8 @@ class MainRoute extends StatelessWidget {
 }
 
 class DummyScreen extends StatelessWidget {
+  const DummyScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Center(

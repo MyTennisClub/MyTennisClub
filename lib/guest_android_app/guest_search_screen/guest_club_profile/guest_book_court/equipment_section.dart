@@ -52,7 +52,7 @@ class EquipmentSection extends State<Equipment_Section> {
               text: "Additional Costs 5€",
               children: <InlineSpan>[
                 TextSpan(
-                  text: '\nItems: ' + items,
+                  text: '\nItems: $items',
                   style: const TextStyle(fontWeight: FontWeight.bold),
                 ),
               ],
