@@ -1,4 +1,3 @@
-import 'package:flutter/services.dart';
 import 'package:flutter/material.dart';
 
 class Payment_Section extends StatefulWidget {
@@ -10,13 +9,15 @@ class Payment_Section extends StatefulWidget {
 }
 
 class PaymentSection extends State<Payment_Section> {
-  late TextEditingController _controller;
   bool payment = true;
+
+  late TextEditingController _controller;
+  String _errorText = '';
 
   @override
   void initState() {
     super.initState();
-    _controller = TextEditingController(text: '5');
+    _controller = TextEditingController(text: '5.0');
   }
 
   @override
@@ -33,22 +34,28 @@ class PaymentSection extends State<Payment_Section> {
           child: SizedBox(
             child: TextField(
               onChanged: (value) {
+                print(value);
                 setState(() {
                   if (value.isEmpty) {
-                    widget.checkPayment(false, 0);
+                    widget.checkPayment(false, 0.0);
                   } else {
-                    widget.checkPayment(true, int.parse(value));
+                    try {
+                      _errorText = '';
+                      widget.checkPayment(true, double.parse(value));
+                    } on FormatException catch (_) {
+                      _errorText = 'Incorrect Format';
+                      widget.checkPayment(false, 0.0);
+                    }
                   }
                 });
               },
-              decoration: const InputDecoration(
+              decoration: InputDecoration(
                   hintText: 'Enter',
-                  border: OutlineInputBorder(),
-                  labelText: 'Payment'),
-              keyboardType: TextInputType.number,
-              inputFormatters: <TextInputFormatter>[
-                FilteringTextInputFormatter.digitsOnly
-              ],
+                  border: const OutlineInputBorder(),
+                  labelText: 'Payment',
+                  errorText: _errorText.isEmpty ? null : _errorText),
+              keyboardType:
+                  const TextInputType.numberWithOptions(decimal: true),
               controller: _controller,
             ),
           ),
