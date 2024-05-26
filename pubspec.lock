@@ -320,10 +320,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "0.7.0"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> athlete_android_app
+
   typed_data:
     dependency: transitive
     description:
@@ -332,8 +329,7 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "1.3.2"
-=======
->>>>>>> coach_android_app
+
   vector_math:
     dependency: transitive
     description:
@@ -350,10 +346,6 @@ packages:
       url: "https://pub.dev"
     source: hosted
     version: "14.2.1"
-<<<<<<< HEAD
-<<<<<<< HEAD
-=======
->>>>>>> athlete_android_app
   web:
     dependency: transitive
     description:

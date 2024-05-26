@@ -142,15 +142,7 @@ class MainRoute extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-<<<<<<< HEAD
                   Navigator.pushNamed(context, '/coach_home');
-                  ;
-=======
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const DummyScreen()),
-                  );
->>>>>>> athlete_android_app
                 },
                 child: const Text(
                   "Coach App",
