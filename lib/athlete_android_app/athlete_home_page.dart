@@ -1,18 +1,21 @@
 import 'package:flutter/material.dart';
-import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_search_screen.dart';
+import 'package:mytennisclub/athlete_android_app/athlete_search_screen/athlete_search_screen.dart';
+import 'athelete_home_screen/athlete_home_screen.dart';
+import 'athlete_schedule_screen/athlete_schedule_screen.dart';
 
-class GuestHomePage extends StatefulWidget {
-  const GuestHomePage({super.key});
+class AthleteHomePage extends StatefulWidget {
+  const AthleteHomePage({super.key});
 
   @override
-  State<GuestHomePage> createState() => _GuestHomePage();
+  State<AthleteHomePage> createState() => _AthleteHomePage();
 }
 
 int _currentIndex = 0;
 
-class _GuestHomePage extends State<GuestHomePage> {
+class _AthleteHomePage extends State<AthleteHomePage> {
   final List<Widget> _tabs = [
     const HomeScreen(),
+    const ScheduleScreen(),
     const SearchScreen(),
     const FeedScreen(),
     const ProfileScreen(),
@@ -59,6 +62,10 @@ class _GuestHomePage extends State<GuestHomePage> {
                 label: 'Home'),
             NavigationDestination(
                 selectedIcon: Icon(Icons.calendar_month, color: Colors.black),
+                icon: Icon(Icons.calendar_month_outlined),
+                label: 'Schedule'),
+            NavigationDestination(
+                selectedIcon: Icon(Icons.search, color: Colors.black),
                 icon: Icon(Icons.search_outlined),
                 label: 'Search'),
             NavigationDestination(
@@ -82,23 +89,26 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Home Screen'),
+      child: AthleteHomeScreen(),
     );
+  }
+}
+
+class ScheduleScreen extends StatelessWidget {
+  const ScheduleScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return AthleteScheduleScreen();
   }
 }
 
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
 
-  checkIndex(index) {
-    _currentIndex = index;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return GuestsSearchScreen(
-      checkIndex: checkIndex,
-    );
+    return const AthleteSearchScreen();
   }
 }
 

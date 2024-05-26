@@ -19,7 +19,7 @@ class ApplyClub extends State<ApplyClub_Main> {
   Type typeSelected = Type.member;
 
   bool isChecked = false;
-  bool allFields = false;
+  bool allFields = true;
   bool uploadsCheck = false;
   bool submitEnabled = false;
   List<bool> uploads = [false, false, false];
@@ -136,6 +136,11 @@ class ApplyClub extends State<ApplyClub_Main> {
                                   // selected at one time, so its value is always the first
                                   // item in the selected set.
                                   personSelected = newSelection.first;
+                                  if (personSelected.name == 'you') {
+                                    checkAllFields(true);
+                                  } else {
+                                    checkAllFields(false);
+                                  }
                                   checkUploads();
                                 });
                               }),
@@ -179,6 +184,7 @@ class ApplyClub extends State<ApplyClub_Main> {
                       color: Color.fromRGBO(193, 199, 209, 1),
                     ),
                     Personal_Info(
+                      personSelected: personSelected.name,
                       checkAllFields: checkAllFields,
                     ),
                     const Divider(
@@ -251,7 +257,7 @@ class ApplyClub extends State<ApplyClub_Main> {
                           child: FilledButton(
                             onPressed: () {},
                             style: ButtonStyle(
-                              backgroundColor: MaterialStateProperty.all<Color>(
+                              backgroundColor: WidgetStateProperty.all<Color>(
                                   const Color.fromRGBO(24, 28, 32, 0.12)),
                             ),
                             child: const Text(

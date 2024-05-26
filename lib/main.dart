@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'coach_app_android/coach_home_page.dart';
+import 'package:mytennisclub/athlete_android_app/athlete_home_page.dart';
 
 
 void main() => runApp(const MainClass());
@@ -21,6 +22,8 @@ class Main_Class extends State<MainClass> {
       DeviceOrientation.portraitUp,
     ]);
     return MaterialApp(
+        initialRoute: '/',
+        routes: {'/athlete_home': (context) => const AthleteHomePage()},
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
@@ -59,7 +62,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -78,10 +81,8 @@ class MainRoute extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => DummyScreen()),
-                  );
+                  Navigator.pushNamed(context, '/athlete_home');
+
                 },
                 child: const Text(
                   "Athlete App",
@@ -101,7 +102,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -122,7 +123,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) =>GuestHomePage()),
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -141,8 +142,15 @@ class MainRoute extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
+<<<<<<< HEAD
                   Navigator.pushNamed(context, '/coach_home');
                   ;
+=======
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
+                  );
+>>>>>>> athlete_android_app
                 },
                 child: const Text(
                   "Coach App",
@@ -158,6 +166,8 @@ class MainRoute extends StatelessWidget {
 }
 
 class DummyScreen extends StatelessWidget {
+  const DummyScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Center(

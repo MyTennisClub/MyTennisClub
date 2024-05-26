@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Available_Hours extends StatefulWidget {
   final Function checkHour;
   final int id;
-  const Available_Hours({required this.checkHour, required this.id});
+  const Available_Hours({super.key, required this.checkHour, required this.id});
   @override
   State<Available_Hours> createState() => AvailableHours();
 }
@@ -16,7 +16,7 @@ class AvailableHours extends State<Available_Hours> {
   Widget build(BuildContext context) {
     return SizedBox(
       height: 100,
-      child: ListView(children: [
+      child: ListView(physics: const NeverScrollableScrollPhysics(), children: [
         Wrap(
           direction: Axis.horizontal,
           spacing: 8.0,
