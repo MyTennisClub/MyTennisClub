@@ -59,7 +59,7 @@ class _GuestHomePage extends State<GuestHomePage> {
                 icon: Icon(Icons.home_outlined),
                 label: 'Home'),
             NavigationDestination(
-                selectedIcon: Icon(Icons.calendar_month, color: Colors.black),
+                selectedIcon: Icon(Icons.search, color: Colors.black),
                 icon: Icon(Icons.search_outlined),
                 label: 'Search'),
             NavigationDestination(
