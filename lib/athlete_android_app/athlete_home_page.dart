@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mytennisclub/athlete_android_app/athlete_search_screen/athlete_search_screen.dart';
 import 'athelete_home_screen/athlete_home_screen.dart';
+import 'athlete_schedule_screen/athlete_schedule_screen.dart';
 
 class AthleteHomePage extends StatefulWidget {
   const AthleteHomePage({super.key});
@@ -98,9 +99,7 @@ class ScheduleScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: Text('Schedule Screen'),
-    );;
+    return AthleteScheduleScreen();
   }
 }
 
