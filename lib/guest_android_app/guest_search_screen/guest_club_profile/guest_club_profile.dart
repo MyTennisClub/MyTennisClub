@@ -1,137 +1,57 @@
 import 'package:flutter/material.dart';
-import 'bottomnavigationbar_guest.dart';
-import 'clubtext.dart';
-import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_apply_club/apply_club_page.dart';
-import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_book_court/book_court_page.dart';
+import 'guest_club_profile_info.dart';
 
-class ClubInfo extends StatefulWidget {
-  const ClubInfo({super.key});
+class ClubProfile extends StatefulWidget {
+  const ClubProfile({super.key});
 
   @override
-  State<ClubInfo> createState() => _ClubInfoState();
+  State<ClubProfile> createState() => _ClubProfileState();
 }
 
-class _ClubInfoState extends State<ClubInfo> {
+class _ClubProfileState extends State<ClubProfile>
+    with SingleTickerProviderStateMixin {
+  static const List<Tab> myTabs = <Tab>[
+    Tab(text: 'Info'),
+    Tab(text: 'Announcement'),
+    Tab(text: 'Reviews')
+  ];
+
+  late TabController _tabController;
+
+  @override
+  void initState() {
+    super.initState();
+    _tabController = TabController(vsync: this, length: myTabs.length);
+  }
+
+  @override
+  void dispose() {
+    _tabController.dispose();
+    super.dispose();
+  }
+
+  @override
   @override
   Widget build(BuildContext context) {
-    return DefaultTabController(
-      initialIndex: 0,
-      length: 3,
-      child: SafeArea(
-        child: Scaffold(
-          appBar: AppBar(
-            backgroundColor: const Color.fromRGBO(236, 238, 243, 1),
-            title: const Text('Patras Tennis Club',
-                style: TextStyle(fontWeight: FontWeight.normal, fontSize: 22)),
-            bottom: const TabBar(
-              tabs: <Widget>[
-                Tab(
-                  text: 'Info',
-                ),
-                Tab(
-                  text: 'Announcements',
-                ),
-                Tab(
-                  text: 'Reviews',
-                ),
-              ],
-            ),
-          ),
-          body: TabBarView(
-            children: <Widget>[
-              LayoutBuilder(
-                builder: (context, constraints) {
-                  return SingleChildScrollView(
-                    child: ConstrainedBox(
-                      constraints:
-                          BoxConstraints(minHeight: constraints.maxHeight),
-                      child: Padding(
-                        padding: const EdgeInsets.all(12.0),
-                        child: Column(
-                          children: [
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 4.0, horizontal: 8),
-                              child: Container(
-                                height: constraints.maxHeight / 4,
-                                decoration: BoxDecoration(
-                                  color: const Color.fromRGBO(236, 238, 243, 1),
-                                  borderRadius: const BorderRadius.all(
-                                      Radius.circular(10)),
-                                  boxShadow: [
-                                    BoxShadow(
-                                      color: Colors.grey.shade200,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            const ClubText(),
-                            Center(
-                              child: SizedBox(
-                                width: constraints.maxWidth * 0.66,
-                                child: FilledButton(
-                                  style: FilledButton.styleFrom(
-                                      backgroundColor:
-                                          const Color.fromRGBO(0, 83, 135, 1)
-                                      // This is what you need!
-                                      ),
-                                  onPressed: () {
-                                    setState(() {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              const ApplyClub_Main(),
-                                        ),
-                                      );
-                                    });
-                                  },
-                                  child: const Text('Apply to Club'),
-                                ),
-                              ),
-                            ),
-                            Center(
-                              child: SizedBox(
-                                width: constraints.maxWidth * 0.66,
-                                child: FilledButton(
-                                  style: FilledButton.styleFrom(
-                                      backgroundColor:
-                                          const Color.fromRGBO(0, 83, 135, 1)
-                                      // This is what you need!
-                                      ),
-                                  onPressed: () {
-                                    setState(() {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (_) =>
-                                              const BookCourt_Main(),
-                                        ),
-                                      );
-                                    });
-                                  },
-                                  child: const Text('Book a Court'),
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                  );
-                },
-              ),
-              const Center(
-                child: Text("Announcements"),
-              ),
-              const Center(
-                child: Text("Reviews"),
-              ),
-            ],
-          ),
-          bottomNavigationBar: const GuestBottomNavigationBar(),
+    return Scaffold(
+      appBar: AppBar(
+        automaticallyImplyLeading: false,
+        title: TabBar(
+          controller: _tabController,
+          tabs: myTabs,
         ),
+      ),
+      body: TabBarView(
+        controller: _tabController,
+        children: const <Widget>[
+          ClubInfo(),
+          Center(
+            child: Text("Announcements"),
+          ),
+          Center(
+            child: Text("Reviews"),
+          ),
+        ],
       ),
     );
   }

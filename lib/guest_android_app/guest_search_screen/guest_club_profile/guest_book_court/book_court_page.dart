@@ -229,6 +229,7 @@ class BookCourt extends State<BookCourt_Main> {
                       children: <Widget>[
                         Expanded(
                           child: ListView.builder(
+                            physics: const NeverScrollableScrollPhysics(),
                             shrinkWrap: true,
                             padding: const EdgeInsets.all(8),
                             itemCount: courts.length,

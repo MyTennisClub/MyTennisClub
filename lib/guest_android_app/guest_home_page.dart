@@ -90,15 +90,9 @@ class HomeScreen extends StatelessWidget {
 class SearchScreen extends StatelessWidget {
   const SearchScreen({super.key});
 
-  checkIndex(index) {
-    _currentIndex = index;
-  }
-
   @override
   Widget build(BuildContext context) {
-    return GuestsSearchScreen(
-      checkIndex: checkIndex,
-    );
+    return const GuestsSearchScreen();
   }
 }
 
