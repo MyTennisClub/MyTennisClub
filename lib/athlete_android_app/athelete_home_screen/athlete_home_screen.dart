@@ -34,8 +34,8 @@ List<Reservation> reservations = [
 
 // Sort reservations by start time
 
-class GuestHomeScreen extends StatelessWidget {
-  const GuestHomeScreen({super.key});
+class AthleteHomeScreen extends StatelessWidget {
+  const AthleteHomeScreen({super.key});
 
 
 

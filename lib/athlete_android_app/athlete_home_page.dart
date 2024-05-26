@@ -1,19 +1,20 @@
 import 'package:flutter/material.dart';
-import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_search_screen.dart';
-import 'guest_home_screen/guest_home_screen.dart';
+import 'package:mytennisclub/athlete_android_app/athlete_search_screen/athlete_search_screen.dart';
+import 'athelete_home_screen/athlete_home_screen.dart';
 
-class GuestHomePage extends StatefulWidget {
-  const GuestHomePage({super.key});
+class AthleteHomePage extends StatefulWidget {
+  const AthleteHomePage({super.key});
 
   @override
-  State<GuestHomePage> createState() => _GuestHomePage();
+  State<AthleteHomePage> createState() => _AthleteHomePage();
 }
 
 int _currentIndex = 0;
 
-class _GuestHomePage extends State<GuestHomePage> {
+class _AthleteHomePage extends State<AthleteHomePage> {
   final List<Widget> _tabs = [
     const HomeScreen(),
+    const ScheduleScreen(),
     const SearchScreen(),
     const FeedScreen(),
     const ProfileScreen(),
@@ -59,6 +60,10 @@ class _GuestHomePage extends State<GuestHomePage> {
                 icon: Icon(Icons.home_outlined),
                 label: 'Home'),
             NavigationDestination(
+                selectedIcon: Icon(Icons.calendar_month, color: Colors.black),
+                icon: Icon(Icons.calendar_month_outlined),
+                label: 'Schedule'),
+            NavigationDestination(
                 selectedIcon: Icon(Icons.search, color: Colors.black),
                 icon: Icon(Icons.search_outlined),
                 label: 'Search'),
@@ -83,8 +88,19 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: GuestHomeScreen(),
+      child: AthleteHomeScreen(),
     );
+  }
+}
+
+class ScheduleScreen extends StatelessWidget {
+  const ScheduleScreen({super.key});
+
+  @override
+  Widget build(BuildContext context) {
+    return const Center(
+      child: Text('Schedule Screen'),
+    );;
   }
 }
 
@@ -93,7 +109,7 @@ class SearchScreen extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return const GuestsSearchScreen();
+    return const AthleteSearchScreen();
   }
 }
 

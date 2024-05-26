@@ -1,7 +1,7 @@
 import 'package:flutter/material.dart';
 import 'clubtext.dart';
-import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_apply_club/apply_club_page.dart';
-import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_book_court/book_court_page.dart';
+import 'athlete_apply_club/apply_club_page.dart';
+import 'athlete_book_court/book_court_page.dart';
 
 class ClubInfo extends StatefulWidget {
   const ClubInfo({super.key});

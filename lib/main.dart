@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'package:mytennisclub/guest_android_app/guest_home_page.dart';
+import 'package:mytennisclub/athlete_android_app/athlete_home_page.dart';
+
 
 void main() => runApp(const MainClass());
 
@@ -21,7 +22,7 @@ class Main_Class extends State<MainClass> {
     ]);
     return MaterialApp(
         initialRoute: '/',
-        routes: {'/guest_home': (context) => const GuestHomePage()},
+        routes: {'/athlete_home': (context) => const AthleteHomePage()},
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
@@ -77,10 +78,8 @@ class MainRoute extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const DummyScreen()),
-                  );
+                  Navigator.pushNamed(context, '/athlete_home');
+
                 },
                 child: const Text(
                   "Athlete App",
@@ -119,8 +118,10 @@ class MainRoute extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.pushNamed(context, '/guest_home');
-
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
+                  );
                 },
                 child: const Text(
                   "Guest App",

@@ -1,5 +1,5 @@
 import 'package:flutter/material.dart';
-import 'guest_club_profile_info.dart';
+import 'athlete_club_profile_info.dart';
 
 class ClubProfile extends StatefulWidget {
   const ClubProfile({super.key});

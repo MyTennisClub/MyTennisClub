@@ -1,14 +1,14 @@
 import 'package:flutter/material.dart';
-import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_club_profile.dart';
+import 'athlete_club_profile/athlete_club_profile.dart';
 
-class GuestsSearchScreen extends StatefulWidget {
-  const GuestsSearchScreen({super.key});
+class AthleteSearchScreen extends StatefulWidget {
+  const AthleteSearchScreen({super.key});
 
   @override
-  State<GuestsSearchScreen> createState() => _GuestsSearchScreenState();
+  State<AthleteSearchScreen> createState() => _GuestsSearchScreenState();
 }
 
-class _GuestsSearchScreenState extends State<GuestsSearchScreen> {
+class _GuestsSearchScreenState extends State<AthleteSearchScreen> {
   bool profileSelected = false;
   @override
   Widget build(BuildContext context) {
