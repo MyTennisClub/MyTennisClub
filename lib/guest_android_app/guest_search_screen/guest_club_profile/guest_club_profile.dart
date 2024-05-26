@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
-import 'guest_club_profile_info.dart';
+import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_club_profile_review.dart';
+import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_club_profile_info.dart';
 
 class ClubProfile extends StatefulWidget {
   const ClubProfile({super.key});
@@ -12,7 +13,7 @@ class _ClubProfileState extends State<ClubProfile>
     with SingleTickerProviderStateMixin {
   static const List<Tab> myTabs = <Tab>[
     Tab(text: 'Info'),
-    Tab(text: 'Announcement'),
+    Tab(text: 'Announcements'),
     Tab(text: 'Reviews')
   ];
 
@@ -48,9 +49,7 @@ class _ClubProfileState extends State<ClubProfile>
           Center(
             child: Text("Announcements"),
           ),
-          Center(
-            child: Text("Reviews"),
-          ),
+          ClubReview(),
         ],
       ),
     );
