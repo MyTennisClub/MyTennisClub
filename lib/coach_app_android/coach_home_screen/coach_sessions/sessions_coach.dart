@@ -1,8 +1,11 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'current_card_coach.dart';
 import 'next_card_coach.dart';
+
+
+enum Choices {Current, Next}
+
+
 class SessionsCoach extends StatefulWidget {
   const SessionsCoach({super.key});
 
@@ -11,117 +14,56 @@ class SessionsCoach extends StatefulWidget {
 }
 
 class _SessionsCoachState extends State<SessionsCoach> {
-  bool currentIsPressed = true;
-  bool nextIsPressed = false;
+
+  Choices _choice = Choices.Current;
 
   @override
   Widget build(BuildContext context) {
     return Column(
       children: <Widget>[
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
-          child: Row(
-            children: <Widget>[
-              Padding(
-                padding: const EdgeInsets.only(right: 7),
-                child: SizedBox(
-                  height: 30,
-                  child: ElevatedButton(
-                    onPressed: () => {
-                      setState(() {
-                        currentIsPressed = true;
-                        nextIsPressed = false;
-                      })
-                    },
-                    child: Text(
+        Align(
+          alignment: Alignment.bottomLeft,
+            child: SegmentedButton<Choices>(
+              segments: const <ButtonSegment<Choices>>[
+                ButtonSegment<Choices>(
+                  value: Choices.Current,
+                  label: Text(
                       'Current',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          currentIsPressed ? Color(0xFFFF3C70A0) : Colors.grey,
+                    style: TextStyle(
+                        fontWeight: FontWeight.bold,
+                        fontSize: 16
                     ),
                   ),
+                  // icon: Icon(Icons.calendar_view_day)),
                 ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(right: 7),
-                child: SizedBox(
-                  height: 30,
-                  child: ElevatedButton(
-                    onPressed: () => {
-                      setState(() {
-                        currentIsPressed = false;
-                        nextIsPressed = true;
-                      })
-                    },
-                    child: Text(
+                ButtonSegment<Choices>(
+                  value: Choices.Next,
+                  label: Text(
                       'Next',
-                      style: TextStyle(color: Colors.white),
-                    ),
-                    style: ElevatedButton.styleFrom(
-                      backgroundColor:
-                          nextIsPressed ? Color(0xFFFF3C70A0) : Colors.grey,
+                    style: TextStyle(
+                      fontWeight: FontWeight.bold,
+                      fontSize: 16
                     ),
                   ),
-                ),
-              )
-            ],
-          ),
-        ),
-        Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: currentIsPressed ? Card1_Coach():Card2_Coach()),
-        Row(
-          children: <Widget>[
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 3),
-              child: Row(
-                children: <Widget>[
-                  Padding(
-                    padding: const EdgeInsets.only(right: 14),
-                    child: SizedBox(
-                      height: 30,
-                      child: ElevatedButton(
-                        onPressed: () => {},
-                        child: Text(
-                          'Attendance Book',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFFF3C70A0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 15),
-                    child: SizedBox(
-                      height: 30,
-                      child: ElevatedButton(
-                        onPressed: () => {},
-                        child: Text(
-                          'Attendance Book',
-                          style: TextStyle(color: Colors.white),
-                        ),
-                        style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFFF3C70A0),
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
+                )
+              ],
+              selected: <Choices>{_choice},
+              onSelectionChanged: (Set<Choices> newSelection) {
+                setState(() {
+                  _choice = newSelection.first;
+
+                });
+              },
             ),
-          ],
+        ),
+        Expanded(
+          child: _choice == Choices.Current ? const CurrentCard() : const NextCard(),
         )
       ],
     );
   }
 }
+
+
+
+

@@ -12,6 +12,7 @@ class MainClass extends StatefulWidget {
 }
 
 class Main_Class extends State<MainClass> {
+
   @override
   Widget build(BuildContext context) {
     //the screen can't be rotated
@@ -28,7 +29,7 @@ class Main_Class extends State<MainClass> {
           ),
         ),
         initialRoute: '/',
-        routes: {'/coach_home': (context) => CoachHomePage()},
+        routes: {'/coach_home': (context) => const CoachHomePage()},
         home: const MainRoute());
   }
 }
@@ -58,7 +59,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -79,7 +80,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -100,7 +101,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => DummyScreen()),
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -121,7 +122,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) =>DummyScreen()),
+                    MaterialPageRoute(builder: (context) =>const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -141,7 +142,6 @@ class MainRoute extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/coach_home');
-                  ;
                 },
                 child: const Text(
                   "Coach App",
@@ -157,6 +157,8 @@ class MainRoute extends StatelessWidget {
 }
 
 class DummyScreen extends StatelessWidget {
+  const DummyScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Center(

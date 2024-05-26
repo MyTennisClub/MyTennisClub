@@ -12,11 +12,11 @@ class CoachHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding:
-      const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+      const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
       child: Column(
         children: [
           Container(
-            child: Align(
+            child: const Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'Today’s Schedule',
@@ -28,23 +28,14 @@ class CoachHomeScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 8,
             child: Container(
-              child: TodayScheduleCoach(),
-              padding: EdgeInsets.symmetric(vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.white10,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.shade200,
-                  ),
-                ],
-              ),
+                color: Colors.grey.shade300,
+
+                child: const TodayScheduleCoach()
             ),
           ),
           Container(
-            child: Align(
+            child: const Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'Sessions',
@@ -56,20 +47,8 @@ class CoachHomeScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 10,
             child: Container(
-              child: SessionsCoach(),
-              padding: EdgeInsets.symmetric(vertical: 6),
-              // child: SpacedItemsList(),
-              decoration: BoxDecoration(
-                color: Colors.white10,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.shade200,
-                  ),
-                ],
-              ),
+              child: const SessionsCoach()
             ),
           ),
         ],
