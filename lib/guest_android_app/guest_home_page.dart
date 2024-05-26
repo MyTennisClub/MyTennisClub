@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_search_screen.dart';
+import 'guest_home_screen/guest_home_screen.dart';
 
 class GuestHomePage extends StatefulWidget {
   const GuestHomePage({super.key});
@@ -82,7 +83,7 @@ class HomeScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return const Center(
-      child: Text('Home Screen'),
+      child: GuestHomeScreen(),
     );
   }
 }
