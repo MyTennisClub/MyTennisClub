@@ -3,6 +3,8 @@ import 'coach_home_screen/coach_home_screen.dart';
 import 'coach_schedule_screen/coach_schedule_screen.dart';
 
 class CoachHomePage extends StatefulWidget {
+  const CoachHomePage({super.key});
+
   @override
   _CoachHomePageState createState() => _CoachHomePageState();
 }
@@ -11,11 +13,11 @@ class _CoachHomePageState extends State<CoachHomePage> {
   int _currentIndex = 0;
 
   final List<Widget> _tabs = [
-    HomeScreen(),
-    ScheduleScreen(),
-    TrainningScreen(),
-    AthletesScreen(),
-    ProfileScreen(),
+    const HomeScreen(),
+    const ScheduleScreen(),
+    const TrainningScreen(),
+    const AthletesScreen(),
+    const ProfileScreen(),
   ];
 
   @override
@@ -58,24 +60,24 @@ class _CoachHomePageState extends State<CoachHomePage> {
             _currentIndex = index;
           });
         },
-        destinations: [
-          const NavigationDestination(
+        destinations: const [
+          NavigationDestination(
               selectedIcon: Icon(Icons.home, color: Colors.black),
               icon: Icon(Icons.home, color: Colors.grey),
               label: 'Home'),
-          const NavigationDestination(
+          NavigationDestination(
               selectedIcon: Icon(Icons.calendar_month, color: Colors.black),
               icon: Icon(Icons.calendar_month, color: Colors.grey),
               label: 'Schedule'),
-          const NavigationDestination(
+          NavigationDestination(
               selectedIcon: Icon(Icons.sports_tennis, color: Colors.black),
               icon: Icon(Icons.sports_tennis, color: Colors.grey),
               label: 'Trainning'),
-          const NavigationDestination(
+          NavigationDestination(
               selectedIcon: Icon(Icons.people, color: Colors.black),
               icon: Icon(Icons.people, color: Colors.grey),
               label: 'Athletes'),
-          const NavigationDestination(
+          NavigationDestination(
               selectedIcon: Icon(Icons.person, color: Colors.black),
               icon: Icon(Icons.person, color: Colors.grey),
               label: 'Profile')
@@ -86,6 +88,8 @@ class _CoachHomePageState extends State<CoachHomePage> {
 }
 
 class HomeScreen extends StatelessWidget {
+  const HomeScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const CoachHomeScreen();
@@ -93,6 +97,8 @@ class HomeScreen extends StatelessWidget {
 }
 
 class ScheduleScreen extends StatelessWidget {
+  const ScheduleScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const CoachScheduleScreen();
@@ -100,6 +106,8 @@ class ScheduleScreen extends StatelessWidget {
 }
 
 class TrainningScreen extends StatelessWidget {
+  const TrainningScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Center(
@@ -109,6 +117,8 @@ class TrainningScreen extends StatelessWidget {
 }
 
 class AthletesScreen extends StatelessWidget {
+  const AthletesScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Center(
@@ -118,6 +128,8 @@ class AthletesScreen extends StatelessWidget {
 }
 
 class ProfileScreen extends StatelessWidget {
+  const ProfileScreen({super.key});
+
   @override
   Widget build(BuildContext context) {
     return const Center(

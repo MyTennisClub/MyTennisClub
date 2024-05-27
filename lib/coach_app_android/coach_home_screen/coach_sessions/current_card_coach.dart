@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
 
 class Card1_Coach extends StatelessWidget {
+  const Card1_Coach({super.key});
+
   @override
   Widget build(BuildContext context) {
     return Row(
       mainAxisAlignment: MainAxisAlignment.spaceBetween,
       children: <Widget>[
-        Card(
+        const Card(
           color: Color.fromRGBO(141, 182, 219, 1),
           child: SizedBox(
               width: 160,
               height: 110,
               child: Padding(
                 padding:
-                    const EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
+                    EdgeInsets.symmetric(horizontal: 10.0, vertical: 4.0),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
@@ -29,7 +31,7 @@ class Card1_Coach extends StatelessWidget {
               )),
         ),
         Container(
-          child: Column(
+          child: const Column(
             children: <Widget>[
               Card(
                 color: Color.fromRGBO(141, 182, 219, 1),

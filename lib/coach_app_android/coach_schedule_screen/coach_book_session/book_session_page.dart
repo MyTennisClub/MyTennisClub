@@ -98,7 +98,7 @@ class BookSession extends State<BookSession_Main> {
       for (var key = 0; key < courts.length; key++) {
         if (hourCheck[key] && durationCheck && numberCheck && paymentCheck) {
           visible[key] = true;
-          court = 'Court ' + courts[key];
+          court = 'Court ${courts[key]}';
           calcuateDuration(hour, duration);
         } else {
           visible[key] = false;

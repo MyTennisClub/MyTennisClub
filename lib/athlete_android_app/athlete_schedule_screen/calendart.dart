@@ -1,13 +1,15 @@
 import 'package:flutter/material.dart';
 
 class CalendarWidget extends StatefulWidget {
+  const CalendarWidget({super.key});
+
   @override
   _CalendarWidgetState createState() => _CalendarWidgetState();
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
   DateTime _currentDate = DateTime.now();
-  DateTime _initialDate = DateTime.now();
+  final DateTime _initialDate = DateTime.now();
 
   // List of reservations
   List<Reservation> reservations = [
@@ -49,16 +51,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       DateTime startOfWeek =
           _currentDate.subtract(Duration(days: _currentDate.weekday - 1));
       // Ensure we do not go before the initial week's start
-      if (startOfWeek.isAfter(_initialDate.subtract(Duration(days: 7))) &&
+      if (startOfWeek.isAfter(_initialDate.subtract(const Duration(days: 7))) &&
           startOfWeek.isAfter(_initialDate)) {
-        _currentDate = _currentDate.subtract(Duration(days: 7));
+        _currentDate = _currentDate.subtract(const Duration(days: 7));
       }
     });
   }
 
   void _nextWeek() {
     setState(() {
-      _currentDate = _currentDate.add(Duration(days: 7));
+      _currentDate = _currentDate.add(const Duration(days: 7));
     });
   }
 
@@ -86,7 +88,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   @override
   Widget build(BuildContext context) {
     return Container(
-      padding: EdgeInsets.all(10.0),
+      padding: const EdgeInsets.all(10.0),
       child: Column(
         children: [
           Row(
@@ -94,16 +96,16 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             children: [
               GestureDetector(
                 onTap: _previousWeek,
-                child: Icon(Icons.arrow_back, size: 30),
+                child: const Icon(Icons.arrow_back, size: 30),
               ),
               ..._generateWeekDays(),
               GestureDetector(
                 onTap: _nextWeek,
-                child: Icon(Icons.arrow_forward, size: 30),
+                child: const Icon(Icons.arrow_forward, size: 30),
               ),
             ],
           ),
-          SizedBox(height: 10),
+          const SizedBox(height: 10),
           _buildDayRow(
               ['Hour', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']),
           Expanded(
@@ -132,7 +134,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               child: Text(
                 day,
                 style:
-                    TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
+                    const TextStyle(color: Colors.white, fontWeight: FontWeight.bold),
               ),
             ),
           ),
@@ -153,7 +155,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           child: Center(
             child: Text(
               '${hour.toString().padLeft(2, '0')}:00', // Format hour to HH:00
-              style: TextStyle(color: Colors.black),
+              style: const TextStyle(color: Colors.black),
             ),
           ),
         ),
@@ -169,7 +171,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     context: context,
                     builder: (context) {
                       return AlertDialog(
-                          title: Text('Reservation Details'),
+                          title: const Text('Reservation Details'),
                           content: Text(
                               'Title: $reservationTitle\nCourt: ${_getReservationCourt(reservationTitle)}\nTime: ${_formatTime(day, hour)}'),
                           actions: [
@@ -177,7 +179,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                               onPressed: () {
                                 Navigator.pop(context);
                               },
-                              child: Text('Close'),
+                              child: const Text('Close'),
                             ),
                           ]);
                     },
@@ -190,7 +192,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 child: Center(
                   child: Text(
                     reservationTitle,
-                    style: TextStyle(
+                    style: const TextStyle(
                       color: Colors.white,
                     ),
                   ),
@@ -205,7 +207,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
   Color _getReservationColor(DateTime day, int hour) {
     DateTime startOfHour = DateTime(day.year, day.month, day.day, hour);
-    DateTime endOfHour = startOfHour.add(Duration(hours: 1));
+    DateTime endOfHour = startOfHour.add(const Duration(hours: 1));
     for (var reservation in reservations) {
       if ((reservation.startTime.isBefore(endOfHour) &&
           reservation.endTime.isAfter(startOfHour))) {

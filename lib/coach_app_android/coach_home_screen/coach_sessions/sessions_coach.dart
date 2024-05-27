@@ -33,13 +33,13 @@ class _SessionsCoachState extends State<SessionsCoach> {
                         nextIsPressed = false;
                       })
                     },
-                    child: Text(
-                      'Current',
-                      style: TextStyle(color: Colors.white),
-                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
-                          currentIsPressed ? Color(0xFFFF3C70A0) : Colors.grey,
+                          currentIsPressed ? const Color(0xffff3c70a0) : Colors.grey,
+                    ),
+                    child: const Text(
+                      'Current',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
@@ -55,13 +55,13 @@ class _SessionsCoachState extends State<SessionsCoach> {
                         nextIsPressed = true;
                       })
                     },
-                    child: Text(
-                      'Next',
-                      style: TextStyle(color: Colors.white),
-                    ),
                     style: ElevatedButton.styleFrom(
                       backgroundColor:
-                          nextIsPressed ? Color(0xFFFF3C70A0) : Colors.grey,
+                          nextIsPressed ? const Color(0xffff3c70a0) : Colors.grey,
+                    ),
+                    child: const Text(
+                      'Next',
+                      style: TextStyle(color: Colors.white),
                     ),
                   ),
                 ),
@@ -70,8 +70,8 @@ class _SessionsCoachState extends State<SessionsCoach> {
           ),
         ),
         Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10),
-            child: currentIsPressed ? Card1_Coach():Card2_Coach()),
+            padding: const EdgeInsets.symmetric(horizontal: 10),
+            child: currentIsPressed ? const Card1_Coach():const Card2_Coach()),
         Row(
           children: <Widget>[
             Padding(
@@ -84,15 +84,15 @@ class _SessionsCoachState extends State<SessionsCoach> {
                       height: 30,
                       child: ElevatedButton(
                         onPressed: () => {},
-                        child: Text(
-                          'Attendance Book',
-                          style: TextStyle(color: Colors.white),
-                        ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFFF3C70A0),
+                          backgroundColor: const Color(0xffff3c70a0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
+                        ),
+                        child: const Text(
+                          'Attendance Book',
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
                     ),
@@ -103,15 +103,15 @@ class _SessionsCoachState extends State<SessionsCoach> {
                       height: 30,
                       child: ElevatedButton(
                         onPressed: () => {},
-                        child: Text(
-                          'Attendance Book',
-                          style: TextStyle(color: Colors.white),
-                        ),
                         style: ElevatedButton.styleFrom(
-                          backgroundColor: Color(0xFFFF3C70A0),
+                          backgroundColor: const Color(0xffff3c70a0),
                           shape: RoundedRectangleBorder(
                             borderRadius: BorderRadius.circular(8.0),
                           ),
+                        ),
+                        child: const Text(
+                          'Attendance Book',
+                          style: TextStyle(color: Colors.white),
                         ),
                       ),
                     ),

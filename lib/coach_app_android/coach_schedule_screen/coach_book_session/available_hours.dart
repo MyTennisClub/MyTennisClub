@@ -3,7 +3,7 @@ import 'package:flutter/material.dart';
 class Available_Hours extends StatefulWidget {
   final Function checkHour;
   final int id;
-  Available_Hours({required this.checkHour, required this.id});
+  const Available_Hours({super.key, required this.checkHour, required this.id});
   @override
   State<Available_Hours> createState() => AvailableHours();
 }

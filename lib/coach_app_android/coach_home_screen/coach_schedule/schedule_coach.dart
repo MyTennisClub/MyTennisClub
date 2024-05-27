@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 
 class TodayScheduleCoach extends StatelessWidget {
   const TodayScheduleCoach({super.key});
@@ -35,7 +33,7 @@ class ItemWidget extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    return Padding(
+    return const Padding(
       padding: EdgeInsets.symmetric(horizontal: 10),
       child: Card(
         color: Color.fromRGBO(141, 182, 219, 1),
@@ -45,7 +43,7 @@ class ItemWidget extends StatelessWidget {
               mainAxisAlignment: MainAxisAlignment.spaceAround,
               children: <Widget>[
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 5.0,vertical:3.5),
+                  padding: EdgeInsets.symmetric(horizontal: 5.0,vertical:3.5),
                   child: Column(
                     // mainAxisAlignment: MainAxisAlignment.saceBetween,
                     children: <Widget>[
@@ -66,7 +64,7 @@ class ItemWidget extends StatelessWidget {
                   color: Colors.white,
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 2),
+                  padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 2),
                   child: Text(
                       'Group A Session',
                       textAlign: TextAlign.center,
@@ -80,7 +78,7 @@ class ItemWidget extends StatelessWidget {
                 //   color: Colors.white,
                 // ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 10.0,vertical: 2),
+                  padding: EdgeInsets.symmetric(horizontal: 10.0,vertical: 2),
                   child: Text(
                       'Court A',
                       textAlign: TextAlign.center,

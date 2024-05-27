@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'coach_schedule/schedule_coach.dart';
 import 'coach_sessions/sessions_coach.dart';
 
@@ -16,7 +14,7 @@ class CoachHomeScreen extends StatelessWidget {
       child: Column(
         children: [
           Container(
-            child: Align(
+            child: const Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'Today’s Schedule',
@@ -30,21 +28,21 @@ class CoachHomeScreen extends StatelessWidget {
           Expanded(
             flex: 8,
             child: Container(
-              child: TodayScheduleCoach(),
-              padding: EdgeInsets.symmetric(vertical: 6),
+              padding: const EdgeInsets.symmetric(vertical: 6),
               decoration: BoxDecoration(
                 color: Colors.white10,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.shade200,
                   ),
                 ],
               ),
+              child: const TodayScheduleCoach(),
             ),
           ),
           Container(
-            child: Align(
+            child: const Align(
               alignment: Alignment.centerLeft,
               child: Text(
                 'Sessions',
@@ -58,18 +56,18 @@ class CoachHomeScreen extends StatelessWidget {
           Expanded(
             flex: 10,
             child: Container(
-              child: SessionsCoach(),
-              padding: EdgeInsets.symmetric(vertical: 6),
+              padding: const EdgeInsets.symmetric(vertical: 6),
               // child: SpacedItemsList(),
               decoration: BoxDecoration(
                 color: Colors.white10,
-                borderRadius: BorderRadius.all(Radius.circular(10)),
+                borderRadius: const BorderRadius.all(Radius.circular(10)),
                 boxShadow: [
                   BoxShadow(
                     color: Colors.grey.shade200,
                   ),
                 ],
               ),
+              child: const SessionsCoach(),
             ),
           ),
         ],

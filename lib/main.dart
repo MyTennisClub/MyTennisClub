@@ -1,8 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
-import 'coach_app_android/coach_home_page.dart';
+import 'package:mytennisclub/coach_app_android/coach_home_page.dart';
 import 'package:mytennisclub/athlete_android_app/athlete_home_page.dart';
-
+import 'package:mytennisclub/secretary_android_app/secretary_home.dart';
 
 void main() => runApp(const MainClass());
 
@@ -23,7 +23,10 @@ class Main_Class extends State<MainClass> {
     ]);
     return MaterialApp(
         initialRoute: '/',
-        routes: {'/athlete_home': (context) => const AthleteHomePage()},
+        routes: {
+          '/athlete_home': (context) => const AthleteHomePage(),
+          '/coach_home': (context) => const CoachHomePage()
+        },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
           useMaterial3: true,
@@ -31,8 +34,6 @@ class Main_Class extends State<MainClass> {
             seedColor: const Color.fromRGBO(0, 83, 135, 1),
           ),
         ),
-        initialRoute: '/',
-        routes: {'/coach_home': (context) => CoachHomePage()},
         home: const MainRoute());
   }
 }
@@ -62,11 +63,11 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const DummyScreen()),
+                    MaterialPageRoute(builder: (context) => const Secretary_Scan()),
                   );
                 },
                 child: const Text(
-                  "Secretary App",
+                  "Secretary Home Page ",
                   style: TextStyle(fontSize: 14, color: Colors.white),
                 ),
               ),
@@ -82,7 +83,6 @@ class MainRoute extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/athlete_home');
-
                 },
                 child: const Text(
                   "Athlete App",
@@ -102,7 +102,8 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const DummyScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -123,7 +124,8 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const DummyScreen()),
+                    MaterialPageRoute(
+                        builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -132,23 +134,22 @@ class MainRoute extends StatelessWidget {
                 ),
               ),
               ElevatedButton(
-                style: ElevatedButton.styleFrom(
-                  fixedSize: const Size(330, 30),
-                  backgroundColor: const Color.fromRGBO(60, 111, 159, 1),
-                  shape: const RoundedRectangleBorder(
-                    borderRadius: BorderRadius.all(
-                      Radius.circular(10),
+                  style: ElevatedButton.styleFrom(
+                    fixedSize: const Size(330, 30),
+                    backgroundColor: const Color.fromRGBO(60, 111, 159, 1),
+                    shape: const RoundedRectangleBorder(
+                      borderRadius: BorderRadius.all(
+                        Radius.circular(10),
+                      ),
                     ),
                   ),
-                ),
-                onPressed: () {
-                  Navigator.pushNamed(context, '/coach_home');
-                },
-                child: const Text(
-                  "Coach App",
-                  style: TextStyle(fontSize: 14, color: Colors.white),
-                ),
-              ),
+                  onPressed: () {
+                    Navigator.pushNamed(context, '/coach_home');
+                  },
+                  child: const Text(
+                    "Coach App",
+                    style: TextStyle(fontSize: 14, color: Colors.white),
+                  )),
             ],
           ),
         ),

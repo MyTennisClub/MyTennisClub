@@ -1,9 +1,6 @@
 import 'package:flutter/material.dart';
-import 'package:flutter_slidable/flutter_slidable.dart';
 import 'package:intl/intl.dart';
-import 'package:qr_flutter/qr_flutter.dart';
 import 'Reservation.dart';
-import 'confirm_delete_diaolog.dart';
 
 class UpcomingReservations extends StatefulWidget {
   final List<Reservation> reservations;
@@ -89,17 +86,17 @@ class _UpcomingReservationsState extends State<UpcomingReservations> {
                                     child: LayoutBuilder(
                                       builder: (BuildContext context,
                                           BoxConstraints constraints) {
-                                        double _modalHeight = constraints
+                                        double modalHeight = constraints
                                             .maxHeight; // This will give you the height of the modal bottom sheet
                                         return Padding(
-                                          padding: EdgeInsets.symmetric(
+                                          padding: const EdgeInsets.symmetric(
                                               vertical: 20),
                                           child: Column(
                                             mainAxisAlignment:
                                                 MainAxisAlignment.center,
                                             mainAxisSize: MainAxisSize.min,
                                             children: <Widget>[
-                                              Expanded(
+                                              const Expanded(
                                                 child: Text(
                                                   'Reservation Info',
                                                   style:
@@ -107,8 +104,8 @@ class _UpcomingReservationsState extends State<UpcomingReservations> {
                                                 ),
                                               ),
                                               SizedBox(
-                                                height: _modalHeight -
-                                                    _modalHeight / 3,
+                                                height: modalHeight -
+                                                    modalHeight / 3,
                                                 child: Container(
                                                   child: Column(
                                                     children: <Widget>[
