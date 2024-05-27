@@ -18,7 +18,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       title: 'ATH Tennis',
       court: 'Court A',
       startTime: DateTime.parse('2024-05-30 12:00:00'),
-      endTime: DateTime.parse('2024-05-30 14  :00:00'),
+      endTime: DateTime.parse('2024-05-30 14:00:00'),
     ),
     Reservation(
       id: 2,
