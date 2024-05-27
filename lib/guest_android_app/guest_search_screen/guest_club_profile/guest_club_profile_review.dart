@@ -1,5 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_review.dart';
 
@@ -47,7 +46,7 @@ class _ClubReviewState extends State<ClubReview> {
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: Column(
               children: [
-                Container(
+                SizedBox(
                   height: constraints.maxHeight * 0.90,
                   child: ListView.builder(
                     shrinkWrap: true,

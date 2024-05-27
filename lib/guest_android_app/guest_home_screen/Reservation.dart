@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
-import 'package:qr/qr.dart';
 
 class Reservation {
   final int id;
@@ -18,7 +17,7 @@ class Reservation {
     required this.endTime,
   }){
     qrCode = QrImageView(
-      data: this.id.toString(),
+      data: id.toString(),
       version: QrVersions.auto,
       gapless: false,
     ); // Call function to generate QR code
