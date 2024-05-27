@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_review.dart';
 
@@ -18,9 +19,9 @@ class _ClubReviewState extends State<ClubReview> {
     DateFormat.yMMMMd().format(DateTime.utc(2024, 5, 3))
   ];
   List<String> review = [
-    'Body text for a post. Since it’s a social app, sometimes it’s a hot take, and sometimes it’s a question.',
-    'Body text for a post. Since it’s a social app, sometimes it’s a hot take, and sometimes it’s a question.',
-    'Body text for a post. Since it’s a social app, sometimes it’s a hot take, and sometimes it’s a question.'
+    "Body text for a post. Since it’s a social app, sometimes it’s a hot take, and sometimes it’s a question.",
+    "Body text for a post. Since it’s a social app, sometimes it’s a hot take, and sometimes it’s a question.",
+    "Body text for a post. Since it’s a social app, sometimes it’s a hot take, and sometimes it’s a question."
   ];
 
   List<bool> likePressed = [false, false, false];
@@ -46,7 +47,7 @@ class _ClubReviewState extends State<ClubReview> {
             constraints: BoxConstraints(minHeight: constraints.maxHeight),
             child: Column(
               children: [
-                SizedBox(
+                Container(
                   height: constraints.maxHeight * 0.90,
                   child: ListView.builder(
                     shrinkWrap: true,
