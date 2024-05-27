@@ -3,7 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mytennisclub/coach_app_android/coach_home_page.dart';
 import 'package:mytennisclub/secretary_android_app/secretary_home.dart';
 import 'package:mytennisclub/guest_android_app/guest_home_page.dart';
-
+import 'package:mytennisclub/athlete_android_app/athlete_home_page.dart';
 
 void main() => runApp(const MainClass());
 
@@ -27,7 +27,7 @@ class Main_Class extends State<MainClass> {
         initialRoute: '/',
         routes: {
           '/guest_home': (context) => const GuestHomePage(),
-          '/athlete_home': (context) => const DummyScreen(),
+          '/athlete_home': (context) => const AthleteHomePage(),
           '/coach_home': (context) => const CoachHomePage()
         },
         debugShowCheckedModeBanner: false,
