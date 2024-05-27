@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:mytennisclub/coach_app_android/coach_home_page.dart';
-import 'package:mytennisclub/athlete_android_app/athlete_home_page.dart';
 import 'package:mytennisclub/secretary_android_app/secretary_home.dart';
 
 void main() => runApp(const MainClass());
@@ -25,7 +24,7 @@ class Main_Class extends State<MainClass> {
     return MaterialApp(
         initialRoute: '/',
         routes: {
-          '/athlete_home': (context) => const AthleteHomePage(),
+          // '/athlete_home': (context) => const AthleteHomePage(),
           '/coach_home': (context) => const CoachHomePage()
         },
         debugShowCheckedModeBanner: false,
