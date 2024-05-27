@@ -3,6 +3,7 @@ import 'package:flutter/services.dart';
 import 'package:mytennisclub/coach_app_android/coach_home_page.dart';
 import 'package:mytennisclub/secretary_android_app/secretary_home.dart';
 import 'package:mytennisclub/guest_android_app/guest_home_page.dart';
+import 'package:mytennisclub/member_android_app/member_home_page.dart';
 import 'package:mytennisclub/athlete_android_app/athlete_home_page.dart';
 
 void main() => runApp(const MainClass());
@@ -15,7 +16,6 @@ class MainClass extends StatefulWidget {
 }
 
 class Main_Class extends State<MainClass> {
-
   @override
   Widget build(BuildContext context) {
     //the screen can't be rotated
@@ -28,7 +28,8 @@ class Main_Class extends State<MainClass> {
         routes: {
           '/guest_home': (context) => const GuestHomePage(),
           '/athlete_home': (context) => const AthleteHomePage(),
-          '/coach_home': (context) => const CoachHomePage()
+          '/coach_home': (context) => const CoachHomePage(),
+          '/member_home': (context) => const MemberHomePage()
         },
         debugShowCheckedModeBanner: false,
         theme: ThemeData(
@@ -66,7 +67,8 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(builder: (context) => const Secretary_Scan()),
+                    MaterialPageRoute(
+                        builder: (context) => const Secretary_Scan()),
                   );
                 },
                 child: const Text(
@@ -86,7 +88,6 @@ class MainRoute extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/athlete_home');
-
                 },
                 child: const Text(
                   "Athlete App",
@@ -104,10 +105,7 @@ class MainRoute extends StatelessWidget {
                   ),
                 ),
                 onPressed: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(builder: (context) => const DummyScreen()),
-                  );
+                  Navigator.pushNamed(context, '/member_home');
                 },
                 child: const Text(
                   "Member App",
