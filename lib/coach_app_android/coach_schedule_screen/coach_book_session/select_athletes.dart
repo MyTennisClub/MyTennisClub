@@ -1,7 +1,8 @@
 import 'package:flutter/material.dart';
 
 class Select_Athletes extends StatefulWidget {
-  const Select_Athletes({super.key});
+  final int number;
+  const Select_Athletes({required this.number, super.key});
 
   @override
   State<Select_Athletes> createState() => SelectAthletes();
@@ -19,9 +20,32 @@ class SelectAthletes extends State<Select_Athletes> {
     'Carter Spencer',
     'Patrick Dyer',
     'Jonas Wiley'
+        'Melissa Roth',
+    'Morgan Reyes',
+    'Elliot Quinn',
+    'Estrella Escobar',
+    'Ace Terell',
+    'Carter Spencer',
+    'Patrick Dyer',
+    'Jonas Wiley' 'Melissa Roth',
+    'Morgan Reyes',
+    'Elliot Quinn',
+    'Estrella Escobar',
+    'Ace Terell',
+    'Carter Spencer',
+    'Patrick Dyer',
+    'Jonas Wiley' 'Melissa Roth',
+    'Morgan Reyes',
+    'Elliot Quinn',
+    'Estrella Escobar',
+    'Ace Terell',
+    'Carter Spencer',
+    'Patrick Dyer',
+    'Jonas Wiley'
   ];
   List<int> selectedItems = [];
   List<String> _filteredData = [];
+  List<String> selectedAthletes = [];
   bool _isLoading = false;
 
   @override
@@ -55,6 +79,7 @@ class SelectAthletes extends State<Select_Athletes> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          automaticallyImplyLeading: false,
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               color: Color.fromRGBO(248, 249, 255, 1),
@@ -81,7 +106,12 @@ class SelectAthletes extends State<Select_Athletes> {
         body: SingleChildScrollView(
           child: _isLoading
               ? const Center(
-                  child: CircularProgressIndicator(),
+                  child: Column(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      CircularProgressIndicator(),
+                    ],
+                  ),
                 )
               : Padding(
                   padding: const EdgeInsets.all(12.0),
@@ -89,11 +119,12 @@ class SelectAthletes extends State<Select_Athletes> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Selected: ${selectedItems.length}/3',
+                        'Selected: ${selectedItems.length}/${widget.number}',
                         textAlign: TextAlign.start,
                       ),
                       ListView.builder(
                         primary: true,
+                        physics: const NeverScrollableScrollPhysics(),
                         itemCount: _filteredData.length,
                         shrinkWrap: true,
                         itemBuilder: (BuildContext context, int index) =>
@@ -110,14 +141,20 @@ class SelectAthletes extends State<Select_Athletes> {
                           child: ListTile(
                             onTap: () {
                               if (selectedItems.contains(index)) {
-                                setState(() => selectedItems
-                                    .removeWhere((val) => val == index));
+                                setState(() {
+                                  selectedItems
+                                      .removeWhere((val) => val == index);
+                                  selectedAthletes.remove(athleteList[index]);
+                                });
                               }
                             },
                             onLongPress: () {
                               if (!selectedItems.contains(index) &&
-                                  selectedItems.length < 3) {
-                                setState(() => selectedItems.add(index));
+                                  selectedItems.length < widget.number) {
+                                setState(() {
+                                  selectedItems.add(index);
+                                  selectedAthletes.add(athleteList[index]);
+                                });
                               }
                             },
                             leading: CircleAvatar(
@@ -164,7 +201,7 @@ class SelectAthletes extends State<Select_Athletes> {
             )
           ])),
           onPressed: () {
-            Navigator.pop(context);
+            Navigator.of(context).pop(selectedAthletes);
           },
         ),
       ),

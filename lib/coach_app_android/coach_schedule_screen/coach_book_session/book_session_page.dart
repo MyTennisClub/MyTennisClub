@@ -35,6 +35,7 @@ class BookSession_Main extends StatefulWidget {
 
 class BookSession extends State<BookSession_Main> {
   bool numberCheck = true;
+  bool athletesCheck = false;
   bool paymentCheck = true;
   bool durationCheck = true;
   List<bool> hourCheck = [false, false, false, false];
@@ -49,6 +50,7 @@ class BookSession extends State<BookSession_Main> {
   String? hour;
   String? endhour;
   String? court = '';
+  List<String>? athletes = [];
 
   checkHour(check, key, h) {
     setState(() {
@@ -81,6 +83,17 @@ class BookSession extends State<BookSession_Main> {
     setState(() {
       numberCheck = check;
       number = numb;
+      print(check);
+      checkVisible();
+    });
+  }
+
+  checkAthletes(check, list) {
+    setState(() {
+      athletesCheck = check;
+      athletes = list;
+      print(check);
+
       checkVisible();
     });
   }
@@ -96,7 +109,11 @@ class BookSession extends State<BookSession_Main> {
   checkVisible() {
     setState(() {
       for (var key = 0; key < courts.length; key++) {
-        if (hourCheck[key] && durationCheck && numberCheck && paymentCheck) {
+        if (hourCheck[key] &&
+            durationCheck &&
+            numberCheck &&
+            athletesCheck &&
+            paymentCheck) {
           visible[key] = true;
           court = 'Court ${courts[key]}';
           calcuateDuration(hour, duration);
@@ -134,10 +151,10 @@ class BookSession extends State<BookSession_Main> {
             ],
           ),
         ),
-        body: LayoutBuilder(builder: (context, contraints) {
+        body: LayoutBuilder(builder: (context, constraints) {
           return SingleChildScrollView(
             child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: contraints.maxHeight),
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
               child: Padding(
                 padding: const EdgeInsetsDirectional.symmetric(horizontal: 15),
                 child: Column(
@@ -157,6 +174,8 @@ class BookSession extends State<BookSession_Main> {
                       padding: const EdgeInsets.symmetric(vertical: 10.0),
                       child: Details_Section(
                         checkNumber: checkNumber,
+                        checkAthletes: checkAthletes,
+                        constraints: constraints.maxHeight,
                       ),
                     ),
                     Padding(
@@ -180,7 +199,7 @@ class BookSession extends State<BookSession_Main> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 8.0),
                       child: SizedBox(
-                        width: contraints.maxWidth,
+                        width: constraints.maxWidth,
                         child: Duration_Section(
                           checkDuration: checkDuration,
                         ),

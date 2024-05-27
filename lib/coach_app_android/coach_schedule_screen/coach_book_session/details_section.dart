@@ -5,7 +5,13 @@ import 'select_athletes.dart';
 
 class Details_Section extends StatefulWidget {
   final Function checkNumber;
-  const Details_Section({required this.checkNumber, super.key});
+  final Function checkAthletes;
+  final double constraints;
+  const Details_Section(
+      {required this.checkNumber,
+      required this.checkAthletes,
+      required this.constraints,
+      super.key});
 
   @override
   State<Details_Section> createState() => DetailsSection();
@@ -14,7 +20,11 @@ class Details_Section extends StatefulWidget {
 class DetailsSection extends State<Details_Section> {
   late TextEditingController _controller;
   bool numberCheck = true;
-  int memberNumber = 3;
+  int number = 1;
+  int allowedMemberNumber = 4;
+  List<String>? athletes = [];
+
+  String _errorText = ('');
 
   @override
   void initState() {
@@ -28,7 +38,20 @@ class DetailsSection extends State<Details_Section> {
     super.dispose();
   }
 
-  String _errorText = ('');
+  Future<List<String>?> _openSelectAthletes(context) async {
+    var result = showModalBottomSheet<List<String>>(
+      isDismissible: false,
+      useSafeArea: true,
+      isScrollControlled: true,
+      context: context,
+      builder: (context) => SizedBox(
+          height: widget.constraints,
+          child: Select_Athletes(
+            number: number,
+          )),
+    );
+    return result;
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -46,16 +69,22 @@ class DetailsSection extends State<Details_Section> {
               onChanged: (value) {
                 setState(() {
                   if (value.isEmpty) {
-                    widget.checkNumber(false, 0);
+                    numberCheck = false;
+                    number = 0;
                   }
-                  if (int.parse(value) > memberNumber) {
-                    _errorText = 'Must be less than ${memberNumber.toString()}';
-                    widget.checkNumber(false, 0);
+                  if (int.parse(value) > allowedMemberNumber) {
+                    _errorText =
+                        'Must be less than ${allowedMemberNumber.toString()}';
+                    numberCheck = false;
+                    number = 0;
                   } else {
                     _errorText = '';
-                    widget.checkNumber(true, int.parse(value));
+                    numberCheck = true;
+                    number = int.parse(value);
                   }
-                  widget.checkNumber(numberCheck);
+                  athletes = [];
+                  widget.checkNumber(numberCheck, number);
+                  widget.checkAthletes(false, athletes);
                 });
               },
               decoration: InputDecoration(
@@ -89,12 +118,12 @@ class DetailsSection extends State<Details_Section> {
                   style: const TextStyle(
                       color: Color.fromRGBO(0, 83, 135, 1), fontSize: 14),
                   recognizer: TapGestureRecognizer()
-                    ..onTap = () => Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (_) => const Select_Athletes(),
-                          ),
-                        ),
+                    ..onTap = () async {
+                      athletes = await _openSelectAthletes(context);
+                      if (numberCheck) {
+                        widget.checkAthletes(true, athletes);
+                      }
+                    },
                 ),
               ],
             ),
