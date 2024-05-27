@@ -22,11 +22,11 @@ class AthleteScheduleScreen extends StatelessWidget {
           Expanded(
             child: Container(
               color: Colors.grey.shade300,
-              child: CalendarWidget(),
+              child: const CalendarWidget(),
             ),
           ),
           ElevatedButton(onPressed: () {  },
-            child: Text('Book'),)
+            child: const Text('Book'),)
         ],
       ),
     );

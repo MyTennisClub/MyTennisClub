@@ -50,7 +50,7 @@ class _NextCardState extends State<NextCard> {
                       Column(
                         // Align label to the left
                         children: [
-                          Text(
+                          const Text(
                             'Athletes',
                             style: TextStyle(
                               fontWeight: FontWeight.bold,

@@ -1,6 +1,4 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'coach_schedule/schedule_coach.dart';
 import 'coach_sessions/sessions_coach.dart';
 
