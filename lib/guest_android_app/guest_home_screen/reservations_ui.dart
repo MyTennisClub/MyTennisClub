@@ -67,109 +67,109 @@ class _UpcomingReservationsState extends State<UpcomingReservations> {
       return _reservations.isNotEmpty
           ? SingleChildScrollView(
 
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.stretch,
-                children: _reservations
-                    .map((reservation) => GestureDetector(
-                          onTap: () {
-                            // Handle item click here
-                            // _deleteReservation(reservation.id);
-                            // print(reservation.qrCode.hashCode.toString());
-                            showModalBottomSheet<void>(
-                              isScrollControlled: true,
-                              context: context,
-                              builder: (BuildContext context) {
-                                return FractionallySizedBox(
-                                  heightFactor: 0.9,
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.stretch,
+          children: _reservations
+              .map((reservation) => GestureDetector(
+            onTap: () {
+              // Handle item click here
+              // _deleteReservation(reservation.id);
+              // print(reservation.qrCode.hashCode.toString());
+              showModalBottomSheet<void>(
+                isScrollControlled: true,
+                context: context,
+                builder: (BuildContext context) {
+                  return FractionallySizedBox(
+                    heightFactor: 0.9,
+                    child: Container(
+                      // color: Colors.red,
+                      child: LayoutBuilder(
+                        builder: (BuildContext context,
+                            BoxConstraints constraints) {
+                          double modalHeight = constraints
+                              .maxHeight; // This will give you the height of the modal bottom sheet
+                          return Padding(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 20),
+                            child: Column(
+                              mainAxisAlignment:
+                              MainAxisAlignment.center,
+                              mainAxisSize: MainAxisSize.min,
+                              children: <Widget>[
+                                const Expanded(
+                                  child: Text(
+                                    'Reservation Info',
+                                    style:
+                                    TextStyle(fontSize: 25),
+                                  ),
+                                ),
+                                SizedBox(
+                                  height: modalHeight -
+                                      modalHeight / 3,
                                   child: Container(
-                                    // color: Colors.red,
-                                    child: LayoutBuilder(
-                                      builder: (BuildContext context,
-                                          BoxConstraints constraints) {
-                                        double modalHeight = constraints
-                                            .maxHeight; // This will give you the height of the modal bottom sheet
-                                        return Padding(
-                                          padding: const EdgeInsets.symmetric(
-                                              vertical: 20),
-                                          child: Column(
-                                            mainAxisAlignment:
-                                                MainAxisAlignment.center,
-                                            mainAxisSize: MainAxisSize.min,
-                                            children: <Widget>[
-                                              const Expanded(
-                                                child: Text(
-                                                  'Reservation Info',
-                                                  style:
-                                                      TextStyle(fontSize: 25),
-                                                ),
-                                              ),
-                                              SizedBox(
-                                                height: modalHeight -
-                                                    modalHeight / 3,
-                                                child: Container(
-                                                  child: Column(
-                                                    children: <Widget>[
-                                                      Text(reservation.title),
-                                                      Text(DateFormat(
-                                                              'dd-MM-yyyy')
-                                                          .format(reservation
-                                                              .startTime)),
-                                                      Text('${DateFormat('HH:mm').format(reservation.startTime)} - ${DateFormat('HH:mm').format(reservation.endTime)}'),
-                                                      reservation.qrCode,
+                                    child: Column(
+                                      children: <Widget>[
+                                        Text(reservation.title),
+                                        Text(DateFormat(
+                                            'dd-MM-yyyy')
+                                            .format(reservation
+                                            .startTime)),
+                                        Text('${DateFormat('HH:mm').format(reservation.startTime)} - ${DateFormat('HH:mm').format(reservation.endTime)}'),
+                                        reservation.qrCode,
 
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Expanded(
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceAround,
-                                                  children: <Widget>[
-                                                    ElevatedButton(
-                                                      child:
-                                                          const Text('Close'),
-                                                      onPressed: () =>
-                                                          Navigator.pop(
-                                                              context),
-                                                    ),
-                                                    ElevatedButton(
-                                                      child:
-                                                          const Text('Cancel'),
-                                                      onPressed: () async {
-                                                        String? result = await _confirmDelete(context);
-                                                        if(result == 'Yes'){
-                                                          _deleteReservation(reservation.id);
-                                                          Navigator.pop(context);
-                                                        }
-                                                        // print(result);
-                                                        // Navigator.pop(context);
-                                                        // _deleteReservation(reservation.id);
-                                                      },
-                                                    )
-                                                  ],
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        );
-                                      },
+                                      ],
                                     ),
                                   ),
-                                );
-                              },
-                            );
-                          },
-                          child: ItemWidget(reservation: reservation),
-                        ))
-                    .toList(),
-              ),
-            )
+                                ),
+                                Expanded(
+                                  child: Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment
+                                        .spaceAround,
+                                    children: <Widget>[
+                                      ElevatedButton(
+                                        child:
+                                        const Text('Close'),
+                                        onPressed: () =>
+                                            Navigator.pop(
+                                                context),
+                                      ),
+                                      ElevatedButton(
+                                        child:
+                                        const Text('Cancel'),
+                                        onPressed: () async {
+                                          String? result = await _confirmDelete(context);
+                                          if(result == 'Yes'){
+                                            _deleteReservation(reservation.id);
+                                            Navigator.pop(context);
+                                          }
+                                          // print(result);
+                                          // Navigator.pop(context);
+                                          // _deleteReservation(reservation.id);
+                                        },
+                                      )
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          );
+                        },
+                      ),
+                    ),
+                  );
+                },
+              );
+            },
+            child: ItemWidget(reservation: reservation),
+          ))
+              .toList(),
+        ),
+      )
           : Container(
-              child: const Align(
-                  alignment: Alignment.center,
-                  child: Text('No Sessions For Today')));
+          child: const Align(
+              alignment: Alignment.center,
+              child: Text('No Sessions For Today')));
     });
   }
 }
@@ -193,7 +193,7 @@ class ItemWidget extends StatelessWidget {
               children: <Widget>[
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -278,4 +278,3 @@ Future<String?> _confirmDelete(BuildContext context) {
     },
   );
 }
-
