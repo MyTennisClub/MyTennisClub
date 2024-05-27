@@ -71,8 +71,11 @@ class DetailsSection extends State<Details_Section> {
                   if (value.isEmpty) {
                     numberCheck = false;
                     number = 0;
-                  }
-                  if (int.parse(value) > allowedMemberNumber) {
+                  } else if (int.parse(value) == 0) {
+                    numberCheck = false;
+                    _errorText = "Number can't be zero";
+                    number = 0;
+                  } else if (int.parse(value) > allowedMemberNumber) {
                     _errorText =
                         'Must be less than ${allowedMemberNumber.toString()}';
                     numberCheck = false;
