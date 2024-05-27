@@ -9,8 +9,6 @@ class Payment_Section extends StatefulWidget {
 }
 
 class PaymentSection extends State<Payment_Section> {
-  bool payment = true;
-
   late TextEditingController _controller;
   String _errorText = '';
 

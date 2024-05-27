@@ -1,4 +1,6 @@
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter/widgets.dart';
 import 'coach_schedule/schedule_coach.dart';
 import 'coach_sessions/sessions_coach.dart';
 
@@ -10,7 +12,7 @@ class CoachHomeScreen extends StatelessWidget {
   Widget build(BuildContext context) {
     return Padding(
       padding:
-      const EdgeInsets.symmetric(horizontal: 10.0, vertical: 5.0),
+      const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
       child: Column(
         children: [
           Container(
@@ -26,19 +28,10 @@ class CoachHomeScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 8,
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              decoration: BoxDecoration(
-                color: Colors.white10,
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.shade200,
-                  ),
-                ],
-              ),
-              child: const TodayScheduleCoach(),
+                color: Colors.grey.shade300,
+
+                child: const TodayScheduleCoach()
             ),
           ),
           Container(
@@ -54,20 +47,8 @@ class CoachHomeScreen extends StatelessWidget {
             ),
           ),
           Expanded(
-            flex: 10,
             child: Container(
-              padding: const EdgeInsets.symmetric(vertical: 6),
-              // child: SpacedItemsList(),
-              decoration: BoxDecoration(
-                color: Colors.white10,
-                borderRadius: const BorderRadius.all(Radius.circular(10)),
-                boxShadow: [
-                  BoxShadow(
-                    color: Colors.grey.shade200,
-                  ),
-                ],
-              ),
-              child: const SessionsCoach(),
+                child: const SessionsCoach()
             ),
           ),
         ],
@@ -75,4 +56,3 @@ class CoachHomeScreen extends StatelessWidget {
     );
   }
 }
-

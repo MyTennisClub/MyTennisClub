@@ -14,6 +14,7 @@ class MainClass extends StatefulWidget {
 }
 
 class Main_Class extends State<MainClass> {
+
   @override
   Widget build(BuildContext context) {
     //the screen can't be rotated
@@ -83,6 +84,7 @@ class MainRoute extends StatelessWidget {
                 ),
                 onPressed: () {
                   Navigator.pushNamed(context, '/athlete_home');
+
                 },
                 child: const Text(
                   "Athlete App",
@@ -102,8 +104,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const DummyScreen()),
+                    MaterialPageRoute(builder: (context) => const DummyScreen()),
                   );
                 },
                 child: const Text(
@@ -124,8 +125,7 @@ class MainRoute extends StatelessWidget {
                 onPressed: () {
                   Navigator.push(
                     context,
-                    MaterialPageRoute(
-                        builder: (context) => const DummyScreen()),
+                    MaterialPageRoute(builder: (context) =>const DummyScreen()),
                   );
                 },
                 child: const Text(
