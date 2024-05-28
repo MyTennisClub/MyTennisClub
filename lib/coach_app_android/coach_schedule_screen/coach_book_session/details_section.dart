@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
@@ -22,7 +24,7 @@ class DetailsSection extends State<Details_Section> {
   bool numberCheck = true;
   int number = 1;
   int allowedMemberNumber = 4;
-  List<String>? athletes = [];
+  List<String> athletes = [];
 
   String _errorText = ('');
 
@@ -38,19 +40,19 @@ class DetailsSection extends State<Details_Section> {
     super.dispose();
   }
 
-  Future<List<String>?> _openSelectAthletes(context) async {
-    var result = showModalBottomSheet<List<String>>(
-      isDismissible: false,
-      useSafeArea: true,
-      isScrollControlled: true,
-      context: context,
-      builder: (context) => SizedBox(
-          height: widget.constraints,
-          child: Select_Athletes(
-            number: number,
-          )),
-    );
-    return result;
+  Future<void> _openSelectAthletes(BuildContext context) {
+    return showModalBottomSheet<List<String>>(
+        useSafeArea: true,
+        isScrollControlled: true,
+        context: context,
+        builder: (BuildContext context) {
+          return SizedBox(
+              height: widget.constraints,
+              child: Select_Athletes(
+                number: number,
+                athletes: athletes,
+              ));
+        });
   }
 
   @override
@@ -87,7 +89,7 @@ class DetailsSection extends State<Details_Section> {
                   }
                   athletes = [];
                   widget.checkNumber(numberCheck, number);
-                  widget.checkAthletes(false, athletes);
+                  widget.checkAthletes(athletes);
                 });
               },
               decoration: InputDecoration(
@@ -122,9 +124,9 @@ class DetailsSection extends State<Details_Section> {
                       color: Color.fromRGBO(0, 83, 135, 1), fontSize: 14),
                   recognizer: TapGestureRecognizer()
                     ..onTap = () async {
-                      athletes = await _openSelectAthletes(context);
                       if (numberCheck) {
-                        widget.checkAthletes(true, athletes);
+                        (_openSelectAthletes(context));
+                        widget.checkAthletes(athletes);
                       }
                     },
                 ),
