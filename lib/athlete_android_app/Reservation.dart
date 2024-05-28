@@ -1,6 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 
+
+enum ResType {private, public}
+
 class Reservation {
   final int id;
   final String title;
@@ -8,6 +11,7 @@ class Reservation {
   final DateTime startTime;
   final DateTime endTime;
   late Widget qrCode; // Variable to store the QR code
+  final ResType resType;
 
   Reservation({
     required this.id,
@@ -15,6 +19,7 @@ class Reservation {
     required this.court,
     required this.startTime,
     required this.endTime,
+    required this.resType,
   }){
     qrCode = QrImageView(
       data: id.toString(),

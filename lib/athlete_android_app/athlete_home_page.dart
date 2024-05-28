@@ -1,23 +1,62 @@
 import 'package:flutter/material.dart';
 import 'athlete_home_screen/athlete_home_screen.dart';
 import 'athlete_schedule_screen/athlete_schedule_screen.dart';
+import 'Reservation.dart';
+
 class AthleteHomePage extends StatefulWidget {
-  const AthleteHomePage({super.key});
+  const AthleteHomePage({Key? key}) : super(key: key);
 
   @override
   State<AthleteHomePage> createState() => _AthleteHomePage();
 }
 
-int _currentIndex = 0;
-
 class _AthleteHomePage extends State<AthleteHomePage> {
-  final List<Widget> _tabs = [
-    const HomeScreen(),
-    const ScheduleScreen(),
-    const SearchScreen(),
-    const FeedScreen(),
-    const ProfileScreen(),
+  int _currentIndex = 0;
+
+  late List<Widget> _tabs;
+
+  List<Reservation> reservationsList = [
+    Reservation(
+      id: 1,
+      title: 'ATH Tennis',
+      court: 'Court A',
+      startTime: DateTime.parse('2024-05-30 12:30:00'),
+      endTime: DateTime.parse('2024-05-30 14:30:00'),
+      resType: ResType.public
+    ),
+    Reservation(
+      id: 2,
+      title: 'Patras Tennis',
+      court: 'Court B',
+      startTime: DateTime.parse('2024-06-01 09:30:00'),
+      endTime: DateTime.parse('2024-06-01 12:00:00'),
+      resType: ResType.private
+    ),
+    // Reservation(
+    //   id: 3,
+    //   title: 'Ceid',
+    //   court: 'Court C',
+    //   startTime: DateTime.parse('2024-06-02 09:00:00'),
+    //   endTime: DateTime.parse('2024-06-02 23:00:00'),
+    // ),
+    // Reservation(
+    //   id: 4,
+    //   title: 'CEID',
+    //   court: 'Court C',
+    //   startTime: DateTime.parse('2024-05-29 09:30:00'),
+    //   endTime: DateTime.parse('2024-05-29 10:30:00'),
+    // ),    // Add more reservations here
   ];
+
+  _AthleteHomePage() {
+    _tabs = [
+      HomeScreen(reservations: reservationsList),
+      ScheduleScreen(reservations: reservationsList),
+      const SearchScreen(),
+      const FeedScreen(),
+      const ProfileScreen(),
+    ];
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -82,27 +121,33 @@ class _AthleteHomePage extends State<AthleteHomePage> {
   }
 }
 
+
 class HomeScreen extends StatelessWidget {
-  const HomeScreen({super.key});
+  final List<Reservation> reservations;
+
+  const HomeScreen({Key? key, required this.reservations}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
-    return const Center(
-      child: AthleteHomeScreen(),
+    return Center(
+      child: AthleteHomeScreen(reservations: reservations),
     );
   }
 }
 
 class ScheduleScreen extends StatelessWidget {
-  const ScheduleScreen({super.key});
+  final List<Reservation> reservations;
+
+  const ScheduleScreen({Key? key, required this.reservations}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return const AthleteScheduleScreen();
+    return AthleteScheduleScreen(reservations: reservations);
   }
 }
 
 class SearchScreen extends StatelessWidget {
-  const SearchScreen({super.key});
+  const SearchScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -113,7 +158,8 @@ class SearchScreen extends StatelessWidget {
 }
 
 class FeedScreen extends StatelessWidget {
-  const FeedScreen({super.key});
+  const FeedScreen({Key? key}) : super(key: key);
+
   @override
   Widget build(BuildContext context) {
     return const Center(
@@ -123,7 +169,7 @@ class FeedScreen extends StatelessWidget {
 }
 
 class ProfileScreen extends StatelessWidget {
-  const ProfileScreen({super.key});
+  const ProfileScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {

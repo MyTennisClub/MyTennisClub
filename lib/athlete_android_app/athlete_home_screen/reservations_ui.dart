@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'Reservation.dart';
+import '../Reservation.dart';
 
 class UpcomingReservations extends StatefulWidget {
   final List<Reservation> reservations;

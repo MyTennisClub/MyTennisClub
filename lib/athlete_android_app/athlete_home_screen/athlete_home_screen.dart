@@ -1,47 +1,16 @@
 import 'package:flutter/material.dart';
 import 'reservations_ui.dart';
-import 'Reservation.dart';
-
-
-
-List<Reservation> reservations = [
-  Reservation(
-    id: 1,
-    title: 'ATH Tennis',
-    court: 'Court A',
-    startTime: DateTime.parse('2024-08-04 12:00:00'),
-    endTime: DateTime.parse('2024-08-04 13:00:00'),
-  ),
-  Reservation(
-    id: 2,
-    title: 'ATH Tennis',
-    court: 'Court B',
-    startTime: DateTime.parse('2024-08-04 14:00:00'),
-    endTime: DateTime.parse('2024-08-04 15:00:00'),
-  ),
-  Reservation(
-    id: 3,
-    title: 'ATH Tennis',
-    court: 'Court C',
-    startTime: DateTime.now().add(const Duration(hours: 1)),
-    endTime: DateTime.now().add(const Duration(hours: 2)), // Example of upcoming reservation
-  ),
-  // Add more reservations here
-];
-
-// Sort reservations by start time
-
-
-// Sort reservations by start time
+import '../Reservation.dart';
 
 class AthleteHomeScreen extends StatelessWidget {
-  const AthleteHomeScreen({super.key});
+  final List<Reservation> reservations;
 
-
+  const AthleteHomeScreen({Key? key, required this.reservations}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    reservations.sort((a, b) => a.startTime.compareTo(b.startTime));
+    List<Reservation> sortedReservations = [...reservations];
+    sortedReservations.sort((a, b) => a.startTime.compareTo(b.startTime));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
@@ -62,10 +31,9 @@ class AthleteHomeScreen extends StatelessWidget {
           Expanded(
             child: Container(
               color: Colors.grey.shade300,
-              child:  UpcomingReservations(
-                reservations: reservations,
+              child: UpcomingReservations(
+                reservations: sortedReservations,
               ),
-              // child: const Text("data")
             ),
           ),
           Container(
@@ -83,7 +51,6 @@ class AthleteHomeScreen extends StatelessWidget {
           Expanded(
             child: Container(
               color: Colors.grey.shade300,
-              // child: const Text('Data')
             ),
           ),
         ],
@@ -91,3 +58,4 @@ class AthleteHomeScreen extends StatelessWidget {
     );
   }
 }
+
