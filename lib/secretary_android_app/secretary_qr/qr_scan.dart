@@ -2,7 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
 
 class QR_Scan extends StatefulWidget {
-  const QR_Scan({super.key});
+  final Function checkResult;
+  const QR_Scan({required this.checkResult, super.key});
 
   @override
   State<QR_Scan> createState() => QRScan();
@@ -28,6 +29,16 @@ class QRScan extends State<QR_Scan> {
     super.dispose();
   }
 
+  Future<void> onPermissionSet(
+      BuildContext context, QRViewController ctrl, bool p) async {
+    {
+      if (!p) {
+        _controller?.dispose();
+        Navigator.pop(context);
+      }
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return SafeArea(
@@ -37,6 +48,9 @@ class QRScan extends State<QR_Scan> {
             Expanded(
               flex: 5,
               child: QRView(
+                onPermissionSet: (ctrl, p) async {
+                  await onPermissionSet(context, ctrl, p);
+                },
                 key: _qrKey,
                 onQRViewCreated: _onQRViewCreated,
               ),
@@ -48,17 +62,18 @@ class QRScan extends State<QR_Scan> {
                       ? Text('Data = ${result!.code}')
                       : const Text('Scan QR Code')),
             ),
-            Flexible(
-              flex: 1,
-              child: FilledButton(
-                onPressed: () {
-                  setState(() {
-                    Navigator.of(context).pop('qr');
-                  });
-                },
-                child: const Text('Check Info'),
-              ),
-            )
+            // Flexible(
+            //   flex: 1,
+            //   child: FilledButton(
+            //     onPressed: () {
+            //       setState(() {
+            //         widget.checkResult(1.toString());
+            //         Navigator.pop(context);
+            //       });
+            //     },
+            //     child: const Text('Check Info'),
+            //   ),
+            // )
           ],
         ),
       ),
@@ -70,6 +85,8 @@ class QRScan extends State<QR_Scan> {
     controller.scannedDataStream.listen((scanData) {
       setState(() {
         result = scanData;
+        widget.checkResult(result!.code);
+        Navigator.pop(context);
       });
     });
   }

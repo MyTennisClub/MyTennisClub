@@ -11,7 +11,13 @@ class Secretary_Scan extends StatefulWidget {
 
 class SecretaryScan extends State<Secretary_Scan> {
   int currentPageIndex = 0;
-  String? result;
+  String result = '';
+
+  checkResult(newResult) {
+    setState(() {
+      result = newResult;
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -60,12 +66,18 @@ class SecretaryScan extends State<Secretary_Scan> {
                             // This is what you need!
                             ),
                         onPressed: () async {
-                          await Navigator.of(context)
-                              .push(MaterialPageRoute(
-                                  builder: (context) => const QR_Scan()))
-                              .then((value) {
-                            setState(() {
-                              result = value;
+                          await showModalBottomSheet<List<String>>(
+                            isDismissible: false,
+                            useSafeArea: true,
+                            isScrollControlled: true,
+                            context: context,
+                            builder: (context) => SizedBox(
+                                height: constraints.maxHeight,
+                                child: QR_Scan(checkResult: checkResult)),
+                          );
+                          setState(() {
+                            print(result);
+                            if (result.isNotEmpty) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
@@ -74,7 +86,7 @@ class SecretaryScan extends State<Secretary_Scan> {
                                   ),
                                 ),
                               );
-                            });
+                            }
                           });
                         },
                         child: const Text('Scan QR'),
