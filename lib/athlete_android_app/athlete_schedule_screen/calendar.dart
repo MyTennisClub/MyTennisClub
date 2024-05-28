@@ -2,14 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:mytennisclub/athlete_android_app/Reservation.dart';
 
-
 class CalendarWidget extends StatefulWidget {
   final List<Reservation> reservations;
   const CalendarWidget({super.key, required this.reservations});
 
   @override
   _CalendarWidgetState createState() => _CalendarWidgetState();
-
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
@@ -25,7 +23,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   final DateTime _initialDate = DateTime.now();
   final PageController _pageController = PageController(initialPage: 0);
 
-
   void _onPageChanged(int index) {
     setState(() {
       _currentDate = _initialDate.add(Duration(days: 7 * index));
@@ -39,7 +36,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     // Add an empty container for the first box with the month name in short format
     days.add(Expanded(
       child: Container(
-
         alignment: Alignment.center,
         child: Text(
           DateFormat.MMM().format(date),
@@ -53,21 +49,23 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 
     for (int i = 0; i < 7; i++) {
       DateTime day = startOfWeek.add(Duration(days: i));
+      bool isCurrentDate = DateUtils.isSameDay(day, DateTime.now());
       days.add(Expanded(
         child: Container(
+          decoration: isCurrentDate
+              ? BoxDecoration(
+            color: Colors.grey.shade300,
+            borderRadius: BorderRadius.circular(5),
+          )
+              : null,
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: [
               Text(
                 '${day.day}',
-                style: const TextStyle(
-                    fontWeight: FontWeight.bold,
-                  fontSize: 19
-                ),
+                style: const TextStyle(fontWeight: FontWeight.bold, fontSize: 19),
               ),
-              Text(
-                DateFormat.E().format(day),
-              ),
+              Text(DateFormat.E().format(day)),
             ],
           ),
         ),
@@ -106,12 +104,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           children: [
             Container(
               decoration: BoxDecoration(
-                  border: Border(
-                      top: BorderSide(
-                          color: Colors.black
-                      )
-                  )
-              ),
+                  border: Border(top: BorderSide(color: Colors.black))),
               height: 80,
               width: 50,
               child: Center(
@@ -143,22 +136,24 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               child: Row(
                 children: List.generate(7, (dayIndex) {
                   DateTime day = startOfWeek.add(Duration(days: dayIndex));
-                  Map<String, dynamic> reservationInfo = _getReservationInfo(day, hour);
-                  // String reservationTitle = _getReservationForHour(day, hour);
+                  Map<String, dynamic> reservationInfo =
+                  _getReservationInfo(day, hour);
                   Color containerColor = reservationInfo['color'];
-                  bool checkFirst = checkBorder(reservationInfo['color'], reservationInfo['firstBox']);
+                  bool checkFirst = checkBorder(
+                      reservationInfo['color'], reservationInfo['firstBox']);
+
                   return Expanded(
                     child: GestureDetector(
                       onTap: () {
-                        if (containerColor != Colors.white && reservationInfo['type'] != ResType.private) {
+                        if (containerColor != Colors.white &&
+                            reservationInfo['type'] != ResType.private) {
                           showDialog(
                             context: context,
                             builder: (context) {
                               return AlertDialog(
                                 title: const Text('Reservation Details'),
                                 content: Text(
-                                  'Inform of absense to be continued'
-                                  // 'Title: $reservationTitle\nCourt: ${_getReservationCourt(reservationTitle)}\nTime: ${_formatTime(day, hour)}',
+                                    'Inform of absence to be continued'
                                 ),
                                 actions: [
                                   TextButton(
@@ -174,59 +169,73 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                         }
                       },
                       child: Column(
-                        children: reservationInfo['start'] == 'start' ? [
+                        children: reservationInfo['start'] == 'start'
+                            ? [
                           Container(
                             decoration: BoxDecoration(
                               color: containerColor,
                               border: Border(
                                 top: BorderSide(
-                                  color: checkFirst == true ? Colors.black : containerColor
-                                )
-                              )
+                                    color: checkFirst == true
+                                        ? Colors.black
+                                        : containerColor),
+                              ),
                             ),
                             height: 80,
                             child: Center(
                               child: Text(
-                                checkFirst == true ? reservationInfo['title'] : '',
+                                checkFirst == true
+                                    ? reservationInfo['title']
+                                    : '',
                                 style: TextStyle(
-                                  color: containerColor == Colors.white ? Colors.black : Colors.white,
-                                    fontWeight: FontWeight.bold
-                                ),
+                                    color: containerColor == Colors.white
+                                        ? Colors.black
+                                        : Colors.white,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
-                        ]:  [
+                        ]
+                            : [
                           Container(
                             decoration: BoxDecoration(
-                                color: checkFirst ==  true ? Colors.white : containerColor,
-                                border: Border(
-                                    top: BorderSide(
-                                        color: checkFirst == true ? Colors.black : containerColor
-                                    )
-                                )
+                              color: checkFirst == true
+                                  ? Colors.white
+                                  : containerColor,
+                              border: Border(
+                                top: BorderSide(
+                                    color: checkFirst == true
+                                        ? Colors.black
+                                        : containerColor),
+                              ),
                             ),
                             height: 40,
                             child: Center(
                               child: Text(
                                 '',
                                 style: TextStyle(
-                                  color: containerColor ,
+                                  color: containerColor,
                                 ),
                               ),
                             ),
                           ),
                           Container(
                             decoration: BoxDecoration(
-                                color: reservationInfo['end'] == 'half' ? Colors.white : containerColor
+                              color: reservationInfo['end'] == 'half'
+                                  ? Colors.white
+                                  : containerColor,
                             ),
                             height: 40,
                             child: Center(
                               child: Text(
-                                checkFirst == true ? reservationInfo['title'] : '',
+                                checkFirst == true
+                                    ? reservationInfo['title']
+                                    : '',
                                 style: TextStyle(
-                                  color: containerColor == Colors.white ? Colors.black : Colors.white,
-                                  fontWeight: FontWeight.bold
-                                ),
+                                    color: containerColor == Colors.white
+                                        ? Colors.black
+                                        : Colors.white,
+                                    fontWeight: FontWeight.bold),
                               ),
                             ),
                           ),
@@ -261,8 +270,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     String end = '';
     String court = '';
 
-
-
     for (var reservation in reservations) {
       if (reservation.startTime.isBefore(endOfHour) &&
           reservation.endTime.isAfter(startOfHour)) {
@@ -273,17 +280,14 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         if (reservation.startTime.isAtSameMomentAs(startOfHour)) {
           firstBox = true;
           start = 'start';
-        }
-        else if (reservation.startTime.isAtSameMomentAs(halfHour)) {
-
+        } else if (reservation.startTime.isAtSameMomentAs(halfHour)) {
           firstBox = true;
           start = 'half';
         }
 
         if (reservation.endTime.isAtSameMomentAs(endOfHour)) {
           end = 'end';
-        }
-        else if (reservation.endTime.isAtSameMomentAs(halfHour)) {
+        } else if (reservation.endTime.isAtSameMomentAs(halfHour)) {
           end = 'half';
         }
 
@@ -293,11 +297,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                 reservation.endTime.isAfter(halfHour)) ||
             (reservation.endTime.hour == hour &&
                 reservation.endTime.minute == 30)) {
-          
-          if (reservation.resType == ResType.public){
+          if (reservation.resType == ResType.public) {
             color = Color.fromRGBO(0, 83, 135, 1);
-          }
-          else{
+          } else {
             color = Color.fromRGBO(0, 83, 120, 50);
             title = 'Private Session';
           }
@@ -326,40 +328,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     };
   }
 
-
-
-
-  Color _getReservationColor(DateTime day, int hour) {
-    DateTime startOfHour = DateTime(day.year, day.month, day.day, hour);
-    DateTime halfHour = startOfHour.add(const Duration(minutes: 30));
-    DateTime endOfHour = startOfHour.add(const Duration(hours: 1));
-    for (var reservation in reservations) {
-      if (reservation.startTime.isBefore(endOfHour) && reservation.endTime.isAfter(startOfHour)) {
-        if ((reservation.startTime.isBefore(halfHour) && reservation.endTime.isAfter(startOfHour)) ||
-            (reservation.startTime.isBefore(endOfHour) && reservation.endTime.isAfter(halfHour)) ||
-            (reservation.endTime.hour == hour && reservation.endTime.minute == 30)) {
-          return Colors.blue;
-        }
-      }
-    }
-    return Colors.white;
-  }
-
-
-
-  bool firstBox(DateTime day, int hour) {
-    DateTime startOfHour = DateTime(day.year, day.month, day.day, hour);
-    DateTime halfOfHour = DateTime(day.year, day.month,day.day, hour).add(Duration(minutes: 30));
-    for (var reservation in reservations) {
-      if (reservation.startTime.isAtSameMomentAs(startOfHour) || reservation.startTime.isAtSameMomentAs(halfOfHour)) {
-        return true;
-      }
-    }
-    return false;
-  }
-
-
-
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -378,7 +346,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               },
               itemBuilder: (context, index) {
                 DateTime date = _initialDate.add(Duration(days: 7 * index));
-                if (date.isBefore(_initialDate.subtract(Duration(days: _initialDate.weekday - 1)))) {
+                if (date.isBefore(
+                    _initialDate.subtract(Duration(days: _initialDate.weekday - 1)))) {
                   return Container(); // Return an empty container if trying to navigate to a previous week
                 }
                 return _buildPage(date);
@@ -390,4 +359,3 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     );
   }
 }
-
