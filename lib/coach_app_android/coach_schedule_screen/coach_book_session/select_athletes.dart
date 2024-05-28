@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 
 class Select_Athletes extends StatefulWidget {
   final int number;
-  const Select_Athletes({required this.number, super.key});
+  final List<String> athletes;
+  const Select_Athletes(
+      {required this.athletes, required this.number, super.key});
 
   @override
   State<Select_Athletes> createState() => SelectAthletes();
@@ -19,38 +21,25 @@ class SelectAthletes extends State<Select_Athletes> {
     'Ace Terell',
     'Carter Spencer',
     'Patrick Dyer',
-    'Jonas Wiley'
-        'Melissa Roth',
-    'Morgan Reyes',
-    'Elliot Quinn',
-    'Estrella Escobar',
-    'Ace Terell',
-    'Carter Spencer',
-    'Patrick Dyer',
-    'Jonas Wiley' 'Melissa Roth',
-    'Morgan Reyes',
-    'Elliot Quinn',
-    'Estrella Escobar',
-    'Ace Terell',
-    'Carter Spencer',
-    'Patrick Dyer',
-    'Jonas Wiley' 'Melissa Roth',
-    'Morgan Reyes',
-    'Elliot Quinn',
-    'Estrella Escobar',
-    'Ace Terell',
-    'Carter Spencer',
-    'Patrick Dyer',
-    'Jonas Wiley'
+    'Jonas Wiley',
+    "Voulgaris Nikolaos",
+    "Bakalis Athanasios",
+    "Baknis Georgios",
+    "Skandalos Athanasios Spiridon",
+    "Stamelos Charilaos Panagiotis"
   ];
-  List<int> selectedItems = [];
   List<String> _filteredData = [];
-  List<String> selectedAthletes = [];
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
+    for (int index = 0; index < widget.athletes.length; index++) {
+      if (athleteList.contains(widget.athletes[index])) {
+        athleteList.remove(widget.athletes[index]);
+        athleteList.insert(0, widget.athletes[index]);
+      }
+    }
     _filteredData = athleteList;
     _searchController.addListener(_performSearch);
   }
@@ -79,7 +68,6 @@ class SelectAthletes extends State<Select_Athletes> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-          automaticallyImplyLeading: false,
           flexibleSpace: Container(
             decoration: const BoxDecoration(
               color: Color.fromRGBO(248, 249, 255, 1),
@@ -119,7 +107,7 @@ class SelectAthletes extends State<Select_Athletes> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Selected: ${selectedItems.length}/${widget.number}',
+                        'Selected: ${widget.athletes.length}/${widget.number}',
                         textAlign: TextAlign.start,
                       ),
                       ListView.builder(
@@ -135,34 +123,41 @@ class SelectAthletes extends State<Select_Athletes> {
                                 bottom: BorderSide(
                                     color: Color.fromRGBO(29, 27, 32, 0.574)),
                               ),
-                              color: (selectedItems.contains(index))
+                              color: (widget.athletes
+                                      .contains(_filteredData[index]))
                                   ? const Color.fromRGBO(210, 230, 255, 2)
                                   : Colors.transparent),
                           child: ListTile(
+                            trailing:
+                                (widget.athletes.contains(_filteredData[index]))
+                                    ? const Text('Delete')
+                                    : const Text(''),
                             onTap: () {
-                              if (selectedItems.contains(index)) {
+                              if (widget.athletes
+                                  .contains(_filteredData[index])) {
                                 setState(() {
-                                  selectedItems
-                                      .removeWhere((val) => val == index);
-                                  selectedAthletes.remove(athleteList[index]);
+                                  widget.athletes.remove(athleteList[index]);
                                 });
-                              }
-                            },
-                            onLongPress: () {
-                              if (!selectedItems.contains(index) &&
-                                  selectedItems.length < widget.number) {
+                              } else if (!widget.athletes
+                                      .contains(_filteredData[index]) &&
+                                  widget.athletes.length < widget.number) {
                                 setState(() {
-                                  selectedItems.add(index);
-                                  selectedAthletes.add(athleteList[index]);
+                                  String athlete = _filteredData[index];
+                                  _filteredData.removeAt(index);
+                                  _filteredData.insert(0, athlete);
+
+                                  widget.athletes.add(athlete);
                                 });
                               }
                             },
                             leading: CircleAvatar(
                               radius: 18,
-                              backgroundColor: (!selectedItems.contains(index))
+                              backgroundColor: (!widget.athletes
+                                      .contains(_filteredData[index]))
                                   ? const Color.fromRGBO(50, 121, 180, 1)
                                   : const Color.fromRGBO(52, 75, 98, 1),
-                              child: (!selectedItems.contains(index))
+                              child: (!widget.athletes
+                                      .contains(_filteredData[index]))
                                   ? Text(
                                       '${athleteList[index][0]}${athleteList[index][1].toUpperCase()}',
                                       style:
@@ -201,7 +196,7 @@ class SelectAthletes extends State<Select_Athletes> {
             )
           ])),
           onPressed: () {
-            Navigator.of(context).pop(selectedAthletes);
+            Navigator.of(context).pop(widget.athletes);
           },
         ),
       ),

@@ -35,7 +35,6 @@ class BookSession_Main extends StatefulWidget {
 
 class BookSession extends State<BookSession_Main> {
   bool numberCheck = true;
-  bool athletesCheck = false;
   bool paymentCheck = true;
   bool durationCheck = true;
   List<bool> hourCheck = [false, false, false, false];
@@ -50,7 +49,7 @@ class BookSession extends State<BookSession_Main> {
   String? hour;
   String? endhour;
   String? court = '';
-  List<String>? athletes = [];
+  List<String> athletes = [];
 
   checkHour(check, key, h) {
     setState(() {
@@ -88,11 +87,9 @@ class BookSession extends State<BookSession_Main> {
     });
   }
 
-  checkAthletes(check, list) {
+  checkAthletes(list) {
     setState(() {
-      athletesCheck = check;
       athletes = list;
-      print(check);
 
       checkVisible();
     });
@@ -109,11 +106,7 @@ class BookSession extends State<BookSession_Main> {
   checkVisible() {
     setState(() {
       for (var key = 0; key < courts.length; key++) {
-        if (hourCheck[key] &&
-            durationCheck &&
-            numberCheck &&
-            athletesCheck &&
-            paymentCheck) {
+        if (hourCheck[key] && durationCheck && numberCheck && paymentCheck) {
           visible[key] = true;
           court = 'Court ${courts[key]}';
           calcuateDuration(hour, duration);
