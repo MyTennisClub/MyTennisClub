@@ -1,16 +1,14 @@
 import 'package:flutter/material.dart';
 import 'reservations_ui.dart';
-import '../Reservation.dart';
+
+
 
 class AthleteHomeScreen extends StatelessWidget {
-  final List<Reservation> reservations;
-
-  const AthleteHomeScreen({Key? key, required this.reservations}) : super(key: key);
+  // final List<Reservation> reservations;
+  const AthleteHomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    List<Reservation> sortedReservations = [...reservations];
-    sortedReservations.sort((a, b) => a.startTime.compareTo(b.startTime));
 
     return Padding(
       padding: const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20.0),
@@ -31,9 +29,7 @@ class AthleteHomeScreen extends StatelessWidget {
           Expanded(
             child: Container(
               color: Colors.grey.shade300,
-              child: UpcomingReservations(
-                reservations: sortedReservations,
-              ),
+              child: UpcomingReservations(),
             ),
           ),
           Container(
@@ -58,4 +54,3 @@ class AthleteHomeScreen extends StatelessWidget {
     );
   }
 }
-

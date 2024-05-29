@@ -141,3 +141,5 @@ app.*.symbols
 #extra
 pubspec.lock
 .package
+
+/lib/Database/DatabaseConfig.dart

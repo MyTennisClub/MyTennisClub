@@ -12,25 +12,24 @@ class AthleteHomePage extends StatefulWidget {
 
 class _AthleteHomePage extends State<AthleteHomePage> {
   int _currentIndex = 0;
-
   late List<Widget> _tabs;
 
   List<Reservation> reservationsList = [
     Reservation(
-      id: 1,
-      title: 'ATH Tennis',
-      court: 'Court A',
-      startTime: DateTime.parse('2024-05-30 12:30:00'),
-      endTime: DateTime.parse('2024-05-30 14:30:00'),
-      resType: ResType.public
+        id: 1,
+        title: 'ATH Tennis',
+        court: 'Court A',
+        startTime: DateTime.parse('2024-05-30 12:30:00'),
+        endTime: DateTime.parse('2024-05-30 14:30:00'),
+        resType: ResType.public
     ),
     Reservation(
-      id: 2,
-      title: 'Patras Tennis',
-      court: 'Court B',
-      startTime: DateTime.parse('2024-06-01 09:30:00'),
-      endTime: DateTime.parse('2024-06-01 12:00:00'),
-      resType: ResType.private
+        id: 2,
+        title: 'Patras Tennis',
+        court: 'Court B',
+        startTime: DateTime.parse('2024-06-01 09:30:00'),
+        endTime: DateTime.parse('2024-06-01 12:00:00'),
+        resType: ResType.private
     ),
     // Reservation(
     //   id: 3,
@@ -48,9 +47,11 @@ class _AthleteHomePage extends State<AthleteHomePage> {
     // ),    // Add more reservations here
   ];
 
+
+
   _AthleteHomePage() {
     _tabs = [
-      HomeScreen(reservations: reservationsList),
+      HomeScreen(),
       ScheduleScreen(reservations: reservationsList),
       const SearchScreen(),
       const FeedScreen(),
@@ -123,14 +124,14 @@ class _AthleteHomePage extends State<AthleteHomePage> {
 
 
 class HomeScreen extends StatelessWidget {
-  final List<Reservation> reservations;
+  // final List<Reservation> reservations;
 
-  const HomeScreen({Key? key, required this.reservations}) : super(key: key);
+  const HomeScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Center(
-      child: AthleteHomeScreen(reservations: reservations),
+      child: AthleteHomeScreen(),
     );
   }
 }
