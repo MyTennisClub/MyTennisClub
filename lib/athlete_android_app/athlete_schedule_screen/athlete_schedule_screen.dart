@@ -1,12 +1,10 @@
 import 'package:flutter/material.dart';
-import 'package:mytennisclub/athlete_android_app/Reservation.dart';
 import 'calendar.dart';
 
 
 class AthleteScheduleScreen extends StatelessWidget {
-  final List<Reservation> reservations;
 
-  const AthleteScheduleScreen({Key? key, required this.reservations}) : super(key: key);
+  const AthleteScheduleScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
@@ -17,7 +15,7 @@ class AthleteScheduleScreen extends StatelessWidget {
           Expanded(
             child: Container(
               color: Colors.white,
-              child: CalendarWidget(reservations: reservations), // Pass reservations to CalendarWidget
+              child: CalendarWidget(), // Pass reservations to CalendarWidget
             ),
           ),
           Padding(

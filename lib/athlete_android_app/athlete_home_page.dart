@@ -14,45 +14,10 @@ class _AthleteHomePage extends State<AthleteHomePage> {
   int _currentIndex = 0;
   late List<Widget> _tabs;
 
-  List<Reservation> reservationsList = [
-    Reservation(
-        id: 1,
-        title: 'ATH Tennis',
-        court: 'Court A',
-        startTime: DateTime.parse('2024-05-30 12:30:00'),
-        endTime: DateTime.parse('2024-05-30 14:30:00'),
-        resType: ResType.public
-    ),
-    Reservation(
-        id: 2,
-        title: 'Patras Tennis',
-        court: 'Court B',
-        startTime: DateTime.parse('2024-06-01 09:30:00'),
-        endTime: DateTime.parse('2024-06-01 12:00:00'),
-        resType: ResType.private
-    ),
-    // Reservation(
-    //   id: 3,
-    //   title: 'Ceid',
-    //   court: 'Court C',
-    //   startTime: DateTime.parse('2024-06-02 09:00:00'),
-    //   endTime: DateTime.parse('2024-06-02 23:00:00'),
-    // ),
-    // Reservation(
-    //   id: 4,
-    //   title: 'CEID',
-    //   court: 'Court C',
-    //   startTime: DateTime.parse('2024-05-29 09:30:00'),
-    //   endTime: DateTime.parse('2024-05-29 10:30:00'),
-    // ),    // Add more reservations here
-  ];
-
-
-
   _AthleteHomePage() {
     _tabs = [
       HomeScreen(),
-      ScheduleScreen(reservations: reservationsList),
+      ScheduleScreen(),
       const SearchScreen(),
       const FeedScreen(),
       const ProfileScreen(),
@@ -108,7 +73,7 @@ class _AthleteHomePage extends State<AthleteHomePage> {
                 label: 'Search'),
             NavigationDestination(
                 selectedIcon:
-                Icon(Icons.campaign_outlined, color: Colors.black),
+                    Icon(Icons.campaign_outlined, color: Colors.black),
                 icon: Icon(Icons.campaign_outlined, color: Colors.grey),
                 label: 'Feed'),
             NavigationDestination(
@@ -121,7 +86,6 @@ class _AthleteHomePage extends State<AthleteHomePage> {
     );
   }
 }
-
 
 class HomeScreen extends StatelessWidget {
   // final List<Reservation> reservations;
@@ -137,13 +101,11 @@ class HomeScreen extends StatelessWidget {
 }
 
 class ScheduleScreen extends StatelessWidget {
-  final List<Reservation> reservations;
-
-  const ScheduleScreen({Key? key, required this.reservations}) : super(key: key);
+  const ScheduleScreen({Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    return AthleteScheduleScreen(reservations: reservations);
+    return AthleteScheduleScreen();
   }
 }
 
