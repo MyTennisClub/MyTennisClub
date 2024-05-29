@@ -1,176 +1,214 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../Reservation.dart';
+import 'package:mysql1/mysql1.dart';
+import 'package:mytennisclub/Database/ConnectionDatabase.dart';
+import 'package:qr_flutter/qr_flutter.dart';
+
+enum ResType {private, public}
+
+class Reservation {
+  final int id;
+  final String title;
+  final String court;
+  final DateTime startTime;
+  final DateTime endTime;
+  late Widget qrCode; // Variable to store the QR code
+  final ResType resType;
+
+  Reservation({
+    required this.id,
+    required this.title,
+    required this.court,
+    required this.startTime,
+    required this.endTime,
+    required this.resType,
+  }){
+    qrCode = QrImageView(
+      data: id.toString(),
+      version: QrVersions.auto,
+      gapless: false,
+    ); // Call function to generate QR code
+  }
+}
 
 class UpcomingReservations extends StatefulWidget {
-  final List<Reservation> reservations;
-
-  const UpcomingReservations({super.key, required this.reservations});
+  const UpcomingReservations({super.key});
 
   @override
   _UpcomingReservationsState createState() => _UpcomingReservationsState();
 }
 
 class _UpcomingReservationsState extends State<UpcomingReservations> {
-  late List<Reservation> _reservations;
+  late Future<Map<int, Reservation>> _reservationsFuture;
+  MySqlConnection? _connection;
 
   @override
   void initState() {
     super.initState();
-    _filterUpcomingReservations();
+    _reservationsFuture = _fetchReservationsFromDatabase();
+    _databaseConnection();
   }
 
-  void _filterUpcomingReservations() {
-    DateTime now = DateTime.now();
-    _reservations = widget.reservations
-        .where((reservation) => reservation.startTime.isAfter(now))
-        .toList();
+  Future<Map<int, Reservation>> _fetchReservationsFromDatabase() async {
+    final Map<int, Reservation> reservationsMap = {};
+    try {
+      final conn = await MySQLConnector.createConnection();
+      if (conn != null) {
+        var results = await conn.query('SELECT * FROM reservations');
+        // final result = await conn.query('SELECT * FROM users');
+
+        //
+        // for (var row in results) {
+        //   print(row['res_type'].runtimeType);
+        //
+        // }
+        for (var row in results) {
+          // print(row['id']);
+
+          var reservation = Reservation(
+            id: row['id'], // Convert to integer
+            title: row['title'],
+            court: row['court'],
+            startTime: row['start_time'],
+            endTime: row['end_time'],
+            resType: row['res_type'] == 'private' ? ResType.private : ResType.public,
+          );
+          reservationsMap[reservation.id] = reservation;
+        }
+        await conn.close();
+      }
+    } catch (e) {
+      print('An error occurred while fetching reservations: $e');
+    }
+    return reservationsMap;
+  }
+
+
+
+  Future<void> _databaseConnection() async {
+    try {
+      final conn = await MySQLConnector.createConnection();
+      if (conn != null) {
+        setState(() {
+          _connection = conn;
+        });
+        print('Connected to database');
+      } else {
+        print('Failed to connect to the database');
+      }
+    } catch (e) {
+      print('An error occurred while connecting to the database: $e');
+    }
   }
 
   void _deleteReservation(int id) {
     setState(() {
-      _reservations.removeWhere((reservation) => reservation.id == id);
+      _reservationsFuture = _fetchReservationsFromDatabase().then((reservationsMap) {
+        reservationsMap.remove(id);
+        return reservationsMap;
+      });
     });
   }
 
-  // Future<void> _showDeleteConfirmationDialog(BuildContext context, int id) {
-  //   return showDialog<void>(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //       return AlertDialog(
-  //         title: const Text('Delete Reservation'),
-  //         content: const Text('Are you sure you want to delete this reservation?'),
-  //         actions: <Widget>[
-  //           TextButton(
-  //             child: const Text('No'),
-  //             onPressed: () {
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //           TextButton(
-  //             child: const Text('Yes'),
-  //             onPressed: () {
-  //               _deleteReservation(id);
-  //               Navigator.of(context).pop();
-  //             },
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
   @override
   Widget build(BuildContext context) {
-    return LayoutBuilder(builder: (context, constraints) {
+    return FutureBuilder<Map<int, Reservation>>(
+      future: _reservationsFuture,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return Center(child: CircularProgressIndicator());
+        } else if (snapshot.hasError) {
+          return Center(child: Text('An error occurred: ${snapshot.error}'));
+        } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+          return Center(child: Text('No Reservations For Today'));
+        } else {
+          final reservations = snapshot.data!;
+          final upcomingReservations = reservations.values
+              .where((reservation) => reservation.startTime.isAfter(DateTime.now()))
+              .toList();
 
-      return _reservations.isNotEmpty
-          ? SingleChildScrollView(
-
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.stretch,
-          children: _reservations
-              .map((reservation) => GestureDetector(
-            onTap: () {
-              // Handle item click here
-              // _deleteReservation(reservation.id);
-              // print(reservation.qrCode.hashCode.toString());
-              showModalBottomSheet<void>(
-                isScrollControlled: true,
-                context: context,
-                builder: (BuildContext context) {
-                  return FractionallySizedBox(
-                    heightFactor: 0.9,
-                    child: Container(
-                      // color: Colors.red,
-                      child: LayoutBuilder(
-                        builder: (BuildContext context,
-                            BoxConstraints constraints) {
-                          double modalHeight = constraints
-                              .maxHeight; // This will give you the height of the modal bottom sheet
-                          return Padding(
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 20),
-                            child: Column(
-                              mainAxisAlignment:
-                              MainAxisAlignment.center,
-                              mainAxisSize: MainAxisSize.min,
-                              children: <Widget>[
-                                const Expanded(
-                                  child: Text(
-                                    'Reservation Info',
-                                    style:
-                                    TextStyle(fontSize: 25),
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: modalHeight -
-                                      modalHeight / 3,
-                                  child: Container(
-                                    child: Column(
-                                      children: <Widget>[
-                                        Text(reservation.title),
-                                        Text(DateFormat(
-                                            'dd-MM-yyyy')
-                                            .format(reservation
-                                            .startTime)),
-                                        Text('${DateFormat('HH:mm').format(reservation.startTime)} - ${DateFormat('HH:mm').format(reservation.endTime)}'),
-                                        reservation.qrCode,
-
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment
-                                        .spaceAround,
-                                    children: <Widget>[
-                                      ElevatedButton(
-                                        child:
-                                        const Text('Close'),
-                                        onPressed: () =>
-                                            Navigator.pop(
-                                                context),
+          return SingleChildScrollView(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.stretch,
+              children: upcomingReservations
+                  .map((reservation) => GestureDetector(
+                onTap: () {
+                  showModalBottomSheet<void>(
+                    isScrollControlled: true,
+                    context: context,
+                    builder: (BuildContext context) {
+                      return FractionallySizedBox(
+                        heightFactor: 0.9,
+                        child: Container(
+                          child: LayoutBuilder(
+                            builder: (BuildContext context, BoxConstraints constraints) {
+                              double modalHeight = constraints.maxHeight;
+                              return Padding(
+                                padding: const EdgeInsets.symmetric(vertical: 20),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: <Widget>[
+                                    const Expanded(
+                                      child: Text(
+                                        'Reservation Info',
+                                        style: TextStyle(fontSize: 25),
                                       ),
-                                      ElevatedButton(
-                                        child:
-                                        const Text('Cancel'),
-                                        onPressed: () async {
-                                          String? result = await _confirmDelete(context);
-                                          if(result == 'Yes'){
-                                            _deleteReservation(reservation.id);
-                                            Navigator.pop(context);
-                                          }
-                                          // print(result);
-                                          // Navigator.pop(context);
-                                          // _deleteReservation(reservation.id);
-                                        },
-                                      )
-                                    ],
-                                  ),
+                                    ),
+                                    SizedBox(
+                                      height: modalHeight - modalHeight / 3,
+                                      child: Container(
+                                        child: Column(
+                                          children: <Widget>[
+                                            Text(reservation.title),
+                                            Text(DateFormat('dd-MM-yyyy').format(reservation.startTime)),
+                                            Text(
+                                              '${DateFormat('HH:mm').format(reservation.startTime)} - ${DateFormat('HH:mm').format(reservation.endTime)}',
+                                            ),
+                                            Text("reservation.qrCode"),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                    Expanded(
+                                      child: Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                                        children: <Widget>[
+                                          ElevatedButton(
+                                            child: const Text('Close'),
+                                            onPressed: () => Navigator.pop(context),
+                                          ),
+                                          ElevatedButton(
+                                            child: const Text('Cancel'),
+                                            onPressed: () async {
+                                              String? result = await _confirmDelete(context);
+                                              if (result == 'Yes') {
+                                                _deleteReservation(reservation.id);
+                                                Navigator.pop(context);
+                                              }
+                                            },
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
-                            ),
-                          );
-                        },
-                      ),
-                    ),
+                              );
+                            },
+                          ),
+                        ),
+                      );
+                    },
                   );
                 },
-              );
-            },
-            child: ItemWidget(reservation: reservation),
-          ))
-              .toList(),
-        ),
-      )
-          : Container(
-          child: const Align(
-              alignment: Alignment.center,
-              child: Text('No Sessions For Today')));
-    });
+                child: ItemWidget(reservation: reservation),
+              ))
+                  .toList(),
+            ),
+          );
+        }
+      },
+    );
   }
 }
 
@@ -192,8 +230,7 @@ class ItemWidget extends StatelessWidget {
             child: Row(
               children: <Widget>[
                 Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20, vertical: 10),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
@@ -222,8 +259,7 @@ class ItemWidget extends StatelessWidget {
                   ),
                 ),
                 Padding(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 20.0, vertical: 10),
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0, vertical: 10),
                   child: Column(
                     children: <Widget>[
                       Text(
@@ -242,7 +278,7 @@ class ItemWidget extends StatelessWidget {
                       ),
                     ],
                   ),
-                )
+                ),
               ],
             ),
           ),
@@ -251,7 +287,6 @@ class ItemWidget extends StatelessWidget {
     );
   }
 }
-
 
 Future<String?> _confirmDelete(BuildContext context) {
   return showDialog<String>(

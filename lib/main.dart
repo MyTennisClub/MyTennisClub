@@ -6,7 +6,11 @@ import 'package:mytennisclub/guest_android_app/guest_home_page.dart';
 import 'package:mytennisclub/member_android_app/member_home_page.dart';
 import 'package:mytennisclub/athlete_android_app/athlete_home_page.dart';
 
-void main() => runApp(const MainClass());
+
+
+void main() => runApp(
+    const MainClass()
+);
 
 class MainClass extends StatefulWidget {
   const MainClass({super.key});
@@ -16,6 +20,7 @@ class MainClass extends StatefulWidget {
 }
 
 class Main_Class extends State<MainClass> {
+
   @override
   Widget build(BuildContext context) {
     //the screen can't be rotated

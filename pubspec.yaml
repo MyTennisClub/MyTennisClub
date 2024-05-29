@@ -48,12 +48,16 @@ dependencies:
   mask_text_input_formatter: ^2.9.0
   flutter_slidable: ^3.1.0
   qr_flutter: ^4.1.0
- 
-  
+  mysql_client: ^0.0.27
+  mysql1: ^0.20.0
+  yaml: ^3.1.2
+
+
 
 
 
 dev_dependencies:
+
   flutter_test:
     sdk: flutter
 
@@ -74,7 +78,7 @@ flutter:
   # included with your application, so that you can use the icons in
   # the material Icons class.
   uses-material-design: true
-  
+
 
   # To add assets to your application, add an assets section, like this:
   # assets:
@@ -106,4 +110,9 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-  
+database:
+  host: "sql7.freemysqlhosting.net"
+  port: 3306
+  username: "sql7710060"
+  password: "D5TLEyDKPE"
+  database_name: "sql7710060"
