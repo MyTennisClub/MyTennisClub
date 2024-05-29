@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:qr_code_scanner/qr_code_scanner.dart';
+import 'package:mytennisclub/models/reservation.dart';
 
 class QR_Scan extends StatefulWidget {
   final Function checkResult;
@@ -14,12 +15,11 @@ class QRScan extends State<QR_Scan> {
   final GlobalKey _qrKey = GlobalKey(debugLabel: 'QR');
   Barcode? result;
 
-  // In order to get hot reload to work we need to pause the camera if the platform
-  // is android, or resume the camera if the platform is iOS.
+// In order to get hot reload to work we need to pause the camera if the platform
+// is android, or resume the camera if the platform is iOS.
   @override
   void reassemble() {
     super.reassemble();
-
     _controller!.pauseCamera();
   }
 
@@ -62,18 +62,6 @@ class QRScan extends State<QR_Scan> {
                       ? Text('Data = ${result!.code}')
                       : const Text('Scan QR Code')),
             ),
-            // Flexible(
-            //   flex: 1,
-            //   child: FilledButton(
-            //     onPressed: () {
-            //       setState(() {
-            //         widget.checkResult(1.toString());
-            //         Navigator.pop(context);
-            //       });
-            //     },
-            //     child: const Text('Check Info'),
-            //   ),
-            // )
           ],
         ),
       ),
@@ -82,12 +70,67 @@ class QRScan extends State<QR_Scan> {
 
   void _onQRViewCreated(QRViewController controller) {
     _controller = controller;
-    controller.scannedDataStream.listen((scanData) {
-      setState(() {
-        result = scanData;
-        widget.checkResult(result!.code);
-        Navigator.pop(context);
-      });
+    controller.scannedDataStream.listen((scanData) async {
+      result = scanData;
+
+      if (result!.code!.isNotEmpty) {
+        if (_isInteger(result!.code!)) {
+          try {
+            int scannedId = int.parse(result!.code!);
+            _controller!.pauseCamera(); // Pause the camera to stop scanning
+
+            var reservation =
+                await Reservation.fetchReservationFromDb(scannedId);
+
+            if (reservation.isNotEmpty) {
+              setState(() {
+                result = scanData;
+                _controller!.pauseCamera(); // Pause the camera to stop scanning
+                widget.checkResult(result!.code, reservation);
+                Navigator.pop(context);
+              });
+            } else {
+              _controller!.pauseCamera();
+              Navigator.pop(context);
+              _showErrorDialog(
+                  context, 'No reservation found with the given ID');
+            }
+          } catch (e) {
+            _controller!.pauseCamera();
+            Navigator.pop(context);
+            print('Error fetching reservation: $e');
+            _showErrorDialog(context, 'Error fetching reservation');
+          }
+        } else {
+          _controller!.pauseCamera();
+          Navigator.pop(context);
+          _showErrorDialog(context, 'Scanned QR code is not a valid ID');
+        }
+      }
     });
+  }
+
+  bool _isInteger(String value) {
+    return int.tryParse(value) != null;
+  }
+
+  void _showErrorDialog(BuildContext context, String message) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Error'),
+          content: Text(message),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.of(context).pop();
+              },
+              child: const Text('OK'),
+            ),
+          ],
+        );
+      },
+    );
   }
 }

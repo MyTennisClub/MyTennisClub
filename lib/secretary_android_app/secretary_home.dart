@@ -12,8 +12,16 @@ class Secretary_Scan extends StatefulWidget {
 class SecretaryScan extends State<Secretary_Scan> {
   int currentPageIndex = 0;
   String result = '';
+  Map<String, dynamic> results = {};
 
-  checkResult(newResult) {
+  checkResult(newResult, newResults) {
+    setState(() {
+      result = newResult;
+      results = newResults;
+    });
+  }
+
+  clearResult(newResult) {
     setState(() {
       result = newResult;
     });
@@ -66,6 +74,9 @@ class SecretaryScan extends State<Secretary_Scan> {
                             // This is what you need!
                             ),
                         onPressed: () async {
+                          setState(() {
+                            result = '';
+                          });
                           await showModalBottomSheet<List<String>>(
                             isDismissible: false,
                             useSafeArea: true,
@@ -77,12 +88,14 @@ class SecretaryScan extends State<Secretary_Scan> {
                           );
                           setState(() {
                             print(result);
+                            print(results);
                             if (result.isNotEmpty) {
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
                                   builder: (_) => QR_Info(
-                                    result: result,
+                                    clearResult: clearResult,
+                                    results: results,
                                   ),
                                 ),
                               );

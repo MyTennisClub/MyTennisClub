@@ -2,22 +2,23 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 
 class QR_Info extends StatefulWidget {
-  final String? result;
-  const QR_Info({super.key, required this.result});
+  final Map<String, dynamic> results;
+  final Function clearResult;
+  const QR_Info({super.key, required this.clearResult, required this.results});
 
   @override
   State<QR_Info> createState() => QRInfo();
 }
 
 class QRInfo extends State<QR_Info> {
-  String firstName = 'First Name';
-  String lastName = 'Last Name';
-  int people = 4;
-  String equipment = 'Rackets,Balls,Wristbands';
-  String court = 'Court E';
-  String resDate = DateFormat.yMd().format(DateTime.now());
-  String startTime = '19:00';
-  String endTime = '20:30';
+  late String firstName;
+  late String lastName;
+  late int people = 4;
+  late String equipment;
+  late String court;
+  late String resDate;
+  late String startTime;
+  late String endTime;
 
   String printEquipment(equipment) {
     List<String> equipmentList = equipment.split(',');
@@ -29,6 +30,36 @@ class QRInfo extends State<QR_Info> {
       }
     }
     return print;
+  }
+
+  @override
+  void dispose() {
+    // TODO: implement dispose
+    super.dispose();
+  }
+
+  @override
+  void initState() {
+    super.initState();
+
+    firstName = 'First Name'; // Default value or fetch from another source
+    lastName = 'Last Name'; // Default value or fetch from another source
+    people = 4; // Default value or fetch from another source
+    equipment =
+        'Rackets,Balls,Wristbands'; // Default value or fetch from another source
+    court = widget.results['court'] ?? 'Unknown Court';
+
+    // Ensure start_time and end_time are parsed correctly
+    DateTime startTimeDate = widget.results['start_time'] is String
+        ? DateTime.parse(widget.results['start_time'])
+        : widget.results['start_time'];
+    DateTime endTimeDate = widget.results['end_time'] is String
+        ? DateTime.parse(widget.results['end_time'])
+        : widget.results['end_time'];
+
+    resDate = DateFormat.yMd().format(startTimeDate);
+    startTime = DateFormat.Hm().format(startTimeDate);
+    endTime = DateFormat.Hm().format(endTimeDate);
   }
 
   @override
@@ -206,9 +237,8 @@ class QRInfo extends State<QR_Info> {
                           // This is what you need!
                           ),
                       onPressed: () {
-                        setState(() {
-                          Navigator.pop(context);
-                        });
+                        widget.clearResult('');
+                        Navigator.pop(context); // Close the screen
                       },
                       child: const Text('Close'),
                     ),
