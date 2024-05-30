@@ -27,7 +27,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
   int? _value = 0;
   bool duration = true;
   List<List<dynamic>> _filteredData = [];
-  var filterList = ['Covered', 'Air', 'Hard', 'Grass', 'Has Equipment'];
+  var filterList = ['Covered', 'Grass', 'Has Equipment'];
   bool noResults = false;
 
   final List<List<dynamic>> clubList = [
@@ -96,13 +96,34 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
     for (int index = 0; index < _filteredData.length; index++) {
       markers.add(
         Marker(
-            markerId: MarkerId(_filteredData[index][1]),
-            infoWindow: InfoWindow(title: _filteredData[index][1]),
-            position: LatLng(_filteredData[index][2], _filteredData[index][3])),
+            markerId: MarkerId(clubList[index][1]),
+            infoWindow: InfoWindow(title: clubList[index][1]),
+            position: LatLng(clubList[index][2], clubList[index][3])),
       );
     }
     _searchController.addListener(_performSearch);
   }
+
+  // Future<void> _markersCheck() async {
+  //   for (int index = 0; index < clubList.length; index++) {
+  //     if (_filteredData.contains(clubList[index]) &&
+  //         !markers.contains(clubList[index][1])) {
+  //       print('add');
+  //       markers.add(
+  //         Marker(
+  //             markerId: MarkerId(clubList[index][1]),
+  //             infoWindow: InfoWindow(title: clubList[index][1]),
+  //             position: LatLng(clubList[index][2], clubList[index][3])),
+  //       );
+  //     }
+  //     if (!_filteredData.contains(clubList[index])) {
+  //       print('remove');
+  //       Marker marker = markers.firstWhere(
+  //           (marker) => marker.markerId.value == clubList[index][1]);
+  //       markers.remove(marker);
+  //     }
+  //   }
+  // }
 
   Future<void> _performSearch() async {
     setState(() {
@@ -217,11 +238,14 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
                               if (_value == null) {
                                 noResults = false;
                                 _performSearch();
+                                // _markersCheck();
                               } else {
                                 noResults = false;
+
                                 _filteredData = _filteredData
                                     .where((row) => row.contains(filterList[i]))
                                     .toList();
+                                //_markersCheck();
                                 if (_filteredData.isEmpty) {
                                   noResults = true;
                                 }
