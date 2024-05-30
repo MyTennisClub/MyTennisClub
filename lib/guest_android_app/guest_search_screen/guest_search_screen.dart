@@ -1,3 +1,5 @@
+import 'dart:async';
+
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -5,10 +7,9 @@ import 'package:flutter/material.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 
-//import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_club_profile.dart';
-
 class GuestsSearchScreen extends StatefulWidget {
-  const GuestsSearchScreen({super.key});
+  final Function checkClubSelected;
+  const GuestsSearchScreen({required this.checkClubSelected, super.key});
 
   @override
   State<GuestsSearchScreen> createState() => _GuestsSearchScreenState();
@@ -17,18 +18,21 @@ class GuestsSearchScreen extends StatefulWidget {
 class _GuestsSearchScreenState extends State<GuestsSearchScreen>
     with SingleTickerProviderStateMixin {
   Position? currentPosition;
-  late GoogleMapController mapController;
+  Completer<GoogleMapController> mapController = Completer();
+  Set<Marker> markers = {};
   LatLng _center = const LatLng(38.246266400032816, 21.735063818066433);
 
   final TextEditingController _searchController = TextEditingController();
 
   int? _value = 0;
   bool duration = true;
+  List<List<dynamic>> _filteredData = [];
   var filterList = ['Covered', 'Air', 'Hard', 'Grass', 'Has Equipment'];
   bool noResults = false;
+
   final List<List<dynamic>> clubList = [
     [
-      1,
+      0,
       'Patras Tennis Club',
       38.246266400032816,
       21.735063818066433,
@@ -38,7 +42,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       'Patras'
     ],
     [
-      2,
+      1,
       'Best Tennis Club',
       38.246229277552416,
       21.741915599979517,
@@ -48,7 +52,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       'Patras'
     ],
     [
-      3,
+      2,
       'Tennis Center',
       38.252570180123946,
       21.739732137456364,
@@ -58,7 +62,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       'Patras'
     ],
     [
-      4,
+      3,
       'Athens Tennis Club',
       37.940350236505475,
       23.708126122993432,
@@ -68,7 +72,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       'Athens'
     ],
     [
-      5,
+      4,
       'Athens Sports Center',
       37.994212105267394,
       23.724433953918993,
@@ -78,10 +82,6 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       'Athens'
     ],
   ];
-
-  List<List<dynamic>> _filteredData = [];
-
-  Set<Marker> markers = {};
 
   // void getVariables() async {
   //   WidgetsFlutterBinding.ensureInitialized();
@@ -126,7 +126,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
 
   //google maps controller
   void _onMapCreated(GoogleMapController controller) async {
-    mapController = controller;
+    mapController = mapController;
     await getLocation();
   }
 
@@ -149,6 +149,12 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
         _center = LatLng(currentPosition!.latitude, currentPosition!.longitude);
       });
     }
+  }
+
+  @override
+  void dispose() {
+    mapController.future.then((controller) => controller.dispose());
+    super.dispose();
   }
 
   @override
@@ -180,128 +186,122 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
               ),
             )),
         body: LayoutBuilder(builder: (builder, constraints) {
-          return SingleChildScrollView(
-            physics: const NeverScrollableScrollPhysics(),
-            child: ConstrainedBox(
-              constraints: BoxConstraints(minHeight: constraints.maxHeight),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  const Padding(
-                    padding: EdgeInsets.symmetric(horizontal: 20.0),
-                    child: Text(
-                      textAlign: TextAlign.left,
-                      'Filter Results',
-                      style: TextStyle(
-                          fontSize: 13, color: Color.fromRGBO(0, 0, 0, 0.7)),
-                    ),
+          return ConstrainedBox(
+            constraints: BoxConstraints(minHeight: constraints.maxHeight),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Text(
+                    textAlign: TextAlign.left,
+                    'Filter Results',
+                    style: TextStyle(
+                        fontSize: 13, color: Color.fromRGBO(0, 0, 0, 0.7)),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                    child: SizedBox(
-                      height: constraints.maxHeight * 0.15,
-                      child: Wrap(
-                        spacing: 8.0,
-                        children: List<Widget>.generate(
-                          filterList.length,
-                          (int i) {
-                            return ChoiceChip(
-                              selectedColor:
-                                  const Color.fromRGBO(210, 230, 255, 1),
-                              label: Text(filterList[i]),
-                              selected: _value == i,
-                              onSelected: (bool selected) {
-                                setState(() {
-                                  _value = selected ? i : null;
-                                  if (_value == null) {
-                                    noResults = false;
-                                    _performSearch();
-                                  } else {
-                                    noResults = false;
-                                    _filteredData = _filteredData
-                                        .where((row) =>
-                                            row.contains(filterList[i]))
-                                        .toList();
-                                    if (_filteredData.isEmpty) {
-                                      noResults = true;
-                                    }
-                                  }
-                                });
-                              },
-                            );
+                ),
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                  child: Wrap(
+                    spacing: 8.0,
+                    children: List<Widget>.generate(
+                      filterList.length,
+                      (int i) {
+                        return ChoiceChip(
+                          selectedColor: const Color.fromRGBO(210, 230, 255, 1),
+                          label: Text(filterList[i]),
+                          selected: _value == i,
+                          onSelected: (bool selected) {
+                            setState(() {
+                              _value = selected ? i : null;
+                              if (_value == null) {
+                                noResults = false;
+                                _performSearch();
+                              } else {
+                                noResults = false;
+                                _filteredData = _filteredData
+                                    .where((row) => row.contains(filterList[i]))
+                                    .toList();
+                                if (_filteredData.isEmpty) {
+                                  noResults = true;
+                                }
+                              }
+                            });
                           },
-                        ).toList(),
-                      ),
-                    ),
+                        );
+                      },
+                    ).toList(),
                   ),
-                  Padding(
-                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                    child: SizedBox(
-                      height: constraints.maxHeight * 0.5,
-                      child: ClipRRect(
-                        borderRadius:
-                            const BorderRadius.all(Radius.circular(10)),
-                        child: GoogleMap(
-                          markers: markers,
-                          gestureRecognizers: Set()
-                            ..add(Factory<PanGestureRecognizer>(
-                                () => PanGestureRecognizer()))
-                            ..add(Factory<ScaleGestureRecognizer>(
-                                () => ScaleGestureRecognizer()))
-                            ..add(Factory<TapGestureRecognizer>(
-                                () => TapGestureRecognizer()))
-                            ..add(Factory<VerticalDragGestureRecognizer>(
-                                () => VerticalDragGestureRecognizer())),
-                          onMapCreated: _onMapCreated,
-                          initialCameraPosition: CameraPosition(
-                            target: _center,
-                            zoom: 13.0,
-                          ),
+                ),
+                Expanded(
+                  child: Padding(
+                    padding: const EdgeInsets.symmetric(
+                        horizontal: 10.0, vertical: 5),
+                    child: ClipRRect(
+                      borderRadius: const BorderRadius.all(Radius.circular(10)),
+                      child: GoogleMap(
+                        markers: markers,
+                        gestureRecognizers: Set()
+                          ..add(Factory<PanGestureRecognizer>(
+                              () => PanGestureRecognizer()))
+                          ..add(Factory<ScaleGestureRecognizer>(
+                              () => ScaleGestureRecognizer()))
+                          ..add(Factory<TapGestureRecognizer>(
+                              () => TapGestureRecognizer()))
+                          ..add(Factory<VerticalDragGestureRecognizer>(
+                              () => VerticalDragGestureRecognizer())),
+                        onMapCreated: _onMapCreated,
+                        initialCameraPosition: CameraPosition(
+                          target: _center,
+                          zoom: 13.0,
                         ),
                       ),
                     ),
                   ),
-                  SizedBox(
-                    height: constraints.maxHeight * 0.3,
-                    child: (!noResults)
-                        ? ListView.builder(
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.all(10),
-                            itemCount: _filteredData.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Card.outlined(
-                                color: const Color.fromRGBO(236, 238, 243, 1),
-                                elevation: 1,
-                                key: ObjectKey(clubList[index]),
-                                child: Column(
-                                  mainAxisSize: MainAxisSize.min,
-                                  children: <Widget>[
-                                    ListTile(
-                                      leading: const Icon(
-                                        Icons.sports_tennis_outlined,
-                                        size: 48.0,
-                                        color: Colors.grey,
-                                      ),
-                                      title: Text(_filteredData[index][1],
-                                          style: const TextStyle(
-                                              fontSize: 16,
-                                              fontWeight: FontWeight.w500)),
-                                      subtitle: Text(_filteredData[index][7]),
-                                      trailing: FilledButton(
-                                        onPressed: () {
-                                          // Handle button press
-                                        },
-                                        child: const Text('View'),
-                                      ),
+                ),
+                SizedBox(
+                  height: constraints.maxHeight * 0.3,
+                  child: (!noResults)
+                      ? ListView.builder(
+                          padding: const EdgeInsets.all(10),
+                          itemCount: _filteredData.length,
+                          itemBuilder: (BuildContext context, int index) {
+                            return Card.outlined(
+                              color: const Color.fromRGBO(236, 238, 243, 1),
+                              elevation: 1,
+                              key: ObjectKey(clubList[index]),
+                              child: Column(
+                                mainAxisSize: MainAxisSize.min,
+                                children: <Widget>[
+                                  ListTile(
+                                    leading: const Icon(
+                                      Icons.sports_tennis_outlined,
+                                      size: 48.0,
+                                      color: Colors.grey,
                                     ),
-                                  ],
-                                ),
-                              );
-                            })
-                        : const Center(child: Text('No Results')),
-                  ),
-                ],
-              ),
+                                    title: Text(_filteredData[index][1],
+                                        style: const TextStyle(
+                                            fontSize: 16,
+                                            fontWeight: FontWeight.w500)),
+                                    subtitle: Text(_filteredData[index][7]),
+                                    trailing: FilledButton(
+                                      onPressed: () {
+                                        setState(() {
+                                          widget.checkClubSelected(
+                                              true, _filteredData[index][0]);
+                                        });
+                                        // Handle button press
+                                      },
+                                      child: const Text('View'),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            );
+                          })
+                      : const Center(child: Text('No Results')),
+                ),
+              ],
             ),
           );
         }),
