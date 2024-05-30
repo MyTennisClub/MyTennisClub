@@ -141,3 +141,4 @@ app.*.symbols
 #extra
 pubspec.lock
 .package
+.env
