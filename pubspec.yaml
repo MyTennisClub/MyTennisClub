@@ -110,9 +110,3 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
-database:
-  host: "sql7.freemysqlhosting.net"
-  port: 3306
-  username: "sql7710060"
-  password: "D5TLEyDKPE"
-  database_name: "sql7710060"
