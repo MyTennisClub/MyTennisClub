@@ -22,28 +22,29 @@ class DurationSection extends State<Duration_Section> {
           padding: EdgeInsets.only(right: 10.0),
           child: Icon(Icons.timer_outlined),
         ),
-        Wrap(
-          spacing: 8.0,
-          children: List<Widget>.generate(
-            4,
-            (int i) {
-              return ChoiceChip(
-                selectedColor: const Color.fromRGBO(210, 230, 255, 1),
-                label: Text(durationList[i]),
-                selected: _value == i,
-                onSelected: (bool selected) {
-                  setState(() {
-                    _value = selected ? i : null;
-                    if (_value == null) {
-                      widget.checkDuration(false, null);
-                    } else {
-                      widget.checkDuration(true, durationList[i]);
-                    }
-                  });
-                },
-              );
-            },
-          ).toList(),
+        Expanded(
+          child: Wrap(
+            spacing: 8.0,
+            runSpacing: 8.0,
+            children: List<Widget>.generate(
+              durationList.length,
+              (int i) {
+                return ChoiceChip(
+                  selectedColor: const Color.fromRGBO(210, 230, 255, 1),
+                  label: Text(durationList[i]),
+                  selected: _value == i,
+                  onSelected: (bool selected) {
+                    setState(() {
+                      if (selected && _value != i) {
+                        _value = i;
+                        widget.checkDuration(true, durationList[i]);
+                      }
+                    });
+                  },
+                );
+              },
+            ).toList(),
+          ),
         ),
       ],
     );
