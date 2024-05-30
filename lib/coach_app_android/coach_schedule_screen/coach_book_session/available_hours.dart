@@ -2,8 +2,13 @@ import 'package:flutter/material.dart';
 
 class Available_Hours extends StatefulWidget {
   final Function checkHour;
-  final int id;
-  const Available_Hours({super.key, required this.checkHour, required this.id});
+  final int id; //court
+  final bool isVisible;
+  const Available_Hours(
+      {super.key,
+      required this.checkHour,
+      required this.id,
+      required this.isVisible});
   @override
   State<Available_Hours> createState() => AvailableHours();
 }
@@ -27,16 +32,20 @@ class AvailableHours extends State<Available_Hours> {
               return ChoiceChip(
                 selectedColor: const Color.fromRGBO(210, 230, 255, 1),
                 label: Text(hourList[i]),
-                selected: selectedHour == i,
+                selected: selectedHour == i && widget.isVisible,
                 onSelected: (bool selected) {
                   setState(() {
-                    selectedHour = selected ? i : null;
-                    if (selectedHour == null) {
-                      widget.checkHour(selected, widget.id, null);
-                    }
-                    if (selectedHour != null) {
+                    if (selected && selectedHour != i) {
+                      selectedHour = i;
                       widget.checkHour(selected, widget.id, hourList[i]);
                     }
+                    //selectedHour = selected ? i : null;
+                    // if (selectedHour == null) {
+                    //   widget.checkHour(selected, widget.id, null);
+                    // }
+                    // if (selectedHour != null) {
+                    //   widget.checkHour(selected, widget.id, hourList[i]);
+                    // }
                   });
                 },
               );

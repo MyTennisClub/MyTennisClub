@@ -60,6 +60,7 @@ class BookSession extends State<BookSession_Main> {
         if (i != key) hourCheck[i] = false;
       }
 
+      print('$check - $key - $h');
       checkVisible();
     });
   }
@@ -285,7 +286,9 @@ class BookSession extends State<BookSession_Main> {
                                         mainAxisSize: MainAxisSize.max,
                                         children: [
                                           Available_Hours(
-                                              checkHour: checkHour, id: index),
+                                              checkHour: checkHour,
+                                              id: index,
+                                              isVisible: visible[index]),
                                           visible[index]
                                               ? FilledButton(
                                                   style: FilledButton.styleFrom(
