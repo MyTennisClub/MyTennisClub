@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -23,6 +25,7 @@ class Upload_Files extends StatefulWidget {
 
 class UploadFiles extends State<Upload_Files> {
   FilePickerResult? result;
+  Uint8List? fileBytes;
   String id = 'ID';
   String doctorNote = "Doctor's Note";
   String solemn = 'Solemn Decleration';
@@ -67,7 +70,7 @@ class UploadFiles extends State<Upload_Files> {
                 child: OutlinedButton(
                     onPressed: () async {
                       result = await FilePicker.platform.pickFiles(
-                          type: FileType.custom, allowedExtensions: ['pdf']);
+                          type: FileType.custom, allowedExtensions: ['pdf'], withData: true);
 
                       if (result == null) {
                       } else {
@@ -122,7 +125,7 @@ class UploadFiles extends State<Upload_Files> {
                           onPressed: () async {
                             result = await FilePicker.platform.pickFiles(
                                 type: FileType.custom,
-                                allowedExtensions: ['pdf']);
+                                allowedExtensions: ['pdf'], withData: true);
 
                             if (result == null) {
                             } else {
@@ -178,8 +181,7 @@ class UploadFiles extends State<Upload_Files> {
                           onPressed: () async {
                             result = await FilePicker.platform.pickFiles(
                                 type: FileType.custom,
-                                allowedExtensions: ['pdf']);
-
+                                allowedExtensions: ['pdf'], withData: true);
                             if (result == null) {
                             } else {
                               setState(() {});

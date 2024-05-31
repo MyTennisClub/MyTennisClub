@@ -1,10 +1,9 @@
 import 'dart:typed_data';
-
 import 'package:flutter/material.dart';
 import 'upload_files.dart';
 import 'personal_info.dart';
 import 'success_page.dart';
-//import 'package:mytennisclub/models/guest.dart';
+import 'package:mytennisclub/models/guest.dart';
 
 enum Person { you, kid }
 
@@ -31,7 +30,8 @@ class ApplyClub extends State<ApplyClub_Main> {
   String phone = '6971662770';
   String address = 'Agiou Andreou 16';
   String email = 'nickvoul3@gmail.com';
-  DateTime date = DateTime.parse('2024-08-04 12:00:00');
+  DateTime birthDate = DateTime.parse('2024-08-04');
+  String formattedDate = '2024-08-04';
 
   String kidName = '';
   String kidPhone = '';
@@ -39,9 +39,10 @@ class ApplyClub extends State<ApplyClub_Main> {
   String kidEmail = '';
   DateTime kidDate = DateTime.now();
 
-  Uint8List? identification;
   Uint8List? p_identification;
   Uint8List? doctorsNote;
+  Uint8List? identification;
+
 
   getNewValues(newName, newPhone, newAddress, newEmail, newDate) {
     setState(() {
@@ -54,13 +55,13 @@ class ApplyClub extends State<ApplyClub_Main> {
     });
   }
 
+
   getID(id) {
     setState(() {
-      print(id.name);
+      print('id bytes ' + id.bytes.toString());
       identification = id.bytes;
     });
   }
-
   getSolemn(solemn) {
     setState(() {
       p_identification = solemn.bytes;
@@ -240,7 +241,7 @@ class ApplyClub extends State<ApplyClub_Main> {
                       phone: phone,
                       address: address,
                       email: email,
-                      date: date,
+                      date: birthDate,
                     ),
                     const Divider(
                       color: Color.fromRGBO(193, 199, 209, 1),
@@ -307,17 +308,15 @@ class ApplyClub extends State<ApplyClub_Main> {
                                 // String address = 'Agiou Andreou 16';
                                 // String email = 'nickvoul3@gmail.com';
                                 // String date = 'March 9, 2024';
-                                // await Guest.youMemberApply(
-                                //     name,
-                                //     phone,
-                                //     address,
-                                //     email,
-                                //     date,
-                                //     identification,
-                                //     p_identification,
-                                //     doctorsNote,
-                                //     tennisClubId,
-                                //     guestId);
+                                await Guest.youMemberApply(
+                                    name,
+                                    phone,
+                                    address,
+                                    email,
+                                    formattedDate,
+                                    identification,
+                                    1,
+                                    2);
                               } else if (personSelected.name == 'you' &&
                                   typeSelected.name == 'athlete') {
                               } else if (personSelected.name == 'kid' &&

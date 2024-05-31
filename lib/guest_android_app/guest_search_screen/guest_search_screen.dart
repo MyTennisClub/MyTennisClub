@@ -160,7 +160,6 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
     } else {
       currentPosition = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.best);
-      setState(() {
         markers.add(Marker(
           markerId: const MarkerId('userLocation'),
           position:
@@ -168,7 +167,6 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
           infoWindow: const InfoWindow(title: 'Your Location'),
         ));
         _center = LatLng(currentPosition!.latitude, currentPosition!.longitude);
-      });
     }
   }
 
