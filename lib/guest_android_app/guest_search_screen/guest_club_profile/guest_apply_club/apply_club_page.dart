@@ -1,9 +1,10 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'upload_files.dart';
 import 'personal_info.dart';
 import 'success_page.dart';
-import 'package:mytennisclub/models/guest.dart';
-
+//import 'package:mytennisclub/models/guest.dart';
 
 enum Person { you, kid }
 
@@ -31,6 +32,46 @@ class ApplyClub extends State<ApplyClub_Main> {
   String address = 'Agiou Andreou 16';
   String email = 'nickvoul3@gmail.com';
   DateTime date = DateTime.parse('2024-08-04 12:00:00');
+
+  String kidName = '';
+  String kidPhone = '';
+  String kidAddress = '';
+  String kidEmail = '';
+  DateTime kidDate = DateTime.now();
+
+  Uint8List? identification;
+  Uint8List? p_identification;
+  Uint8List? doctorsNote;
+
+  getNewValues(newName, newPhone, newAddress, newEmail, newDate) {
+    setState(() {
+      kidName = newName;
+      kidPhone = newPhone;
+      kidAddress = newAddress;
+      kidEmail = newEmail;
+      kidDate = newDate;
+      print('ok');
+    });
+  }
+
+  getID(id) {
+    setState(() {
+      print(id.name);
+      identification = id.bytes;
+    });
+  }
+
+  getSolemn(solemn) {
+    setState(() {
+      p_identification = solemn.bytes;
+    });
+  }
+
+  getDoctors(doctors) {
+    setState(() {
+      doctorsNote = doctors.bytes;
+    });
+  }
 
   checkAllFields(check) {
     setState(() {
@@ -192,13 +233,22 @@ class ApplyClub extends State<ApplyClub_Main> {
                       color: Color.fromRGBO(193, 199, 209, 1),
                     ),
                     Personal_Info(
+                      getNewValues: getNewValues,
                       personSelected: personSelected.name,
                       checkAllFields: checkAllFields,
+                      name: name,
+                      phone: phone,
+                      address: address,
+                      email: email,
+                      date: date,
                     ),
                     const Divider(
                       color: Color.fromRGBO(193, 199, 209, 1),
                     ),
                     Upload_Files(
+                      getID: getID,
+                      getSolemn: getSolemn,
+                      getDoctors: getDoctors,
                       personSelected: personSelected.name,
                       typeSelected: typeSelected.name,
                       checkEachUpload: checkEachUpload,
@@ -249,25 +299,31 @@ class ApplyClub extends State<ApplyClub_Main> {
                       ? Expanded(
                           flex: 3,
                           child: FilledButton(
-                            onPressed: () async{
-
-                              if (personSelected.name == 'you' && typeSelected.name == 'member') {
+                            onPressed: () async {
+                              if (personSelected.name == 'you' &&
+                                  typeSelected.name == 'member') {
                                 // String name = 'Nikolaos Voulgaris';
                                 // String phone = '6971662770';
                                 // String address = 'Agiou Andreou 16';
                                 // String email = 'nickvoul3@gmail.com';
                                 // String date = 'March 9, 2024';
-                                await Guest.youMemberApply(name, phone, address, email, date, identification, p_identification, doctorsNote, tennisClubId, guestId);
-                              }
-                              else if (personSelected.name == 'you' && typeSelected.name == 'athlete') {
-
-                              }
-                              else if (personSelected.name == 'kid' && typeSelected.name == 'member') {
-
-                              }
-                              else if (personSelected.name == 'kid' && typeSelected.name == 'athlete') {
-
-                              }
+                                // await Guest.youMemberApply(
+                                //     name,
+                                //     phone,
+                                //     address,
+                                //     email,
+                                //     date,
+                                //     identification,
+                                //     p_identification,
+                                //     doctorsNote,
+                                //     tennisClubId,
+                                //     guestId);
+                              } else if (personSelected.name == 'you' &&
+                                  typeSelected.name == 'athlete') {
+                              } else if (personSelected.name == 'kid' &&
+                                  typeSelected.name == 'member') {
+                              } else if (personSelected.name == 'kid' &&
+                                  typeSelected.name == 'athlete') {}
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
