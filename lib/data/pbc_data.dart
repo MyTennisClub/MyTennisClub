@@ -42,64 +42,82 @@ List<Court> createCourts() {
 List<Event> createReservations(List<Member> members, List<Court> courts) {
   Random random = Random();
   List<Event> reservations = [];
-  for (var index = 0; index < 20; index++) {
-    int memberId = (index % members.length) + 1;
-    int courtId = (index % courts.length) + 1;
 
-    // Find the member and court
-    Member member = members.firstWhere((m) => m.id == memberId);
-    Court court = courts.firstWhere((c) => c.id == courtId);
+  for (var member in members) {
+    Set<int> usedCourtIds = {}; // Track used courts for each member
 
-    // Dates with one index days difference from now
-    DateTime date = DateTime.now().add(Duration(days: index));
+    for (var i = 0; i < 2; i++) {
+      // Each member should have 2 reservations
+      int courtId;
+      do {
+        courtId = courts[random.nextInt(courts.length)].id;
+      } while (usedCourtIds.contains(courtId)); // Ensure different courts
 
-    // Generate random duration in a specified range of hours an minutes
-    int durationIndex = random.nextInt(4); // Random number between 0 and 3
-    Duration duration;
-    switch (durationIndex) {
-      case 0:
-        duration = const Duration(hours: 1);
-        break;
-      case 1:
-        duration = const Duration(hours: 1, minutes: 30);
-        break;
-      case 2:
-        duration = const Duration(hours: 2);
-        break;
-      case 3:
-        duration = const Duration(hours: 2, minutes: 30);
-        break;
-      default:
-        duration = const Duration(hours: 1); // Default duration
+      usedCourtIds.add(courtId);
+
+      // Find the court
+      Court court = courts.firstWhere((c) => c.id == courtId);
+
+      // Dates with one or two days difference from now
+      DateTime date = DateTime.now().add(Duration(days: i + 1));
+
+      // Possible start times
+      List<DateTime> possibleStartTimes = [
+        DateTime(date.year, date.month, date.day, 10, 0),
+        DateTime(date.year, date.month, date.day, 11, 30),
+        DateTime(date.year, date.month, date.day, 13, 0),
+        DateTime(date.year, date.month, date.day, 14, 30),
+        DateTime(date.year, date.month, date.day, 16, 0),
+        DateTime(date.year, date.month, date.day, 17, 30),
+        DateTime(date.year, date.month, date.day, 19, 0),
+        DateTime(date.year, date.month, date.day, 20, 30),
+      ];
+
+      // Randomly select a start time
+      DateTime startTime =
+          possibleStartTimes[random.nextInt(possibleStartTimes.length)];
+
+      // Generate random duration in a specified range of hours an minutes
+      int durationIndex = random.nextInt(4); // Random number between 0 and 3
+      Duration duration;
+      switch (durationIndex) {
+        case 0:
+          duration = const Duration(hours: 1);
+          break;
+        case 1:
+          duration = const Duration(hours: 1, minutes: 30);
+          break;
+        case 2:
+          duration = const Duration(hours: 2);
+          break;
+        case 3:
+          duration = const Duration(hours: 2, minutes: 30);
+          break;
+        default:
+          duration = const Duration(hours: 1); // Default duration
+      }
+
+      DateTime endTime = startTime.add(duration);
+
+      Event reservation = Event(
+        type: Type.privateReservation,
+        date: date,
+        startTime: startTime,
+        endTime: endTime,
+        courtId: courtId,
+        personId: member.id,
+      );
+
+      // Add the reservation to both the member's and the court's calendar
+      member.calendar?.addEvent(reservation);
+      court.calendar?.addEvent(reservation);
+
+      reservations.add(reservation);
     }
-
-    DateTime endTime = date.add(duration);
-
-    // Extract hour and minute from startTime
-    int startHour = date.hour;
-    int startMinute = date.minute;
-    // Set endTime to one hour after startTime
-    int endHour = endTime.hour;
-    int endMinute = endTime.minute;
-
-    // Create new DateTime objects with only hour and minute components
-    DateTime startTimeHourMinute = DateTime(startHour, startMinute);
-    DateTime endTimeHourMinute = DateTime(endHour, endMinute);
-
-    Event reservation = Event(
-      type: Type.privateReservation,
-      date: date,
-      startTime: startTimeHourMinute,
-      endTime: endTimeHourMinute,
-      courtId: courtId,
-      personId: memberId,
-    );
-
-    // Add the reservation to both the member's and the court's calendar
-    member.calendar?.addEvent(reservation);
-    court.calendar?.addEvent(reservation);
-
-    reservations.add(reservation);
+  }
+  for (var i = 0; i < reservations.length; i++) {
+    print(
+        '${reservations[i].personId} - ${reservations[i].courtId} - ${reservations[i].date} - ${reservations[i].startTime} - ${reservations[i].endTime} ');
   }
   return reservations;
 }
