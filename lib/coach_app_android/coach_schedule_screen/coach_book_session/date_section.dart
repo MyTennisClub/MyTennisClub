@@ -3,7 +3,9 @@ import 'package:intl/intl.dart';
 
 class Date_Section extends StatefulWidget {
   final Function getDate;
-  const Date_Section({required this.getDate, super.key});
+  final DateTime initialDate;
+  const Date_Section(
+      {required this.initialDate, required this.getDate, super.key});
 
   @override
   State<Date_Section> createState() => DateSection();
@@ -22,7 +24,7 @@ class DateSection extends State<Date_Section> {
           flex: 1,
           child: Text(
             textAlign: TextAlign.center,
-            DateFormat.yMd().format(selectedDate),
+            DateFormat.yMd().format(widget.initialDate),
             style: const TextStyle(fontSize: 16, fontWeight: FontWeight.w500),
           ),
         ),

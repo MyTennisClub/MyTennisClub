@@ -57,6 +57,7 @@ class BookSession extends State<BookSession_Main> {
     visible = List.filled(courtsList.length, false);
 
     DateTime firstDate = getFirstAvailableDate(courtsList);
+    date = firstDate;
 
     populateCourts(courtsList, firstDate, duration!, number);
 
@@ -89,7 +90,7 @@ class BookSession extends State<BookSession_Main> {
   double payment = 5;
   //final List<String> courts = <String>['A', 'B', 'C', 'D'];
   String? duration = '1:00 h';
-  DateTime date = DateTime.now();
+  late DateTime date;
 
   String? hour;
   String? endhour;
@@ -141,6 +142,7 @@ class BookSession extends State<BookSession_Main> {
   checkAthletes(list) {
     setState(() {
       athletes = list;
+      print(athletes);
 
       checkVisible();
     });
@@ -264,6 +266,7 @@ class BookSession extends State<BookSession_Main> {
                     Padding(
                       padding: const EdgeInsets.symmetric(vertical: 4.0),
                       child: Date_Section(
+                        initialDate: date,
                         getDate: getDate,
                       ),
                     ),
