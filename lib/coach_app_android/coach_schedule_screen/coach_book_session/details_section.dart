@@ -3,16 +3,20 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
+import '../../../models/member.dart';
 import 'select_athletes.dart';
 
 class Details_Section extends StatefulWidget {
   final Function checkNumber;
   final Function checkAthletes;
   final double constraints;
+  final List<Member> athletesList;
+
   const Details_Section(
       {required this.checkNumber,
       required this.checkAthletes,
       required this.constraints,
+      required this.athletesList,
       super.key});
 
   @override
@@ -24,7 +28,7 @@ class DetailsSection extends State<Details_Section> {
   bool numberCheck = true;
   int number = 1;
   int allowedMemberNumber = 4;
-  List<String> athletes = [];
+  List<Member> selectedAthletes = [];
 
   String _errorText = ('');
 
@@ -41,7 +45,7 @@ class DetailsSection extends State<Details_Section> {
   }
 
   Future<void> _openSelectAthletes(BuildContext context) {
-    return showModalBottomSheet<List<String>>(
+    return showModalBottomSheet<List<Member>>(
         useSafeArea: true,
         isScrollControlled: true,
         context: context,
@@ -50,7 +54,8 @@ class DetailsSection extends State<Details_Section> {
               height: widget.constraints,
               child: Select_Athletes(
                 number: number,
-                athletes: athletes,
+                selectedAthletes: selectedAthletes,
+                athletesList: widget.athletesList,
               ));
         });
   }
@@ -87,9 +92,9 @@ class DetailsSection extends State<Details_Section> {
                     numberCheck = true;
                     number = int.parse(value);
                   }
-                  athletes = [];
+                  selectedAthletes = [];
                   widget.checkNumber(numberCheck, number);
-                  widget.checkAthletes(athletes);
+                  widget.checkAthletes(selectedAthletes);
                 });
               },
               decoration: InputDecoration(
@@ -126,7 +131,7 @@ class DetailsSection extends State<Details_Section> {
                     ..onTap = () async {
                       if (numberCheck) {
                         (_openSelectAthletes(context));
-                        widget.checkAthletes(athletes);
+                        widget.checkAthletes(selectedAthletes);
                       }
                     },
                 ),

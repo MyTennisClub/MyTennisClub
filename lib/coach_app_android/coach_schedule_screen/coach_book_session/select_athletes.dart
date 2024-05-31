@@ -1,10 +1,17 @@
 import 'package:flutter/material.dart';
 
+import '../../../models/member.dart';
+
 class Select_Athletes extends StatefulWidget {
   final int number;
-  final List<String> athletes;
-  const Select_Athletes(
-      {required this.athletes, required this.number, super.key});
+  final List<Member> selectedAthletes;
+  final List<Member> athletesList;
+  const Select_Athletes({
+    required this.athletesList,
+    required this.selectedAthletes,
+    required this.number,
+    super.key,
+  });
 
   @override
   State<Select_Athletes> createState() => SelectAthletes();
@@ -12,32 +19,34 @@ class Select_Athletes extends StatefulWidget {
 
 class SelectAthletes extends State<Select_Athletes> {
   final TextEditingController _searchController = TextEditingController();
-  final List<String> athleteList = [
-    'Cataleya Ho',
-    'Melissa Roth',
-    'Morgan Reyes',
-    'Elliot Quinn',
-    'Estrella Escobar',
-    'Ace Terell',
-    'Carter Spencer',
-    'Patrick Dyer',
-    'Jonas Wiley',
-    "Voulgaris Nikolaos",
-    "Bakalis Athanasios",
-    "Baknis Georgios",
-    "Skandalos Athanasios Spiridon",
-    "Stamelos Charilaos Panagiotis"
-  ];
-  List<String> _filteredData = [];
+  // final List<String> athleteList = [
+  //   'Cataleya Ho',
+  //   'Melissa Roth',
+  //   'Morgan Reyes',
+  //   'Elliot Quinn',
+  //   'Estrella Escobar',
+  //   'Ace Terell',
+  //   'Carter Spencer',
+  //   'Patrick Dyer',
+  //   'Jonas Wiley',
+  //   "Voulgaris Nikolaos",
+  //   "Bakalis Athanasios",
+  //   "Baknis Georgios",
+  //   "Skandalos Athanasios Spiridon",
+  //   "Stamelos Charilaos Panagiotis"
+  // ];
+  late List<Member> athleteList;
+  List<Member> _filteredData = [];
   bool _isLoading = false;
 
   @override
   void initState() {
     super.initState();
-    for (int index = 0; index < widget.athletes.length; index++) {
-      if (athleteList.contains(widget.athletes[index])) {
-        athleteList.remove(widget.athletes[index]);
-        athleteList.insert(0, widget.athletes[index]);
+    athleteList = widget.athletesList;
+    for (int index = 0; index < widget.selectedAthletes.length; index++) {
+      if (athleteList.contains(widget.selectedAthletes[index])) {
+        athleteList.remove(widget.selectedAthletes[index]);
+        athleteList.insert(0, widget.selectedAthletes[index]);
       }
     }
     _filteredData = athleteList;
@@ -54,7 +63,7 @@ class SelectAthletes extends State<Select_Athletes> {
 
     setState(() {
       _filteredData = athleteList
-          .where((element) => element
+          .where((element) => element.fullname
               .toLowerCase()
               .contains(_searchController.text.toLowerCase()))
           .toList();
@@ -107,7 +116,7 @@ class SelectAthletes extends State<Select_Athletes> {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        'Selected: ${widget.athletes.length}/${widget.number}',
+                        'Selected: ${widget.selectedAthletes.length}/${widget.number}',
                         textAlign: TextAlign.start,
                       ),
                       ListView.builder(
@@ -123,43 +132,45 @@ class SelectAthletes extends State<Select_Athletes> {
                                 bottom: BorderSide(
                                     color: Color.fromRGBO(29, 27, 32, 0.574)),
                               ),
-                              color: (widget.athletes
+                              color: (widget.selectedAthletes
                                       .contains(_filteredData[index]))
                                   ? const Color.fromRGBO(210, 230, 255, 2)
                                   : Colors.transparent),
                           child: ListTile(
-                            trailing:
-                                (widget.athletes.contains(_filteredData[index]))
-                                    ? const Text('Delete')
-                                    : const Text(''),
+                            trailing: (widget.selectedAthletes
+                                    .contains(_filteredData[index]))
+                                ? const Text('Delete')
+                                : const Text(''),
                             onTap: () {
-                              if (widget.athletes
+                              if (widget.selectedAthletes
                                   .contains(_filteredData[index])) {
                                 setState(() {
-                                  widget.athletes.remove(athleteList[index]);
+                                  widget.selectedAthletes
+                                      .remove(athleteList[index]);
                                 });
-                              } else if (!widget.athletes
+                              } else if (!widget.selectedAthletes
                                       .contains(_filteredData[index]) &&
-                                  widget.athletes.length < widget.number) {
+                                  widget.selectedAthletes.length <
+                                      widget.number) {
                                 setState(() {
-                                  String athlete = _filteredData[index];
+                                  Member athlete = _filteredData[index];
                                   _filteredData.removeAt(index);
                                   _filteredData.insert(0, athlete);
 
-                                  widget.athletes.add(athlete);
+                                  widget.selectedAthletes.add(athlete);
                                 });
                               }
                             },
                             leading: CircleAvatar(
                               radius: 18,
-                              backgroundColor: (!widget.athletes
+                              backgroundColor: (!widget.selectedAthletes
                                       .contains(_filteredData[index]))
                                   ? const Color.fromRGBO(50, 121, 180, 1)
                                   : const Color.fromRGBO(52, 75, 98, 1),
-                              child: (!widget.athletes
+                              child: (!widget.selectedAthletes
                                       .contains(_filteredData[index]))
                                   ? Text(
-                                      '${athleteList[index][0]}${athleteList[index][1].toUpperCase()}',
+                                      '${athleteList[index].fullname[0]}${athleteList[index].fullname[1].toUpperCase()}',
                                       style:
                                           const TextStyle(color: Colors.white),
                                     )
@@ -167,7 +178,7 @@ class SelectAthletes extends State<Select_Athletes> {
                                       size: 20, color: Colors.white),
                             ),
                             title: Text(
-                              _filteredData[index],
+                              _filteredData[index].fullname,
                               style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
@@ -196,7 +207,7 @@ class SelectAthletes extends State<Select_Athletes> {
             )
           ])),
           onPressed: () {
-            Navigator.of(context).pop(widget.athletes);
+            Navigator.of(context).pop(widget.selectedAthletes);
           },
         ),
       ),

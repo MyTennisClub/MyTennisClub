@@ -46,10 +46,19 @@ class BookSession extends State<BookSession_Main> {
   late List<Court> courtsList;
   List<Court> availableCourts = [];
   Map<Court, List<DateTime>> courtsAndHours = {};
+  int number = 1;
+  double payment = 5;
+  String? duration = '1:00 h';
+  late DateTime date;
+  String? hour;
+  String? endhour;
+  String? court = '';
+  List<Member> selectedAthletes = [];
 
   @override
   void initState() {
     membersList = createMembers();
+    print('Initialization: ${membersList.length}');
     courtsList = createCourts();
     createReservations(membersList, courtsList);
 
@@ -85,17 +94,6 @@ class BookSession extends State<BookSession_Main> {
       }
     }
   }
-
-  int number = 1;
-  double payment = 5;
-  //final List<String> courts = <String>['A', 'B', 'C', 'D'];
-  String? duration = '1:00 h';
-  late DateTime date;
-
-  String? hour;
-  String? endhour;
-  String? court = '';
-  List<String> athletes = [];
 
   checkHour(check, key, h) {
     setState(() {
@@ -141,8 +139,10 @@ class BookSession extends State<BookSession_Main> {
 
   checkAthletes(list) {
     setState(() {
-      athletes = list;
-      print(athletes);
+      selectedAthletes = list;
+
+      print(
+          'printing from checkAthlete:${selectedAthletes.length}\n-----Done Printing-----');
 
       checkVisible();
     });
@@ -223,6 +223,7 @@ class BookSession extends State<BookSession_Main> {
                         checkNumber: checkNumber,
                         checkAthletes: checkAthletes,
                         constraints: constraints.maxHeight,
+                        athletesList: membersList,
                       ),
                     ),
                     Padding(
