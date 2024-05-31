@@ -26,6 +26,7 @@ class _GuestHomePage extends State<GuestHomePage> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          surfaceTintColor: Colors.transparent,
           automaticallyImplyLeading: false,
           backgroundColor: const Color.fromRGBO(236, 238, 243, 1),
           title: const Text('MyTennisClub',

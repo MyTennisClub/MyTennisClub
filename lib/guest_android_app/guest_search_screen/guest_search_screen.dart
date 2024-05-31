@@ -27,6 +27,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
   int? _value = 0;
   bool duration = true;
   List<List<dynamic>> _filteredData = [];
+  List selectedFilters = [];
   var filterList = ['Covered', 'Grass', 'Has Equipment'];
   bool noResults = false;
 
@@ -104,25 +105,27 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
     _searchController.addListener(_performSearch);
   }
 
-  // Future<void> _markersCheck() async {
-  //   for (int index = 0; index < clubList.length; index++) {
-  //     if (_filteredData.contains(clubList[index]) &&
-  //         !markers.contains(clubList[index][1])) {
-  //       print('add');
-  //       markers.add(
-  //         Marker(
-  //             markerId: MarkerId(clubList[index][1]),
-  //             infoWindow: InfoWindow(title: clubList[index][1]),
-  //             position: LatLng(clubList[index][2], clubList[index][3])),
-  //       );
+  // markersCheck() {
+  //   setState(() {
+  //     for (int index = 0; index < clubList.length; index++) {
+  //       if (_filteredData.contains(clubList[index]) &&
+  //           !markers.contains(clubList[index][1])) {
+  //         print('add $index');
+  //         markers.add(
+  //           Marker(
+  //               markerId: MarkerId(clubList[index][1]),
+  //               infoWindow: InfoWindow(title: clubList[index][1]),
+  //               position: LatLng(clubList[index][2], clubList[index][3])),
+  //         );
+  //       }
+  //       if (!_filteredData.contains(clubList[index]) &&
+  //           !markers.contains(clubList[index][1])) {
+  //         print('remove $index');
+  //         markers.removeWhere(
+  //             (marker) => marker.markerId.value == clubList[index][1]);
+  //       }
   //     }
-  //     if (!_filteredData.contains(clubList[index])) {
-  //       print('remove');
-  //       Marker marker = markers.firstWhere(
-  //           (marker) => marker.markerId.value == clubList[index][1]);
-  //       markers.remove(marker);
-  //     }
-  //   }
+  //   });
   // }
 
   Future<void> _performSearch() async {
@@ -143,6 +146,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
         noResults = true;
       }
     });
+    //markersCheck();
   }
 
   //google maps controller
@@ -184,11 +188,12 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
-            // backgroundColor: const Color.fromRGBO(236, 238, 243, 10),
+            forceMaterialTransparency:
+                true, // backgroundColor: const Color.fromRGBO(236, 238, 243, 10),
             automaticallyImplyLeading: false,
             title: Padding(
               padding:
-                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 20),
+                  const EdgeInsets.symmetric(horizontal: 10.0, vertical: 30),
               child: Container(
                 decoration: BoxDecoration(
                   color: const Color.fromRGBO(230, 232, 237, 1),
@@ -207,125 +212,163 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
               ),
             )),
         body: LayoutBuilder(builder: (builder, constraints) {
-          return ConstrainedBox(
-            constraints: BoxConstraints(minHeight: constraints.maxHeight),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                const Padding(
-                  padding: EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Text(
-                    textAlign: TextAlign.left,
-                    'Filter Results',
-                    style: TextStyle(
-                        fontSize: 13, color: Color.fromRGBO(0, 0, 0, 0.7)),
+          return SingleChildScrollView(
+            child: ConstrainedBox(
+              constraints: BoxConstraints(minHeight: constraints.maxHeight),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  const Padding(
+                    padding: EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      children: [
+                        Text(
+                          textAlign: TextAlign.left,
+                          'Filter Results',
+                          style: TextStyle(
+                              fontSize: 13,
+                              color: Color.fromRGBO(0, 0, 0, 0.7)),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 20.0),
-                  child: Wrap(
-                    spacing: 8.0,
-                    children: List<Widget>.generate(
-                      filterList.length,
-                      (int i) {
-                        return ChoiceChip(
-                          selectedColor: const Color.fromRGBO(210, 230, 255, 1),
-                          label: Text(filterList[i]),
-                          selected: _value == i,
-                          onSelected: (bool selected) {
-                            setState(() {
-                              _value = selected ? i : null;
-                              if (_value == null) {
-                                noResults = false;
-                                _performSearch();
-                                // _markersCheck();
-                              } else {
-                                noResults = false;
+                  Padding(
+                    padding: const EdgeInsets.symmetric(horizontal: 20.0),
+                    child: Row(
+                      children: [
+                        Wrap(
+                          spacing: 8.0,
+                          children: List<Widget>.generate(
+                            filterList.length,
+                            (int i) {
+                              return ChoiceChip(
+                                selectedColor:
+                                    const Color.fromRGBO(210, 230, 255, 1),
+                                label: Text(filterList[i]),
+                                selected:
+                                    selectedFilters.contains(filterList[i]),
+                                onSelected: (bool selected) {
+                                  setState(() {
+                                    selectedFilters.contains(filterList[i])
+                                        ? selectedFilters.remove(filterList[i])
+                                        : selectedFilters.add(filterList[i]);
+                                    if (selectedFilters.isEmpty) {
+                                      noResults = false;
+                                      _performSearch();
+                                      // _markersCheck();
+                                    } else {
+                                      noResults = false;
 
-                                _filteredData = _filteredData
-                                    .where((row) => row.contains(filterList[i]))
-                                    .toList();
-                                //_markersCheck();
-                                if (_filteredData.isEmpty) {
-                                  noResults = true;
-                                }
-                              }
-                            });
-                          },
-                        );
-                      },
-                    ).toList(),
+                                      for (int index = 0;
+                                          index < selectedFilters.length;
+                                          index++) {
+                                        _filteredData = clubList
+                                            .where((row) =>
+                                                row.contains(
+                                                    selectedFilters[index]) &&
+                                                _filteredData.contains(row))
+                                            .toList();
+                                      }
+                                      //_markersCheck();
+                                      if (_filteredData.isEmpty) {
+                                        noResults = true;
+                                      }
+                                    }
+                                  });
+                                },
+                              );
+                            },
+                          ).toList(),
+                        ),
+                      ],
+                    ),
                   ),
-                ),
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 10.0, vertical: 5),
-                    child: ClipRRect(
-                      borderRadius: const BorderRadius.all(Radius.circular(10)),
-                      child: GoogleMap(
-                        markers: markers,
-                        gestureRecognizers: Set()
-                          ..add(Factory<PanGestureRecognizer>(
-                              () => PanGestureRecognizer()))
-                          ..add(Factory<ScaleGestureRecognizer>(
-                              () => ScaleGestureRecognizer()))
-                          ..add(Factory<TapGestureRecognizer>(
-                              () => TapGestureRecognizer()))
-                          ..add(Factory<VerticalDragGestureRecognizer>(
-                              () => VerticalDragGestureRecognizer())),
-                        onMapCreated: _onMapCreated,
-                        initialCameraPosition: CameraPosition(
-                          target: _center,
-                          zoom: 13.0,
+                  SizedBox(
+                    height: constraints.maxHeight * 0.5,
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 10.0, vertical: 5),
+                      child: ClipRRect(
+                        borderRadius:
+                            const BorderRadius.all(Radius.circular(10)),
+                        child: GoogleMap(
+                          markers: markers,
+                          gestureRecognizers: Set()
+                            ..add(Factory<OneSequenceGestureRecognizer>(
+                                () => EagerGestureRecognizer()))
+                            ..add(Factory<PanGestureRecognizer>(
+                                () => PanGestureRecognizer()))
+                            ..add(Factory<ScaleGestureRecognizer>(
+                                () => ScaleGestureRecognizer()))
+                            ..add(Factory<TapGestureRecognizer>(
+                                () => TapGestureRecognizer()))
+                            ..add(Factory<VerticalDragGestureRecognizer>(
+                                () => VerticalDragGestureRecognizer())),
+                          onMapCreated: _onMapCreated,
+                          initialCameraPosition: CameraPosition(
+                            target: _center,
+                            zoom: 13.0,
+                          ),
                         ),
                       ),
                     ),
                   ),
-                ),
-                SizedBox(
-                  height: constraints.maxHeight * 0.3,
-                  child: (!noResults)
-                      ? ListView.builder(
-                          padding: const EdgeInsets.all(10),
-                          itemCount: _filteredData.length,
-                          itemBuilder: (BuildContext context, int index) {
-                            return Card.outlined(
-                              color: const Color.fromRGBO(236, 238, 243, 1),
-                              elevation: 1,
-                              key: ObjectKey(clubList[index]),
-                              child: Column(
-                                mainAxisSize: MainAxisSize.min,
-                                children: <Widget>[
-                                  ListTile(
-                                    leading: const Icon(
-                                      Icons.sports_tennis_outlined,
-                                      size: 48.0,
-                                      color: Colors.grey,
-                                    ),
-                                    title: Text(_filteredData[index][1],
-                                        style: const TextStyle(
-                                            fontSize: 16,
-                                            fontWeight: FontWeight.w500)),
-                                    subtitle: Text(_filteredData[index][7]),
-                                    trailing: FilledButton(
-                                      onPressed: () {
-                                        setState(() {
-                                          widget.checkClubSelected(
-                                              true, _filteredData[index][0]);
-                                        });
-                                        // Handle button press
-                                      },
-                                      child: const Text('View'),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            );
-                          })
-                      : const Center(child: Text('No Results')),
-                ),
-              ],
+                  Row(
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      (!noResults)
+                          ? Expanded(
+                              child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.all(10),
+                                  itemCount: _filteredData.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Card.outlined(
+                                      color: const Color.fromRGBO(
+                                          236, 238, 243, 1),
+                                      elevation: 1,
+                                      key: ObjectKey(clubList[index]),
+                                      child: Column(
+                                        mainAxisSize: MainAxisSize.min,
+                                        children: <Widget>[
+                                          ListTile(
+                                            leading: const Icon(
+                                              Icons.sports_tennis_outlined,
+                                              size: 48.0,
+                                              color: Colors.grey,
+                                            ),
+                                            title: Text(_filteredData[index][1],
+                                                style: const TextStyle(
+                                                    fontSize: 16,
+                                                    fontWeight:
+                                                        FontWeight.w500)),
+                                            subtitle:
+                                                Text(_filteredData[index][7]),
+                                            trailing: FilledButton(
+                                              onPressed: () {
+                                                setState(() {
+                                                  widget.checkClubSelected(true,
+                                                      _filteredData[index][0]);
+                                                });
+                                                // Handle button press
+                                              },
+                                              child: const Text('View'),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    );
+                                  }),
+                            )
+                          : SizedBox(
+                              height: constraints.maxHeight * 0.4,
+                              child: const Center(child: Text('No Results'))),
+                    ],
+                  ),
+                ],
+              ),
             ),
           );
         }),
