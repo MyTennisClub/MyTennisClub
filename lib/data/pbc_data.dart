@@ -194,10 +194,11 @@ List<DateTime> getAvailableHoursForCourt(
     if ((date.year == DateTime.now().year) &&
         (date.month == DateTime.now().month) &&
         (date.day == DateTime.now().day)) {
-      //print('${startTime.hour} <= ${date.add(const Duration(hours: 1)).hour}');
-      if (startTime.hour <= date.add(const Duration(hours: 1)).hour) {
+      print('${startTime.hour} <= ${date.add(const Duration(hours: 1)).hour}');
+      if (startTime.hour <= date.add(const Duration(hours: 1)).hour ||
+          date.add(const Duration(hours: 1)).hour == 0) {
         isAvailable = false;
-        //print('false');
+        print('false');
       }
     }
 
