@@ -56,7 +56,9 @@ class BookSession extends State<BookSession_Main> {
     hourCheck = List.filled(courtsList.length, false);
     visible = List.filled(courtsList.length, false);
 
-    populateCourts(courtsList, DateTime.now(), duration!, number);
+    DateTime firstDate = getFirstAvailableDate(courtsList);
+
+    populateCourts(courtsList, firstDate, duration!, number);
 
     super.initState();
   }
@@ -111,6 +113,9 @@ class BookSession extends State<BookSession_Main> {
   getDate(dat) {
     setState(() {
       date = dat;
+      date = date.add(
+          Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute));
+      print(date);
       populateCourts(courtsList, date, duration!, number);
     });
   }

@@ -59,7 +59,7 @@ List<Event> createReservations(List<Member> members, List<Court> courts) {
       Court court = courts.firstWhere((c) => c.id == courtId);
 
       // Dates with one or two days difference from now
-      DateTime date = DateTime.now().add(Duration(days: i + 1));
+      DateTime date = DateTime.now().add(Duration(days: i));
 
       // Possible start times at whole and half-hour intervals
       List<DateTime> possibleStartTimes = _generateHoursInRange(date);
@@ -129,11 +129,34 @@ List<Event> createReservations(List<Member> members, List<Court> courts) {
 // Helper function to generate hours in the specified range
 List<DateTime> _generateHoursInRange(DateTime date) {
   List<DateTime> hours = [];
-  for (int hour = 16; hour <= 21; hour++) {
+  for (int hour = 17; hour <= 21; hour++) {
     hours.add(DateTime(date.year, date.month, date.day, hour, 0));
     hours.add(DateTime(date.year, date.month, date.day, hour, 30));
   }
   return hours;
+}
+
+DateTime getFirstAvailableDate(List<Court> courts) {
+  DateTime date = DateTime.now();
+  String defaultDuration = '1:00 h';
+  bool found = false;
+  while (!found) {
+    bool flag = false;
+    for (var i = 0; i < courts.length; i++) {
+      if (getAvailableHoursForCourt(courts[i], date, defaultDuration)
+          .isNotEmpty) {
+        found = true;
+        flag = true;
+        break;
+      }
+    }
+    if (!flag) {
+      // If no available hours were found for any court
+      date = date.add(
+          const Duration(days: 1)); // Increment date for the next iteration
+    }
+  }
+  return date;
 }
 
 List<DateTime> getAvailableHoursForCourt(
@@ -166,6 +189,16 @@ List<DateTime> getAvailableHoursForCourt(
     // Ensure the end time does not exceed 23:00
     if (endHour.hour >= 23 && endHour.minute > 0) {
       isAvailable = false;
+    }
+
+    if ((date.year == DateTime.now().year) &&
+        (date.month == DateTime.now().month) &&
+        (date.day == DateTime.now().day)) {
+      //print('${startTime.hour} <= ${date.add(const Duration(hours: 1)).hour}');
+      if (startTime.hour <= date.add(const Duration(hours: 1)).hour) {
+        isAvailable = false;
+        //print('false');
+      }
     }
 
     if (isAvailable) {
