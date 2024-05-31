@@ -1,4 +1,8 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/rendering.dart';
+import '../../../models/court.dart';
+import '../../../models/event.dart';
+import '../../../models/member.dart';
 import 'success_page.dart';
 import 'available_hours.dart';
 import 'details_section.dart';
@@ -6,6 +10,7 @@ import 'payment_section.dart';
 import 'duration_section.dart';
 import 'date_section.dart';
 import 'package:intl/intl.dart';
+import 'package:mytennisclub/data/pbc_data.dart';
 
 extension TimeOfDayExtension on TimeOfDay {
   TimeOfDay plusMinutes(int minutes) {
@@ -37,14 +42,50 @@ class BookSession extends State<BookSession_Main> {
   bool numberCheck = true;
   bool paymentCheck = true;
   bool durationCheck = true;
-  List<bool> hourCheck = [false, false, false, false];
-  List<bool> visible = [false, false, false, false];
+  List<bool> hourCheck = [];
+  List<bool> visible = [];
+  late List<Member> membersList;
+  late List<Court> courtsList;
+  List<Court> availableCourts = [];
+  Map<Court, List<DateTime>> courtsAndHours = {};
+
+  @override
+  void initState() {
+    membersList = createMembers();
+    courtsList = createCourts();
+    createReservations(membersList, courtsList);
+
+    hourCheck = List.filled(courtsList.length, false);
+    visible = List.filled(courtsList.length, false);
+
+    populateCourts(courtsList, DateTime.now(), duration!, number);
+
+    super.initState();
+  }
+
+  void populateCourts(
+    List<Court> courts,
+    DateTime date,
+    String duration,
+    int numAthletes,
+  ) {
+    availableCourts = [];
+    for (var i = 0; i < courts.length; i++) {
+      List<DateTime> availableHours = [];
+      if (courts[i].athlete_capacity >= numAthletes) {
+        availableHours = getAvailableHoursForCourt(courts[i], date, duration);
+        if (availableHours.isNotEmpty) {
+          availableCourts.add(courts[i]);
+        }
+      }
+    }
+  }
 
   int number = 1;
   double payment = 5;
-  final List<String> courts = <String>['A', 'B', 'C', 'D'];
+  //final List<String> courts = <String>['A', 'B', 'C', 'D'];
   String? duration = '1:00 h';
-  String? date = DateFormat.yMd().format(DateTime.now());
+  DateTime date = DateTime.now();
 
   String? hour;
   String? endhour;
@@ -68,6 +109,7 @@ class BookSession extends State<BookSession_Main> {
   getDate(dat) {
     setState(() {
       date = dat;
+      populateCourts(courtsList, date, duration!, number);
     });
   }
 
@@ -75,6 +117,7 @@ class BookSession extends State<BookSession_Main> {
     setState(() {
       durationCheck = check;
       duration = dur;
+      populateCourts(courtsList, date, duration!, number);
       checkVisible();
     });
   }
@@ -83,7 +126,7 @@ class BookSession extends State<BookSession_Main> {
     setState(() {
       numberCheck = check;
       number = numb;
-      print(check);
+      populateCourts(courtsList, date, duration!, number);
       checkVisible();
     });
   }
@@ -100,16 +143,17 @@ class BookSession extends State<BookSession_Main> {
     setState(() {
       paymentCheck = check;
       payment = pay;
+      populateCourts(courtsList, date, duration!, number);
       checkVisible();
     });
   }
 
   checkVisible() {
     setState(() {
-      for (var key = 0; key < courts.length; key++) {
+      for (var key = 0; key < availableCourts.length; key++) {
         if (hourCheck[key] && durationCheck && numberCheck && paymentCheck) {
           visible[key] = true;
-          court = 'Court ${courts[key]}';
+          court = 'Court ${availableCourts[key]}';
           calcuateDuration(hour, duration);
         } else {
           visible[key] = false;
@@ -153,7 +197,7 @@ class BookSession extends State<BookSession_Main> {
                 padding: const EdgeInsetsDirectional.symmetric(horizontal: 15),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const Row(
                       children: [
@@ -231,100 +275,148 @@ class BookSession extends State<BookSession_Main> {
                     Row(
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
-                        Expanded(
-                          child: ListView.builder(
-                            physics: const NeverScrollableScrollPhysics(),
-                            shrinkWrap: true,
-                            padding: const EdgeInsets.all(8),
-                            itemCount: courts.length,
-                            itemBuilder: (BuildContext context, int index) {
-                              return Card.outlined(
-                                key: ObjectKey(
-                                  courts[index],
-                                ), // Using the item's value as the key.
-                                color: const Color.fromRGBO(244, 246, 251, 1),
-                                child: Padding(
-                                  padding: const EdgeInsets.all(8.0),
-                                  child: Column(
-                                    mainAxisSize: MainAxisSize.min,
-                                    children: [
-                                      Flexible(
-                                        flex: 1,
-                                        child: Row(
-                                          mainAxisAlignment:
-                                              MainAxisAlignment.spaceBetween,
+                        availableCourts.isNotEmpty
+                            ? Expanded(
+                                child: ListView.builder(
+                                  physics: const NeverScrollableScrollPhysics(),
+                                  shrinkWrap: true,
+                                  padding: const EdgeInsets.all(8),
+                                  itemCount: availableCourts.length,
+                                  itemBuilder:
+                                      (BuildContext context, int index) {
+                                    return Card.outlined(
+                                      key: ObjectKey(
+                                        availableCourts[index],
+                                      ), // Using the item's value as the key.
+                                      color: const Color.fromRGBO(
+                                          244, 246, 251, 1),
+                                      child: Padding(
+                                        padding: const EdgeInsets.all(8.0),
+                                        child: Column(
+                                          mainAxisSize: MainAxisSize.min,
                                           children: [
-                                            Text(
-                                              'Court ${courts[index]}',
-                                              style: const TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16),
+                                            Flexible(
+                                              flex: 1,
+                                              child: Row(
+                                                mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    'Court: ${availableCourts[index].name}',
+                                                    style: const TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 16),
+                                                  ),
+                                                  const Text(
+                                                    'Hard | Covered',
+                                                    style: TextStyle(
+                                                        fontWeight:
+                                                            FontWeight.bold,
+                                                        fontSize: 16),
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                            const Text(
-                                              'Hard | Covered',
-                                              style: TextStyle(
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16),
+                                            const Row(
+                                              children: [
+                                                Text(
+                                                  'Available Hours',
+                                                  style: TextStyle(
+                                                    color: Color.fromRGBO(
+                                                        29, 27, 32, 0.7),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                            Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.stretch,
+                                              mainAxisSize: MainAxisSize.max,
+                                              children: [
+                                                Available_Hours(
+                                                    checkHour: checkHour,
+                                                    id: index,
+                                                    isVisible: visible[index]),
+                                                visible[index]
+                                                    ? FilledButton(
+                                                        style: FilledButton.styleFrom(
+                                                            backgroundColor:
+                                                                const Color
+                                                                    .fromRGBO(0,
+                                                                    83, 135, 1)
+                                                            // This is what you need!
+                                                            ),
+                                                        onPressed: () {
+                                                          Navigator.push(
+                                                            context,
+                                                            MaterialPageRoute(
+                                                              builder: (_) =>
+                                                                  Success_Main(
+                                                                date: DateFormat
+                                                                        .yMMMMd()
+                                                                    .format(
+                                                                        date),
+                                                                duration:
+                                                                    duration,
+                                                                hour: hour,
+                                                                court: court,
+                                                                endhour:
+                                                                    endhour,
+                                                              ),
+                                                            ),
+                                                          );
+                                                        },
+                                                        child: const Text(
+                                                            'Book Session'),
+                                                      )
+                                                    : Container(),
+                                              ],
                                             ),
                                           ],
                                         ),
                                       ),
-                                      const Row(
-                                        children: [
-                                          Text(
-                                            'Available Hours',
-                                            style: TextStyle(
-                                              color: Color.fromRGBO(
-                                                  29, 27, 32, 0.7),
-                                            ),
+                                    );
+                                  },
+                                ),
+                              )
+                            : Expanded(
+                                child: Container(
+                                  padding:
+                                      const EdgeInsets.symmetric(vertical: 100),
+                                  // Set background color to blue
+                                  child: const Align(
+                                    alignment: Alignment.center,
+                                    child: Column(
+                                      children: [
+                                        Text(
+                                          textAlign: TextAlign.center,
+                                          'There are no available courts',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight
+                                                .w400, // Make the text bold
+                                            fontSize:
+                                                20, // Optional: adjust font size as needed
+                                            // Optional: change text color to white for better visibility
                                           ),
-                                        ],
-                                      ),
-                                      Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.stretch,
-                                        mainAxisSize: MainAxisSize.max,
-                                        children: [
-                                          Available_Hours(
-                                              checkHour: checkHour,
-                                              id: index,
-                                              isVisible: visible[index]),
-                                          visible[index]
-                                              ? FilledButton(
-                                                  style: FilledButton.styleFrom(
-                                                      backgroundColor:
-                                                          const Color.fromRGBO(
-                                                              0, 83, 135, 1)
-                                                      // This is what you need!
-                                                      ),
-                                                  onPressed: () {
-                                                    Navigator.push(
-                                                      context,
-                                                      MaterialPageRoute(
-                                                        builder: (_) =>
-                                                            Success_Main(
-                                                          date: date,
-                                                          duration: duration,
-                                                          hour: hour,
-                                                          court: court,
-                                                          endhour: endhour,
-                                                        ),
-                                                      ),
-                                                    );
-                                                  },
-                                                  child: const Text(
-                                                      'Book Session'),
-                                                )
-                                              : Container(),
-                                        ],
-                                      ),
-                                    ],
+                                        ),
+                                        Text(
+                                          textAlign: TextAlign.center,
+                                          'Please change your requirements',
+                                          style: TextStyle(
+                                            fontWeight: FontWeight
+                                                .normal, // Make the text bold
+                                            fontSize:
+                                                16, // Optional: adjust font size as needed
+                                            // Optional: change text color to white for better visibility
+                                          ),
+                                        ),
+                                      ],
+                                    ),
                                   ),
                                 ),
-                              );
-                            },
-                          ),
-                        ),
+                              ),
                       ],
                     ),
                   ],

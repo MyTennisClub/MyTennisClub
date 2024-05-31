@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'calendar.dart';
-
+import 'calendar_widget.dart';
 
 class AthleteScheduleScreen extends StatelessWidget {
-
   const AthleteScheduleScreen({Key? key}) : super(key: key);
 
   @override

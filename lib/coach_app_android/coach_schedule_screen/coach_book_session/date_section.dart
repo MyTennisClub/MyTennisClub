@@ -48,7 +48,7 @@ class DateSection extends State<Date_Section> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
-        widget.getDate(DateFormat.yMMMMd().format(selectedDate));
+        widget.getDate(selectedDate);
       });
     }
   }
