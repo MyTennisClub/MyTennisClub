@@ -4,10 +4,24 @@ import 'package:email_validator/email_validator.dart';
 import 'package:intl/intl.dart';
 
 class Personal_Info extends StatefulWidget {
+  final Function getNewValues;
+  final String name;
+  final String phone;
+  final String address;
+  final String email;
+  final DateTime date;
   final String personSelected;
   final Function checkAllFields;
   const Personal_Info(
-      {required this.personSelected, required this.checkAllFields, super.key});
+      {required this.getNewValues,
+      required this.personSelected,
+      required this.checkAllFields,
+      required this.name,
+      required this.phone,
+      required this.address,
+      required this.email,
+      required this.date,
+      super.key});
 
   @override
   State<Personal_Info> createState() => _PersonalInfo();
@@ -17,11 +31,11 @@ class _PersonalInfo extends State<Personal_Info> {
   List<bool> fields = [false, false, false, false, false];
   bool checker = false;
 
-  String name = 'Nikolaos Voulgaris';
-  String phone = '6971662770';
-  String address = 'Agiou Andreou 16';
-  String email = 'nickvoul3@gmail.com';
-  String date = 'March 9, 2024';
+  String name = '';
+  String phone = '';
+  String address = '';
+  String email = '';
+  DateTime? date;
   String _errorText = '';
   TextEditingController dateController = TextEditingController();
 
@@ -38,6 +52,11 @@ class _PersonalInfo extends State<Personal_Info> {
   checkAllFields() {
     checker = fields.every((i) => i == true);
     widget.checkAllFields(checker);
+    setState(() {
+      if (checker) {
+        widget.getNewValues(name, phone, address, email, date);
+      }
+    });
   }
 
   @override
@@ -61,7 +80,7 @@ class _PersonalInfo extends State<Personal_Info> {
                     ? TextFormField(
                         readOnly: true,
                         key: Key(name),
-                        initialValue: name,
+                        initialValue: widget.name,
                         decoration: const InputDecoration(
                           hintText: 'Enter Name and Surname',
                           border: OutlineInputBorder(),
@@ -81,6 +100,7 @@ class _PersonalInfo extends State<Personal_Info> {
                               fields[0] = false;
                             } else {
                               fields[0] = true;
+                              name = value;
                             }
                             checkAllFields();
                           });
@@ -111,7 +131,7 @@ class _PersonalInfo extends State<Personal_Info> {
                           border: OutlineInputBorder(),
                           labelText: 'Telephone',
                         ),
-                        initialValue: phone,
+                        initialValue: widget.phone,
                         key: Key(phone),
                       )
                     : TextFormField(
@@ -128,6 +148,7 @@ class _PersonalInfo extends State<Personal_Info> {
                               fields[1] = false;
                             } else {
                               fields[1] = true;
+                              phone = value;
                             }
                             checkAllFields();
                           });
@@ -158,7 +179,7 @@ class _PersonalInfo extends State<Personal_Info> {
                           border: OutlineInputBorder(),
                           labelText: 'Address',
                         ),
-                        initialValue: address,
+                        initialValue: widget.address,
                         key: Key(address),
                       )
                     : TextFormField(
@@ -174,6 +195,7 @@ class _PersonalInfo extends State<Personal_Info> {
                               fields[2] = false;
                             } else {
                               fields[2] = true;
+                              address = value;
                             }
                             checkAllFields();
                           });
@@ -204,7 +226,7 @@ class _PersonalInfo extends State<Personal_Info> {
                             border: const OutlineInputBorder(),
                             labelText: 'Email Address',
                             errorText: _errorText.isEmpty ? null : _errorText),
-                        initialValue: email,
+                        initialValue: widget.email,
                         key: Key(email),
                       )
                     : TextFormField(
@@ -224,6 +246,7 @@ class _PersonalInfo extends State<Personal_Info> {
                                 _errorText = '';
                               } else {
                                 _errorText = 'Invalid Format';
+                                email = value;
                               }
                             }
                             checkAllFields();
@@ -255,8 +278,8 @@ class _PersonalInfo extends State<Personal_Info> {
                           labelText: 'Birth Date',
                         ),
                         keyboardType: TextInputType.datetime,
-                        key: Key(date),
-                        initialValue: date,
+                        key: Key(DateFormat.yMMMMd().format(widget.date)),
+                        initialValue: DateFormat.yMMMMd().format(widget.date),
                       )
                     : TextFormField(
                         controller: dateController,
@@ -275,6 +298,7 @@ class _PersonalInfo extends State<Personal_Info> {
                             setState(() {
                               dateController.text =
                                   DateFormat.yMMMMd().format(pickeddate);
+                              date = pickeddate;
 
                               fields[4] = true;
                               checkAllFields();

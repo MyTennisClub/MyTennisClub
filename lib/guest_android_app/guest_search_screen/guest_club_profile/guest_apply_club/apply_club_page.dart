@@ -1,7 +1,9 @@
+import 'dart:typed_data';
 import 'package:flutter/material.dart';
 import 'upload_files.dart';
 import 'personal_info.dart';
 import 'success_page.dart';
+import 'package:mytennisclub/models/guest.dart';
 
 enum Person { you, kid }
 
@@ -23,6 +25,54 @@ class ApplyClub extends State<ApplyClub_Main> {
   bool uploadsCheck = false;
   bool submitEnabled = false;
   List<bool> uploads = [false, false, false];
+
+  String name = 'Nikolaos Voulgaris';
+  String phone = '6971662770';
+  String address = 'Agiou Andreou 16';
+  String email = 'nickvoul3@gmail.com';
+  DateTime birthDate = DateTime.parse('2024-08-04');
+  String formattedDate = '2024-08-04';
+
+  String kidName = '';
+  String kidPhone = '';
+  String kidAddress = '';
+  String kidEmail = '';
+  DateTime kidDate = DateTime.now();
+
+  Uint8List? p_identification;
+  Uint8List? doctorsNote;
+  Uint8List? identification;
+
+
+  getNewValues(newName, newPhone, newAddress, newEmail, newDate) {
+    setState(() {
+      kidName = newName;
+      kidPhone = newPhone;
+      kidAddress = newAddress;
+      kidEmail = newEmail;
+      kidDate = newDate;
+      print('ok');
+    });
+  }
+
+
+  getID(id) {
+    setState(() {
+      print('id bytes ' + id.bytes.toString());
+      identification = id.bytes;
+    });
+  }
+  getSolemn(solemn) {
+    setState(() {
+      p_identification = solemn.bytes;
+    });
+  }
+
+  getDoctors(doctors) {
+    setState(() {
+      doctorsNote = doctors.bytes;
+    });
+  }
 
   checkAllFields(check) {
     setState(() {
@@ -184,13 +234,22 @@ class ApplyClub extends State<ApplyClub_Main> {
                       color: Color.fromRGBO(193, 199, 209, 1),
                     ),
                     Personal_Info(
+                      getNewValues: getNewValues,
                       personSelected: personSelected.name,
                       checkAllFields: checkAllFields,
+                      name: name,
+                      phone: phone,
+                      address: address,
+                      email: email,
+                      date: birthDate,
                     ),
                     const Divider(
                       color: Color.fromRGBO(193, 199, 209, 1),
                     ),
                     Upload_Files(
+                      getID: getID,
+                      getSolemn: getSolemn,
+                      getDoctors: getDoctors,
                       personSelected: personSelected.name,
                       typeSelected: typeSelected.name,
                       checkEachUpload: checkEachUpload,
@@ -241,7 +300,29 @@ class ApplyClub extends State<ApplyClub_Main> {
                       ? Expanded(
                           flex: 3,
                           child: FilledButton(
-                            onPressed: () {
+                            onPressed: () async {
+                              if (personSelected.name == 'you' &&
+                                  typeSelected.name == 'member') {
+                                // String name = 'Nikolaos Voulgaris';
+                                // String phone = '6971662770';
+                                // String address = 'Agiou Andreou 16';
+                                // String email = 'nickvoul3@gmail.com';
+                                // String date = 'March 9, 2024';
+                                await Guest.youMemberApply(
+                                    name,
+                                    phone,
+                                    address,
+                                    email,
+                                    formattedDate,
+                                    identification,
+                                    1,
+                                    2);
+                              } else if (personSelected.name == 'you' &&
+                                  typeSelected.name == 'athlete') {
+                              } else if (personSelected.name == 'kid' &&
+                                  typeSelected.name == 'member') {
+                              } else if (personSelected.name == 'kid' &&
+                                  typeSelected.name == 'athlete') {}
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
