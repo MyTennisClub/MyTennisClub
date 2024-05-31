@@ -150,7 +150,6 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       markersCheck();
     });
     isLoading = false;
-    //markersCheck();
   }
 
   Future<void> performSearchwithFilters() async {
@@ -178,7 +177,6 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       markersCheck();
     });
     isLoading = false;
-    //markersCheck();
   }
 
   //google maps controller
