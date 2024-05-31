@@ -24,7 +24,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
 
   final TextEditingController _searchController = TextEditingController();
 
-  int? _value = 0;
+  bool isLoading = false;
   bool duration = true;
   List<List<dynamic>> _filteredData = [];
   List selectedFilters = [];
@@ -102,39 +102,41 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
             position: LatLng(clubList[index][2], clubList[index][3])),
       );
     }
+    _searchController.text = '';
     _searchController.addListener(_performSearch);
   }
 
-  // markersCheck() {
-  //   setState(() {
-  //     for (int index = 0; index < clubList.length; index++) {
-  //       if (_filteredData.contains(clubList[index]) &&
-  //           !markers.contains(clubList[index][1])) {
-  //         print('add $index');
-  //         markers.add(
-  //           Marker(
-  //               markerId: MarkerId(clubList[index][1]),
-  //               infoWindow: InfoWindow(title: clubList[index][1]),
-  //               position: LatLng(clubList[index][2], clubList[index][3])),
-  //         );
-  //       }
-  //       if (!_filteredData.contains(clubList[index]) &&
-  //           !markers.contains(clubList[index][1])) {
-  //         print('remove $index');
-  //         markers.removeWhere(
-  //             (marker) => marker.markerId.value == clubList[index][1]);
-  //       }
-  //     }
-  //   });
-  // }
+  markersCheck() {
+    setState(() {
+      for (int index = 0; index < clubList.length; index++) {
+        if (_filteredData.contains(clubList[index]) &&
+            !markers.contains(clubList[index][1])) {
+          print('add $index');
+          markers.add(
+            Marker(
+                markerId: MarkerId(clubList[index][1]),
+                infoWindow: InfoWindow(title: clubList[index][1]),
+                position: LatLng(clubList[index][2], clubList[index][3])),
+          );
+        }
+        if (!_filteredData.contains(clubList[index]) &&
+            !markers.contains(clubList[index][1])) {
+          print('remove $index');
+          markers.removeWhere(
+              (marker) => marker.markerId.value == clubList[index][1]);
+        }
+      }
+    });
+  }
 
   Future<void> _performSearch() async {
     setState(() {
       noResults = false;
+      isLoading = true;
     });
 
     //Simulates waiting for an API call
-    await Future.delayed(const Duration(milliseconds: 300));
+    await Future.delayed(const Duration(milliseconds: 500));
 
     setState(() {
       _filteredData = clubList
@@ -145,7 +147,37 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       if (_filteredData.isEmpty) {
         noResults = true;
       }
+      markersCheck();
     });
+    isLoading = false;
+    //markersCheck();
+  }
+
+  Future<void> performSearchwithFilters() async {
+    setState(() {
+      noResults = false;
+      isLoading = true;
+    });
+
+    //Simulates waiting for an API call
+    await Future.delayed(const Duration(milliseconds: 500));
+
+    setState(() {
+      _filteredData = clubList
+          .where((row) =>
+              selectedFilters
+                  .every((item) => [row[4], row[5], row[6]].contains(item)) &&
+              row[7]
+                  .toLowerCase()
+                  .contains(_searchController.text.toLowerCase()))
+          .toList();
+
+      if (_filteredData.isEmpty) {
+        noResults = true;
+      }
+      markersCheck();
+    });
+    isLoading = false;
     //markersCheck();
   }
 
@@ -258,17 +290,17 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
                                       // _markersCheck();
                                     } else {
                                       noResults = false;
-
-                                      for (int index = 0;
-                                          index < selectedFilters.length;
-                                          index++) {
-                                        _filteredData = clubList
-                                            .where((row) =>
-                                                row.contains(
-                                                    selectedFilters[index]) &&
-                                                _filteredData.contains(row))
-                                            .toList();
-                                      }
+                                      performSearchwithFilters();
+                                      // for (int index = 0;
+                                      //     index < selectedFilters.length;
+                                      //     index++) {
+                                      //   _filteredData = clubList
+                                      //       .where((row) =>
+                                      //           row.contains(
+                                      //               selectedFilters[index]) &&
+                                      //           _filteredData.contains(row))
+                                      //       .toList();
+                                      // }
                                       //_markersCheck();
                                       if (_filteredData.isEmpty) {
                                         noResults = true;
@@ -318,50 +350,60 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
                     children: [
                       (!noResults)
                           ? Expanded(
-                              child: ListView.builder(
-                                  physics: const NeverScrollableScrollPhysics(),
-                                  shrinkWrap: true,
-                                  padding: const EdgeInsets.all(10),
-                                  itemCount: _filteredData.length,
-                                  itemBuilder:
-                                      (BuildContext context, int index) {
-                                    return Card.outlined(
-                                      color: const Color.fromRGBO(
-                                          236, 238, 243, 1),
-                                      elevation: 1,
-                                      key: ObjectKey(clubList[index]),
-                                      child: Column(
-                                        mainAxisSize: MainAxisSize.min,
-                                        children: <Widget>[
-                                          ListTile(
-                                            leading: const Icon(
-                                              Icons.sports_tennis_outlined,
-                                              size: 48.0,
-                                              color: Colors.grey,
-                                            ),
-                                            title: Text(_filteredData[index][1],
-                                                style: const TextStyle(
-                                                    fontSize: 16,
-                                                    fontWeight:
-                                                        FontWeight.w500)),
-                                            subtitle:
-                                                Text(_filteredData[index][7]),
-                                            trailing: FilledButton(
-                                              onPressed: () {
-                                                setState(() {
-                                                  widget.checkClubSelected(true,
-                                                      _filteredData[index][0]);
-                                                });
-                                                // Handle button press
-                                              },
-                                              child: const Text('View'),
-                                            ),
+                              child: !isLoading
+                                  ? ListView.builder(
+                                      physics:
+                                          const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      padding: const EdgeInsets.all(10),
+                                      itemCount: _filteredData.length,
+                                      itemBuilder:
+                                          (BuildContext context, int index) {
+                                        return Card.outlined(
+                                          color: const Color.fromRGBO(
+                                              236, 238, 243, 1),
+                                          elevation: 1,
+                                          key: ObjectKey(clubList[index]),
+                                          child: Column(
+                                            mainAxisSize: MainAxisSize.min,
+                                            children: <Widget>[
+                                              ListTile(
+                                                leading: const Icon(
+                                                  Icons.sports_tennis_outlined,
+                                                  size: 48.0,
+                                                  color: Colors.grey,
+                                                ),
+                                                title: Text(
+                                                    _filteredData[index][1],
+                                                    style: const TextStyle(
+                                                        fontSize: 16,
+                                                        fontWeight:
+                                                            FontWeight.w500)),
+                                                subtitle: Text(
+                                                    _filteredData[index][7]),
+                                                trailing: FilledButton(
+                                                  onPressed: () {
+                                                    setState(() {
+                                                      widget.checkClubSelected(
+                                                          true,
+                                                          _filteredData[index]
+                                                              [0]);
+                                                    });
+                                                    // Handle button press
+                                                  },
+                                                  child: const Text('View'),
+                                                ),
+                                              ),
+                                            ],
                                           ),
-                                        ],
+                                        );
+                                      })
+                                  : SizedBox(
+                                      height: constraints.maxHeight * 0.4,
+                                      child: const Center(
+                                        child: CircularProgressIndicator(),
                                       ),
-                                    );
-                                  }),
-                            )
+                                    ))
                           : SizedBox(
                               height: constraints.maxHeight * 0.4,
                               child: const Center(child: Text('No Results'))),
