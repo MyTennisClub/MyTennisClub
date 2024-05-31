@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'upload_files.dart';
 import 'personal_info.dart';
 import 'success_page.dart';
+import 'package:mytennisclub/models/guest.dart';
+
 
 enum Person { you, kid }
 
@@ -23,6 +25,12 @@ class ApplyClub extends State<ApplyClub_Main> {
   bool uploadsCheck = false;
   bool submitEnabled = false;
   List<bool> uploads = [false, false, false];
+
+  String name = 'Nikolaos Voulgaris';
+  String phone = '6971662770';
+  String address = 'Agiou Andreou 16';
+  String email = 'nickvoul3@gmail.com';
+  DateTime date = DateTime.parse('2024-08-04 12:00:00');
 
   checkAllFields(check) {
     setState(() {
@@ -241,10 +249,25 @@ class ApplyClub extends State<ApplyClub_Main> {
                       ? Expanded(
                           flex: 3,
                           child: FilledButton(
-                            onPressed: () {
+                            onPressed: () async{
 
-                              
+                              if (personSelected.name == 'you' && typeSelected.name == 'member') {
+                                // String name = 'Nikolaos Voulgaris';
+                                // String phone = '6971662770';
+                                // String address = 'Agiou Andreou 16';
+                                // String email = 'nickvoul3@gmail.com';
+                                // String date = 'March 9, 2024';
+                                await Guest.youMemberApply(name, phone, address, email, date, identification, p_identification, doctorsNote, tennisClubId, guestId);
+                              }
+                              else if (personSelected.name == 'you' && typeSelected.name == 'athlete') {
 
+                              }
+                              else if (personSelected.name == 'kid' && typeSelected.name == 'member') {
+
+                              }
+                              else if (personSelected.name == 'kid' && typeSelected.name == 'athlete') {
+
+                              }
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(
