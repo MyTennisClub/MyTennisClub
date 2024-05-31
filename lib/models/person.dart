@@ -9,7 +9,7 @@ class Person {
     required this.startDate,
   });
 
-  final String id;
+  final int id;
   final String fullname;
   final String tel;
   final String address;
