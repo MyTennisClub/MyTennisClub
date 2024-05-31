@@ -61,17 +61,14 @@ List<Event> createReservations(List<Member> members, List<Court> courts) {
       // Dates with one or two days difference from now
       DateTime date = DateTime.now().add(Duration(days: i + 1));
 
-      // Possible start times
-      List<DateTime> possibleStartTimes = [
-        DateTime(date.year, date.month, date.day, 10, 0),
-        DateTime(date.year, date.month, date.day, 11, 30),
-        DateTime(date.year, date.month, date.day, 13, 0),
-        DateTime(date.year, date.month, date.day, 14, 30),
-        DateTime(date.year, date.month, date.day, 16, 0),
-        DateTime(date.year, date.month, date.day, 17, 30),
-        DateTime(date.year, date.month, date.day, 19, 0),
-        DateTime(date.year, date.month, date.day, 20, 30),
-      ];
+      // Possible start times at whole and half-hour intervals
+      List<DateTime> possibleStartTimes = _generateHoursInRange(date);
+      // for (int hour = 16; hour <= 21; hour++) {
+      //   possibleStartTimes
+      //       .add(DateTime(date.year, date.month, date.day, hour, 0));
+      //   possibleStartTimes
+      //       .add(DateTime(date.year, date.month, date.day, hour, 30));
+      // }
 
       // Randomly select a start time
       DateTime startTime =
@@ -99,6 +96,13 @@ List<Event> createReservations(List<Member> members, List<Court> courts) {
 
       DateTime endTime = startTime.add(duration);
 
+      // Ensure the endTime does not exceed 23:00
+      if (endTime.hour >= 23) {
+        endTime =
+            DateTime(startTime.year, startTime.month, startTime.day, 23, 0);
+        duration = endTime.difference(startTime);
+      }
+
       Event reservation = Event(
         type: Type.privateReservation,
         date: date,
@@ -125,8 +129,9 @@ List<Event> createReservations(List<Member> members, List<Court> courts) {
 // Helper function to generate hours in the specified range
 List<DateTime> _generateHoursInRange(DateTime date) {
   List<DateTime> hours = [];
-  for (int hour = 17; hour <= 23; hour++) {
-    hours.add(DateTime(date.year, date.month, date.day, hour));
+  for (int hour = 16; hour <= 21; hour++) {
+    hours.add(DateTime(date.year, date.month, date.day, hour, 0));
+    hours.add(DateTime(date.year, date.month, date.day, hour, 30));
   }
   return hours;
 }
@@ -146,21 +151,28 @@ List<DateTime> getAvailableHoursForCourt(
 
   Duration durationObj = Duration(hours: hours, minutes: minutes);
 
-  for (DateTime hour in hoursInRange) {
-    DateTime endHour = hour.add(durationObj);
+  for (DateTime startTime in hoursInRange) {
+    DateTime endHour = startTime.add(durationObj);
     bool isAvailable = true;
 
     for (Event event in court.calendar?.events ?? []) {
-      if (event.startTime.isBefore(endHour) && event.endTime.isAfter(hour)) {
+      if (event.startTime.isBefore(endHour) &&
+          event.endTime.isAfter(startTime)) {
         isAvailable = false;
         break;
       }
     }
 
+    // Ensure the end time does not exceed 23:00
+    if (endHour.hour >= 23 && endHour.minute > 0) {
+      isAvailable = false;
+    }
+
     if (isAvailable) {
-      availableHours.add(hour);
+      availableHours.add(startTime);
     }
   }
 
+  // List of Datetime objects
   return availableHours;
 }

@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/rendering.dart';
 import '../../../models/court.dart';
-import '../../../models/event.dart';
 import '../../../models/member.dart';
 import 'success_page.dart';
 import 'available_hours.dart';
@@ -76,6 +74,10 @@ class BookSession extends State<BookSession_Main> {
         availableHours = getAvailableHoursForCourt(courts[i], date, duration);
         if (availableHours.isNotEmpty) {
           availableCourts.add(courts[i]);
+          courtsAndHours[courts[i]] = availableHours;
+          if (i == 0) {
+            print(courtsAndHours[availableCourts[i]]);
+          }
         }
       }
     }
@@ -336,9 +338,14 @@ class BookSession extends State<BookSession_Main> {
                                               mainAxisSize: MainAxisSize.max,
                                               children: [
                                                 Available_Hours(
-                                                    checkHour: checkHour,
-                                                    id: index,
-                                                    isVisible: visible[index]),
+                                                  checkHour: checkHour,
+                                                  id: index,
+                                                  isVisible: visible[index],
+                                                  availableHours:
+                                                      courtsAndHours[
+                                                          availableCourts[
+                                                              index]]!,
+                                                ),
                                                 visible[index]
                                                     ? FilledButton(
                                                         style: FilledButton.styleFrom(
