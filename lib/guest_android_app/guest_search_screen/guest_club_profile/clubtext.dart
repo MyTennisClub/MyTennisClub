@@ -54,6 +54,7 @@ class _ClubTextState extends State<ClubText> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 15.0),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const Expanded(
@@ -75,6 +76,7 @@ class _ClubTextState extends State<ClubText> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 15.0),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const Expanded(
