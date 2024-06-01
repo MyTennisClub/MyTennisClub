@@ -1,15 +1,17 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
 //import 'package:flutter_config/flutter_config.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mytennisclub/models/clubList.dart';
 
 class GuestsSearchScreen extends StatefulWidget {
   final Function checkClubSelected;
-  const GuestsSearchScreen({required this.checkClubSelected, super.key});
+  final List<List<dynamic>> clubList;
+  const GuestsSearchScreen(
+      {required this.checkClubSelected, required this.clubList, super.key});
 
   @override
   State<GuestsSearchScreen> createState() => _GuestsSearchScreenState();
@@ -25,109 +27,40 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
   final TextEditingController _searchController = TextEditingController();
 
   bool isLoading = false;
+
   bool duration = true;
   List<List<dynamic>> _filteredData = [];
   List selectedFilters = [];
-  var filterList = ['Covered', 'Grass', 'Has Equipment'];
+  List filters = [null, null, null];
+  List filterNames = ['Covered', 'Grass', 'Has equipment'];
   bool noResults = false;
 
-  final List<List<dynamic>> clubList = [
-    [
-      0,
-      'Patras Tennis Club',
-      38.246266400032816,
-      21.735063818066433,
-      'Covered',
-      'Hard',
-      'Has Equipment',
-      'Patras'
-    ],
-    [
-      1,
-      'Best Tennis Club',
-      38.246229277552416,
-      21.741915599979517,
-      'Air',
-      'Clay',
-      'Has Equipment',
-      'Patras'
-    ],
-    [
-      2,
-      'Tennis Center',
-      38.252570180123946,
-      21.739732137456364,
-      'Covered',
-      'Clay',
-      'No Equipment',
-      'Patras'
-    ],
-    [
-      3,
-      'Athens Tennis Club',
-      37.940350236505475,
-      23.708126122993432,
-      'Air',
-      'Grass',
-      'No Equipment',
-      'Athens'
-    ],
-    [
-      4,
-      'Athens Sports Center',
-      37.994212105267394,
-      23.724433953918993,
-      'Air',
-      'Hard',
-      'Has Equipment',
-      'Athens'
-    ],
-  ];
-
-  // void getVariables() async {
-  //   WidgetsFlutterBinding.ensureInitialized();
-  //   await FlutterConfig.loadEnvVariables();
-  // }
+  late List<List<dynamic>> clubList = widget.clubList;
 
   @override
   void initState() {
     super.initState();
-
     _filteredData = clubList;
-    for (int index = 0; index < _filteredData.length; index++) {
-      markers.add(
-        Marker(
-            markerId: MarkerId(clubList[index][1]),
-            infoWindow: InfoWindow(title: clubList[index][1]),
-            position: LatLng(clubList[index][2], clubList[index][3])),
-      );
-    }
+
     _searchController.text = '';
     _searchController.addListener(_performSearch);
   }
 
-  markersCheck() {
-    setState(() {
-      for (int index = 0; index < clubList.length; index++) {
-        if (_filteredData.contains(clubList[index]) &&
-            !markers.contains(clubList[index][1])) {
-          print('add $index');
-          markers.add(
-            Marker(
-                markerId: MarkerId(clubList[index][1]),
-                infoWindow: InfoWindow(title: clubList[index][1]),
-                position: LatLng(clubList[index][2], clubList[index][3])),
-          );
-        }
-        if (!_filteredData.contains(clubList[index]) &&
-            !markers.contains(clubList[index][1])) {
-          print('remove $index');
-          markers.removeWhere(
-              (marker) => marker.markerId.value == clubList[index][1]);
-        }
-      }
-    });
-  }
+  // markersCheck() {
+  //   markers.clear();
+  //   print(_filteredData);
+  //   setState(() {
+  //     for (int index = 0; index < _filteredData.length; index++) {
+  //       markers.add(
+  //         Marker(
+  //             markerId: MarkerId(_filteredData[index][1]),
+  //             infoWindow: InfoWindow(title: _filteredData[index][1]),
+  //             position:
+  //                 LatLng(_filteredData[index][2], _filteredData[index][3])),
+  //       );
+  //     }
+  //   });
+  // }
 
   Future<void> _performSearch() async {
     setState(() {
@@ -140,41 +73,39 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
 
     setState(() {
       _filteredData = clubList
-          .where((row) => row[7]
+          .where((row) => row[4]
               .toLowerCase()
               .contains(_searchController.text.toLowerCase()))
           .toList();
       if (_filteredData.isEmpty) {
         noResults = true;
       }
-      markersCheck();
+      // markersCheck();
     });
     isLoading = false;
   }
 
-  Future<void> performSearchwithFilters() async {
+  Future<void> performSearchwithFilters(covered, type, equipment) async {
     setState(() {
       noResults = false;
       isLoading = true;
     });
-
     //Simulates waiting for an API call
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 200));
+    List<List<dynamic>> filterCheck =
+        await Clublist.retrieveClubs(covered, type, equipment);
 
     setState(() {
-      _filteredData = clubList
-          .where((row) =>
-              selectedFilters
-                  .every((item) => [row[4], row[5], row[6]].contains(item)) &&
-              row[7]
-                  .toLowerCase()
-                  .contains(_searchController.text.toLowerCase()))
+      _filteredData = filterCheck
+          .where((row) => row[4]
+              .toLowerCase()
+              .contains(_searchController.text.toLowerCase()))
           .toList();
 
       if (_filteredData.isEmpty) {
         noResults = true;
       }
-      markersCheck();
+//markersCheck();
     });
     isLoading = false;
   }
@@ -183,17 +114,29 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
   void _onMapCreated(GoogleMapController controller) async {
     mapController = mapController;
     await getLocation();
+
+    for (int index = 0; index < _filteredData.length; index++) {
+      markers.add(
+        Marker(
+            markerId: MarkerId(clubList[index][1]),
+            infoWindow: InfoWindow(title: clubList[index][1]),
+            position: LatLng(clubList[index][2], clubList[index][3])),
+      );
+    }
   }
 
   //create getLocation function
   Future<dynamic> getLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      LocationPermission ask = await Geolocator.requestPermission();
-    } else {
+    if (permission == LocationPermission.denied) {
+      await Geolocator.requestPermission();
+    } else if (permission == LocationPermission.deniedForever) {
+    } else if (permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always) {
       currentPosition = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.best);
+
+      setState(() {
         markers.add(Marker(
           markerId: const MarkerId('userLocation'),
           position:
@@ -201,6 +144,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
           infoWindow: const InfoWindow(title: 'Your Location'),
         ));
         _center = LatLng(currentPosition!.latitude, currentPosition!.longitude);
+      });
     }
   }
 
@@ -267,37 +211,44 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
                         Wrap(
                           spacing: 8.0,
                           children: List<Widget>.generate(
-                            filterList.length,
+                            filterNames.length,
                             (int i) {
                               return ChoiceChip(
                                 selectedColor:
                                     const Color.fromRGBO(210, 230, 255, 1),
-                                label: Text(filterList[i]),
-                                selected:
-                                    selectedFilters.contains(filterList[i]),
+                                label: Text(filterNames[i]),
+                                selected: selectedFilters.contains(i),
                                 onSelected: (bool selected) {
                                   setState(() {
-                                    selectedFilters.contains(filterList[i])
-                                        ? selectedFilters.remove(filterList[i])
-                                        : selectedFilters.add(filterList[i]);
+                                    selectedFilters.contains(i)
+                                        ? selectedFilters.remove(i)
+                                        : selectedFilters.add(i);
                                     if (selectedFilters.isEmpty) {
                                       noResults = false;
                                       _performSearch();
-                                      // _markersCheck();
                                     } else {
                                       noResults = false;
-                                      performSearchwithFilters();
-                                      // for (int index = 0;
-                                      //     index < selectedFilters.length;
-                                      //     index++) {
-                                      //   _filteredData = clubList
-                                      //       .where((row) =>
-                                      //           row.contains(
-                                      //               selectedFilters[index]) &&
-                                      //           _filteredData.contains(row))
-                                      //       .toList();
-                                      // }
-                                      //_markersCheck();
+                                      setState(() {
+                                        if (selectedFilters.contains(0)) {
+                                          filters[0] = true;
+                                        } else {
+                                          filters[0] = null;
+                                        }
+                                        if (selectedFilters.contains(1)) {
+                                          filters[1] = 'GRASS';
+                                        } else {
+                                          filters[1] = null;
+                                        }
+                                        if (selectedFilters.contains(2)) {
+                                          filters[2] = true;
+                                        } else {
+                                          filters[2] = null;
+                                        }
+                                      });
+
+                                      performSearchwithFilters(
+                                          filters[0], filters[1], filters[2]);
+
                                       if (_filteredData.isEmpty) {
                                         noResults = true;
                                       }
@@ -376,7 +327,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
                                                         fontWeight:
                                                             FontWeight.w500)),
                                                 subtitle: Text(
-                                                    _filteredData[index][7]),
+                                                    _filteredData[index][4]),
                                                 trailing: FilledButton(
                                                   onPressed: () {
                                                     setState(() {

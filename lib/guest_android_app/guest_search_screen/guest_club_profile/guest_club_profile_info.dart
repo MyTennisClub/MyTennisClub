@@ -4,7 +4,8 @@ import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_pr
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_book_court/book_court_page.dart';
 
 class ClubInfo extends StatefulWidget {
-  const ClubInfo({super.key});
+  final List info;
+  const ClubInfo({required this.info, super.key});
 
   @override
   State<ClubInfo> createState() => _ClubInfoState();
@@ -39,7 +40,7 @@ class _ClubInfoState extends State<ClubInfo> {
                       ),
                     ),
                   ),
-                  const ClubText(),
+                  ClubText(info: widget.info),
                   Center(
                     child: SizedBox(
                       width: constraints.maxWidth * 0.66,

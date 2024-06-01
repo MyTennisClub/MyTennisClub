@@ -2,9 +2,12 @@ import 'package:flutter/material.dart';
 import 'package:mytennisclub/guest_android_app/guest_home_screen/guest_home_screen.dart';
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_club_profile.dart';
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_search_screen.dart';
+import 'package:mytennisclub/models/clubList.dart';
+import 'package:mytennisclub/models/tennis_club.dart';
 
 class GuestHomePage extends StatefulWidget {
-  const GuestHomePage({super.key});
+  final int guestID;
+  const GuestHomePage({required this.guestID, super.key});
 
   @override
   State<GuestHomePage> createState() => _GuestHomePage();
@@ -103,17 +106,43 @@ class _SearchScreenState extends State<SearchScreen> {
   checkClubSelected(check, id) {
     setState(() {
       clubSelected = check;
+      print(clubSelected);
       clubID = id;
+      print(clubID);
     });
   }
 
   @override
   Widget build(BuildContext context) {
     return (!clubSelected)
-        ? GuestsSearchScreen(checkClubSelected: checkClubSelected)
-        : ClubProfile(
-            checkClubSelected: checkClubSelected,
-            clubID: clubID,
+        ? FutureBuilder<List<List<dynamic>>>(
+            future: Clublist.retrieveClubs(null, null, null),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No Clubs For Today'));
+              } else {
+                final clubList = snapshot.data!;
+                return GuestsSearchScreen(
+                    checkClubSelected: checkClubSelected, clubList: clubList);
+              }
+            })
+        : FutureBuilder<List<dynamic>>(
+            future: TennisClub.getClubInfo(clubID),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator());
+              } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                return const Center(child: Text('No club retrieved'));
+              } else {
+                // final clubList = snapshot.data!;
+                return ClubProfile(
+                  checkClubSelected: checkClubSelected,
+                  clubInfo: snapshot.data!,
+                );
+              }
+            },
           );
   }
 }
