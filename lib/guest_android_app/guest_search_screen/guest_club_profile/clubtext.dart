@@ -1,24 +1,24 @@
 import 'package:flutter/material.dart';
 
 class ClubText extends StatefulWidget {
-  const ClubText({super.key});
+  final List info;
+  const ClubText({required this.info, super.key});
 
   @override
   State<ClubText> createState() => _ClubTextState();
 }
 
 class _ClubTextState extends State<ClubText> {
-  String address = 'D. Gounari 183, Patras';
-  String tel = '+30 2610 996683';
-  String email = 'name@domain.com';
-  String amenities = 'Grass Court,Clay Court,Hard Court,Gym,Canteen';
+  late String address = widget.info[1];
+  late List<String> tel = widget.info[4];
+  late String email = widget.info[2];
+  late List<String> amenities = widget.info[3];
 
-  String printAmenities(equipment) {
-    List<String> amenitiesList = equipment.split(',');
+  String printList(list) {
     String print = '';
-    for (var i = 0; i < amenitiesList.length; i++) {
-      print += amenitiesList[i];
-      if (i != amenitiesList.length - 1) {
+    for (var i = 0; i < list.length; i++) {
+      print += list[i];
+      if (i != list.length - 1) {
         print += '\n';
       }
     }
@@ -38,6 +38,7 @@ class _ClubTextState extends State<ClubText> {
               Padding(
                 padding: const EdgeInsets.only(bottom: 15.0),
                 child: Row(
+                  crossAxisAlignment: CrossAxisAlignment.start,
                   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const Expanded(
@@ -65,7 +66,7 @@ class _ClubTextState extends State<ClubText> {
                     Expanded(
                         flex: 3,
                         child: Text(
-                          tel,
+                          printList(tel),
                         )),
                     const Spacer(),
                   ],
@@ -98,7 +99,7 @@ class _ClubTextState extends State<ClubText> {
                   ),
                   Expanded(
                       flex: 3,
-                      child: Text(printAmenities(amenities),
+                      child: Text(printList(amenities),
                           style: const TextStyle(height: 2))),
                   const Spacer(),
                 ],

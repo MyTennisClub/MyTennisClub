@@ -4,9 +4,9 @@ import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_pr
 
 class ClubProfile extends StatefulWidget {
   final Function checkClubSelected;
-  final int clubID;
+  final List clubInfo;
   const ClubProfile(
-      {required this.checkClubSelected, required this.clubID, super.key});
+      {required this.checkClubSelected, required this.clubInfo, super.key});
 
   @override
   State<ClubProfile> createState() => _ClubProfileState();
@@ -25,7 +25,6 @@ class _ClubProfileState extends State<ClubProfile>
   @override
   void initState() {
     super.initState();
-    print('Club ID = ${widget.clubID}');
     _tabController = TabController(vsync: this, length: myTabs.length);
   }
 
@@ -44,7 +43,7 @@ class _ClubProfileState extends State<ClubProfile>
             icon: const Icon(Icons.arrow_back),
             onPressed: () {
               setState(() {
-                widget.checkClubSelected(false, widget.clubID);
+                widget.checkClubSelected(false, 0);
               });
             }),
         title: TabBar(
@@ -54,12 +53,12 @@ class _ClubProfileState extends State<ClubProfile>
       ),
       body: TabBarView(
         controller: _tabController,
-        children: const <Widget>[
-          ClubInfo(),
-          Center(
+        children: <Widget>[
+          ClubInfo(info: widget.clubInfo),
+          const Center(
             child: Text("Announcements"),
           ),
-          ClubReview(),
+          const ClubReview(),
         ],
       ),
     );

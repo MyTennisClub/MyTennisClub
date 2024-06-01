@@ -1,5 +1,4 @@
 import 'dart:async';
-
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +8,9 @@ import 'package:google_maps_flutter/google_maps_flutter.dart';
 
 class GuestsSearchScreen extends StatefulWidget {
   final Function checkClubSelected;
-  const GuestsSearchScreen({required this.checkClubSelected, super.key});
+  final List<List<dynamic>> clubList;
+  const GuestsSearchScreen(
+      {required this.checkClubSelected, required this.clubList, super.key});
 
   @override
   State<GuestsSearchScreen> createState() => _GuestsSearchScreenState();
@@ -25,83 +26,20 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
   final TextEditingController _searchController = TextEditingController();
 
   bool isLoading = false;
+
   bool duration = true;
   List<List<dynamic>> _filteredData = [];
   List selectedFilters = [];
-  var filterList = ['Covered', 'Grass', 'Has Equipment'];
+  var filterList = ['Covered', 'Grass', 'Has equipment'];
   bool noResults = false;
 
-  final List<List<dynamic>> clubList = [
-    [
-      0,
-      'Patras Tennis Club',
-      38.246266400032816,
-      21.735063818066433,
-      'Covered',
-      'Hard',
-      'Has Equipment',
-      'Patras'
-    ],
-    [
-      1,
-      'Best Tennis Club',
-      38.246229277552416,
-      21.741915599979517,
-      'Air',
-      'Clay',
-      'Has Equipment',
-      'Patras'
-    ],
-    [
-      2,
-      'Tennis Center',
-      38.252570180123946,
-      21.739732137456364,
-      'Covered',
-      'Clay',
-      'No Equipment',
-      'Patras'
-    ],
-    [
-      3,
-      'Athens Tennis Club',
-      37.940350236505475,
-      23.708126122993432,
-      'Air',
-      'Grass',
-      'No Equipment',
-      'Athens'
-    ],
-    [
-      4,
-      'Athens Sports Center',
-      37.994212105267394,
-      23.724433953918993,
-      'Air',
-      'Hard',
-      'Has Equipment',
-      'Athens'
-    ],
-  ];
-
-  // void getVariables() async {
-  //   WidgetsFlutterBinding.ensureInitialized();
-  //   await FlutterConfig.loadEnvVariables();
-  // }
+  late List<List<dynamic>> clubList = widget.clubList;
 
   @override
   void initState() {
     super.initState();
-
     _filteredData = clubList;
-    for (int index = 0; index < _filteredData.length; index++) {
-      markers.add(
-        Marker(
-            markerId: MarkerId(clubList[index][1]),
-            infoWindow: InfoWindow(title: clubList[index][1]),
-            position: LatLng(clubList[index][2], clubList[index][3])),
-      );
-    }
+
     _searchController.text = '';
     _searchController.addListener(_performSearch);
   }
@@ -159,7 +97,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
     });
 
     //Simulates waiting for an API call
-    await Future.delayed(const Duration(milliseconds: 500));
+    await Future.delayed(const Duration(milliseconds: 200));
 
     setState(() {
       _filteredData = clubList
@@ -183,17 +121,29 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
   void _onMapCreated(GoogleMapController controller) async {
     mapController = mapController;
     await getLocation();
+
+    for (int index = 0; index < _filteredData.length; index++) {
+      markers.add(
+        Marker(
+            markerId: MarkerId(clubList[index][1]),
+            infoWindow: InfoWindow(title: clubList[index][1]),
+            position: LatLng(clubList[index][2], clubList[index][3])),
+      );
+    }
   }
 
   //create getLocation function
   Future<dynamic> getLocation() async {
     LocationPermission permission = await Geolocator.checkPermission();
-    if (permission == LocationPermission.denied ||
-        permission == LocationPermission.deniedForever) {
-      LocationPermission ask = await Geolocator.requestPermission();
-    } else {
+    if (permission == LocationPermission.denied) {
+      await Geolocator.requestPermission();
+    } else if (permission == LocationPermission.deniedForever) {
+    } else if (permission == LocationPermission.whileInUse ||
+        permission == LocationPermission.always) {
       currentPosition = await Geolocator.getCurrentPosition(
           desiredAccuracy: LocationAccuracy.best);
+
+      setState(() {
         markers.add(Marker(
           markerId: const MarkerId('userLocation'),
           position:
@@ -201,6 +151,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
           infoWindow: const InfoWindow(title: 'Your Location'),
         ));
         _center = LatLng(currentPosition!.latitude, currentPosition!.longitude);
+      });
     }
   }
 
@@ -283,21 +234,10 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
                                     if (selectedFilters.isEmpty) {
                                       noResults = false;
                                       _performSearch();
-                                      // _markersCheck();
                                     } else {
                                       noResults = false;
                                       performSearchwithFilters();
-                                      // for (int index = 0;
-                                      //     index < selectedFilters.length;
-                                      //     index++) {
-                                      //   _filteredData = clubList
-                                      //       .where((row) =>
-                                      //           row.contains(
-                                      //               selectedFilters[index]) &&
-                                      //           _filteredData.contains(row))
-                                      //       .toList();
-                                      // }
-                                      //_markersCheck();
+
                                       if (_filteredData.isEmpty) {
                                         noResults = true;
                                       }
@@ -414,3 +354,55 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
     );
   }
 }
+
+
+ // [
+  //   0,
+  //   'Patras Tennis Club',
+  //   38.246266400032816,
+  //   21.735063818066433,
+  //   'Covered',
+  //   'Hard',
+  //   'Has Equipment',
+  //   'Patras'
+  // ],
+  // [
+  //   1,
+  //   'Best Tennis Club',
+  //   38.246229277552416,
+  //   21.741915599979517,
+  //   'Air',
+  //   'Clay',
+  //   'Has Equipment',
+  //   'Patras'
+  // ],
+  // [
+  //   2,
+  //   'Tennis Center',
+  //   38.252570180123946,
+  //   21.739732137456364,
+  //   'Covered',
+  //   'Clay',
+  //   'No Equipment',
+  //   'Patras'
+  // ],
+  // [
+  //   3,
+  //   'Athens Tennis Club',
+  //   37.940350236505475,
+  //   23.708126122993432,
+  //   'Air',
+  //   'Grass',
+  //   'No Equipment',
+  //   'Athens'
+  // ],
+  // [
+  //   4,
+  //   'Athens Sports Center',
+  //   37.994212105267394,
+  //   23.724433953918993,
+  //   'Air',
+  //   'Hard',
+  //   'Has Equipment',
+  //   'Athens'
+  // ],
