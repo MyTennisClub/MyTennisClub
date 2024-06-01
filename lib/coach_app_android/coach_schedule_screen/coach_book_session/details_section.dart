@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
+import '../../../Database/ConnectionDatabase.dart';
 import '../../../models/member.dart';
 import 'select_athletes.dart';
 
@@ -27,15 +28,26 @@ class DetailsSection extends State<Details_Section> {
   late TextEditingController _controller;
   bool numberCheck = true;
   int number = 1;
-  int allowedMemberNumber = 4;
+  int allowedMemberNumber = 0;
   List<Member> selectedAthletes = [];
 
   String _errorText = ('');
+
+  Future<void> _fetchAllowedMemberNumber() async {
+    final conn = await MySQLConnector.createConnection();
+    var result = await conn!.query('CALL GetMaxPeopleCourtByClub(1)');
+
+    allowedMemberNumber = result.first['max_people_court'];
+
+    await conn.close();
+    setState(() {});
+  }
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: '1');
+    _fetchAllowedMemberNumber();
   }
 
   @override
