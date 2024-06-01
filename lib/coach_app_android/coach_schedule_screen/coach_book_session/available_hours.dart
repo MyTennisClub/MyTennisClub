@@ -23,54 +23,41 @@ class AvailableHours extends State<Available_Hours> {
   @override
   Widget build(BuildContext context) {
     return SizedBox(
-      height: 200,
-      child: ListView(physics: const NeverScrollableScrollPhysics(), children: [
-        Wrap(
-          direction: Axis.horizontal,
-          spacing: 8.0,
-          runSpacing: 4.0,
-          children: List<Widget>.generate(
-            widget.availableHours
-                .map((dateTime) {
-                  // Using DateFormat to format the time part of DateTime
-                  return DateFormat('H:mm').format(dateTime);
-                })
-                .toList()
-                .length,
-            (int i) {
-              return ChoiceChip(
-                selectedColor: const Color.fromRGBO(210, 230, 255, 1),
-                label: Text(widget.availableHours.map((dateTime) {
-                  // Using DateFormat to format the time part of DateTime
-                  return DateFormat('H:mm').format(dateTime);
-                }).toList()[i]),
-                selected: selectedHour == i && widget.isVisible,
-                onSelected: (bool selected) {
-                  setState(() {
-                    if (selected && selectedHour != i) {
-                      selectedHour = i;
-                      widget.checkHour(
-                          selected,
-                          widget.id,
-                          widget.availableHours.map((dateTime) {
-                            // Using DateFormat to format the time part of DateTime
-                            return DateFormat('H:mm').format(dateTime);
-                          }).toList()[i]);
-                    }
-                    //selectedHour = selected ? i : null;
-                    // if (selectedHour == null) {
-                    //   widget.checkHour(selected, widget.id, null);
-                    // }
-                    // if (selectedHour != null) {
-                    //   widget.checkHour(selected, widget.id, hourList[i]);
-                    // }
-                  });
-                },
-              );
-            },
-          ).toList(),
+      height: calculateHeight(), // Call a function to calculate the height
+      child: Wrap(
+        direction: Axis.horizontal,
+        spacing: 8.0,
+        runSpacing:
+            4.0, // Adjust this value to change the vertical spacing between rows
+        children: List<Widget>.generate(
+          widget.availableHours.length,
+          (int i) {
+            final dateTime = widget.availableHours[i];
+            final formattedTime = DateFormat('H:mm').format(dateTime);
+            return ChoiceChip(
+              selectedColor: const Color.fromRGBO(210, 230, 255, 1),
+              label: Text(formattedTime),
+              selected: selectedHour == i && widget.isVisible,
+              onSelected: (bool selected) {
+                setState(() {
+                  if (selected && selectedHour != i) {
+                    selectedHour = i;
+                    widget.checkHour(selected, widget.id, formattedTime);
+                  }
+                });
+              },
+            );
+          },
         ),
-      ]),
+      ),
     );
+  }
+
+  double calculateHeight() {
+    final double rowHeight = 48.0; // Height of each row
+    final int numChipsPerRow = 4; // Number of chips per row
+    final int numRows = (widget.availableHours.length / numChipsPerRow).ceil();
+    final double verticalSpacing = 4.0; // Vertical spacing between rows
+    return rowHeight * numRows + (numRows - 1) * verticalSpacing;
   }
 }
