@@ -113,6 +113,8 @@ class BookSession extends State<BookSession_Main> {
 
   getDate(dat) {
     setState(() {
+      visible = List.filled(courtsList.length, false);
+      hourCheck = List.filled(courtsList.length, false);
       date = dat;
       date = date.add(
           Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute));
@@ -123,6 +125,8 @@ class BookSession extends State<BookSession_Main> {
 
   checkDuration(check, dur) {
     setState(() {
+      visible = List.filled(courtsList.length, false);
+      hourCheck = List.filled(courtsList.length, false);
       durationCheck = check;
       duration = dur;
       populateCourts(courtsList, date, duration!, number, selectedAthletes);
@@ -132,6 +136,8 @@ class BookSession extends State<BookSession_Main> {
 
   checkNumber(check, numb) {
     setState(() {
+      visible = List.filled(courtsList.length, false);
+      hourCheck = List.filled(courtsList.length, false);
       numberCheck = check;
       number = numb;
       populateCourts(courtsList, date, duration!, number, selectedAthletes);
@@ -141,6 +147,8 @@ class BookSession extends State<BookSession_Main> {
 
   checkAthletes(list) {
     setState(() {
+      visible = List.filled(courtsList.length, false);
+      hourCheck = List.filled(courtsList.length, false);
       selectedAthletes = list;
 
       print(
