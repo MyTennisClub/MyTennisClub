@@ -8,14 +8,14 @@ class Clublist {
     return input[0].toUpperCase() + input.substring(1).toLowerCase();
   }
 
-  static Future<List<List<dynamic>>> retrieveClubs() async {
+  static Future<List<List<dynamic>>> retrieveClubs(
+      var covered, var field, var equipment) async {
     List<List<dynamic>> clubs = [];
     try {
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
-        var results = await conn.query(
-          "SELECT TennisClub.club_id,club_name,club_address,club_latitude,club_longitude,field_type,court_covered,court_equipment FROM TennisClub RIGHT JOIN Courts ON tennisclub.club_id = Courts.court_club_id WHERE court_only_for_members=0 and Courts.court_status='AVAILABLE';",
-        );
+        var results = await conn
+            .query("call getClubs(?,?,?)", [covered, field, equipment]);
 
         if (results.isNotEmpty) {
           for (var row in results) {
@@ -24,17 +24,13 @@ class Clublist {
               row['club_name'],
               row['club_latitude'],
               row['club_longitude'],
-              (row['court_covered'] == 1) ? 'Covered' : 'Not Covered',
-              capitalizeFields(row['field_type']),
-              (row['court_equipment'] == 1) ? 'Has equipment' : 'No equipment',
               row['club_address'],
             ]);
           }
-          print(clubs);
           await conn.close();
         } else {
           await conn.close();
-          throw Exception('No clubs found');
+          return [];
         }
       }
     } catch (e) {

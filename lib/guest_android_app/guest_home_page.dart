@@ -116,7 +116,7 @@ class _SearchScreenState extends State<SearchScreen> {
   Widget build(BuildContext context) {
     return (!clubSelected)
         ? FutureBuilder<List<List<dynamic>>>(
-            future: Clublist.retrieveClubs(),
+            future: Clublist.retrieveClubs(null, null, null),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
                 return const Center(child: CircularProgressIndicator());
@@ -167,14 +167,3 @@ class ProfileScreen extends StatelessWidget {
     );
   }
 }
-
-
-//  return FutureBuilder<List<List<dynamic>>>(
-//       future: Clublist.retrieveClubs(),
-//       builder: (context, snapshot) {
-//         if (snapshot.connectionState == ConnectionState.waiting) {
-//           return const Center(child: CircularProgressIndicator());
-//         } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-//           return const Center(child: Text('No Clubs For Today'));
-//         } else {
-//           clubList = snapshot.data!;

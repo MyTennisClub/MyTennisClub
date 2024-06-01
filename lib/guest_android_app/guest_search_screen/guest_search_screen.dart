@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 //import 'package:flutter_config/flutter_config.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
+import 'package:mytennisclub/models/clubList.dart';
 
 class GuestsSearchScreen extends StatefulWidget {
   final Function checkClubSelected;
@@ -30,7 +31,8 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
   bool duration = true;
   List<List<dynamic>> _filteredData = [];
   List selectedFilters = [];
-  var filterList = ['Covered', 'Grass', 'Has equipment'];
+  List filters = [null, null, null];
+  List filterNames = ['Covered', 'Grass', 'Has equipment'];
   bool noResults = false;
 
   late List<List<dynamic>> clubList = widget.clubList;
@@ -39,6 +41,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
   void initState() {
     super.initState();
     _filteredData = clubList;
+    print(_filteredData);
 
     _searchController.text = '';
     _searchController.addListener(_performSearch);
@@ -78,7 +81,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
 
     setState(() {
       _filteredData = clubList
-          .where((row) => row[7]
+          .where((row) => row[4]
               .toLowerCase()
               .contains(_searchController.text.toLowerCase()))
           .toList();
@@ -90,23 +93,22 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
     isLoading = false;
   }
 
-  Future<void> performSearchwithFilters() async {
+  Future<void> performSearchwithFilters(covered, type, equipment) async {
     setState(() {
       noResults = false;
       isLoading = true;
     });
-
+    print('wrong');
     //Simulates waiting for an API call
     await Future.delayed(const Duration(milliseconds: 200));
+    List<List<dynamic>> filterCheck =
+        await Clublist.retrieveClubs(covered, type, equipment);
 
     setState(() {
-      _filteredData = clubList
-          .where((row) =>
-              selectedFilters
-                  .every((item) => [row[4], row[5], row[6]].contains(item)) &&
-              row[7]
-                  .toLowerCase()
-                  .contains(_searchController.text.toLowerCase()))
+      _filteredData = filterCheck
+          .where((row) => row[4]
+              .toLowerCase()
+              .contains(_searchController.text.toLowerCase()))
           .toList();
 
       if (_filteredData.isEmpty) {
@@ -218,25 +220,46 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
                         Wrap(
                           spacing: 8.0,
                           children: List<Widget>.generate(
-                            filterList.length,
+                            filterNames.length,
                             (int i) {
                               return ChoiceChip(
                                 selectedColor:
                                     const Color.fromRGBO(210, 230, 255, 1),
-                                label: Text(filterList[i]),
-                                selected:
-                                    selectedFilters.contains(filterList[i]),
+                                label: Text(filterNames[i]),
+                                selected: selectedFilters.contains(i),
                                 onSelected: (bool selected) {
                                   setState(() {
-                                    selectedFilters.contains(filterList[i])
-                                        ? selectedFilters.remove(filterList[i])
-                                        : selectedFilters.add(filterList[i]);
+                                    selectedFilters.contains(i)
+                                        ? selectedFilters.remove(i)
+                                        : selectedFilters.add(i);
                                     if (selectedFilters.isEmpty) {
                                       noResults = false;
                                       _performSearch();
                                     } else {
+                                      print(selectedFilters);
+
                                       noResults = false;
-                                      performSearchwithFilters();
+                                      setState(() {
+                                        if (selectedFilters.contains(0)) {
+                                          filters[0] = true;
+                                        } else {
+                                          filters[0] = null;
+                                        }
+                                        if (selectedFilters.contains(1)) {
+                                          filters[1] = 'GRASS';
+                                        } else {
+                                          filters[1] = null;
+                                        }
+                                        if (selectedFilters.contains(2)) {
+                                          filters[2] = true;
+                                        } else {
+                                          filters[2] = null;
+                                        }
+                                      });
+                                      print(filters);
+
+                                      performSearchwithFilters(
+                                          filters[0], filters[1], filters[2]);
 
                                       if (_filteredData.isEmpty) {
                                         noResults = true;
@@ -316,7 +339,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
                                                         fontWeight:
                                                             FontWeight.w500)),
                                                 subtitle: Text(
-                                                    _filteredData[index][7]),
+                                                    _filteredData[index][4]),
                                                 trailing: FilledButton(
                                                   onPressed: () {
                                                     setState(() {
@@ -354,55 +377,3 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
     );
   }
 }
-
-
- // [
-  //   0,
-  //   'Patras Tennis Club',
-  //   38.246266400032816,
-  //   21.735063818066433,
-  //   'Covered',
-  //   'Hard',
-  //   'Has Equipment',
-  //   'Patras'
-  // ],
-  // [
-  //   1,
-  //   'Best Tennis Club',
-  //   38.246229277552416,
-  //   21.741915599979517,
-  //   'Air',
-  //   'Clay',
-  //   'Has Equipment',
-  //   'Patras'
-  // ],
-  // [
-  //   2,
-  //   'Tennis Center',
-  //   38.252570180123946,
-  //   21.739732137456364,
-  //   'Covered',
-  //   'Clay',
-  //   'No Equipment',
-  //   'Patras'
-  // ],
-  // [
-  //   3,
-  //   'Athens Tennis Club',
-  //   37.940350236505475,
-  //   23.708126122993432,
-  //   'Air',
-  //   'Grass',
-  //   'No Equipment',
-  //   'Athens'
-  // ],
-  // [
-  //   4,
-  //   'Athens Sports Center',
-  //   37.994212105267394,
-  //   23.724433953918993,
-  //   'Air',
-  //   'Hard',
-  //   'Has Equipment',
-  //   'Athens'
-  // ],
