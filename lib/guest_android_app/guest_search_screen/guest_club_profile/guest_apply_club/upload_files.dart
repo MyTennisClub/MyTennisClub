@@ -1,3 +1,5 @@
+import 'dart:typed_data';
+
 import 'package:flutter/material.dart';
 import 'package:file_picker/file_picker.dart';
 
@@ -5,8 +7,14 @@ class Upload_Files extends StatefulWidget {
   final String personSelected;
   final String typeSelected;
   final Function checkEachUpload;
+  final Function getID;
+  final Function getSolemn;
+  final Function getDoctors;
   const Upload_Files(
-      {required this.personSelected,
+      {required this.getID,
+      required this.getSolemn,
+      required this.getDoctors,
+      required this.personSelected,
       required this.typeSelected,
       required this.checkEachUpload,
       super.key});
@@ -17,6 +25,7 @@ class Upload_Files extends StatefulWidget {
 
 class UploadFiles extends State<Upload_Files> {
   FilePickerResult? result;
+  Uint8List? fileBytes;
   String id = 'ID';
   String doctorNote = "Doctor's Note";
   String solemn = 'Solemn Decleration';
@@ -61,17 +70,18 @@ class UploadFiles extends State<Upload_Files> {
                 child: OutlinedButton(
                     onPressed: () async {
                       result = await FilePicker.platform.pickFiles(
-                          type: FileType.custom, allowedExtensions: ['pdf']);
+                          type: FileType.custom, allowedExtensions: ['pdf'], withData: true);
 
                       if (result == null) {
                       } else {
-                        setState(() {});
-                        for (var element in result!.files) {
+                        setState(() {
+                          var element = result!.files.first;
                           uploads[0] = true;
                           widget.checkEachUpload(
                               uploads[0], uploads[1], uploads[2]);
                           id = element.name;
-                        }
+                          widget.getID(element);
+                        });
                       }
                     },
                     child: const Text('Upload')),
@@ -115,17 +125,18 @@ class UploadFiles extends State<Upload_Files> {
                           onPressed: () async {
                             result = await FilePicker.platform.pickFiles(
                                 type: FileType.custom,
-                                allowedExtensions: ['pdf', 'jpg']);
+                                allowedExtensions: ['pdf'], withData: true);
 
                             if (result == null) {
                             } else {
-                              setState(() {});
-                              for (var element in result!.files) {
+                              setState(() {
+                                var element = result!.files.first;
                                 uploads[1] = true;
                                 widget.checkEachUpload(
                                     uploads[0], uploads[1], uploads[2]);
                                 doctorNote = element.name;
-                              }
+                                widget.getDoctors(element);
+                              });
                             }
                           },
                           child: const Text('Upload')),
@@ -170,17 +181,16 @@ class UploadFiles extends State<Upload_Files> {
                           onPressed: () async {
                             result = await FilePicker.platform.pickFiles(
                                 type: FileType.custom,
-                                allowedExtensions: ['pdf', 'jpg']);
-
+                                allowedExtensions: ['pdf'], withData: true);
                             if (result == null) {
                             } else {
                               setState(() {});
-                              for (var element in result!.files) {
-                                uploads[2] = true;
-                                widget.checkEachUpload(
-                                    uploads[0], uploads[1], uploads[2]);
-                                solemn = element.name;
-                              }
+                              var element = result!.files.first;
+                              uploads[2] = true;
+                              widget.checkEachUpload(
+                                  uploads[0], uploads[1], uploads[2]);
+                              solemn = element.name;
+                              widget.getSolemn(element);
                             }
                           },
                           child: const Text('Upload')),

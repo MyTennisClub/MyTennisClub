@@ -3,7 +3,10 @@ import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_pr
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_club_profile_info.dart';
 
 class ClubProfile extends StatefulWidget {
-  const ClubProfile({super.key});
+  final Function checkClubSelected;
+  final int clubID;
+  const ClubProfile(
+      {required this.checkClubSelected, required this.clubID, super.key});
 
   @override
   State<ClubProfile> createState() => _ClubProfileState();
@@ -22,6 +25,7 @@ class _ClubProfileState extends State<ClubProfile>
   @override
   void initState() {
     super.initState();
+    print('Club ID = ${widget.clubID}');
     _tabController = TabController(vsync: this, length: myTabs.length);
   }
 
@@ -36,7 +40,13 @@ class _ClubProfileState extends State<ClubProfile>
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        automaticallyImplyLeading: false,
+        leading: IconButton(
+            icon: const Icon(Icons.arrow_back),
+            onPressed: () {
+              setState(() {
+                widget.checkClubSelected(false, widget.clubID);
+              });
+            }),
         title: TabBar(
           controller: _tabController,
           tabs: myTabs,

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:mytennisclub/guest_android_app/guest_home_screen/guest_home_screen.dart';
+import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_club_profile.dart';
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_search_screen.dart';
 
 class GuestHomePage extends StatefulWidget {
@@ -25,6 +26,7 @@ class _GuestHomePage extends State<GuestHomePage> {
       child: Scaffold(
         resizeToAvoidBottomInset: false,
         appBar: AppBar(
+          surfaceTintColor: Colors.transparent,
           automaticallyImplyLeading: false,
           backgroundColor: const Color.fromRGBO(236, 238, 243, 1),
           title: const Text('MyTennisClub',
@@ -88,12 +90,31 @@ class HomeScreen extends StatelessWidget {
   }
 }
 
-class SearchScreen extends StatelessWidget {
+class SearchScreen extends StatefulWidget {
   const SearchScreen({super.key});
 
   @override
+  State<SearchScreen> createState() => _SearchScreenState();
+}
+
+class _SearchScreenState extends State<SearchScreen> {
+  bool clubSelected = false;
+  int clubID = 0;
+  checkClubSelected(check, id) {
+    setState(() {
+      clubSelected = check;
+      clubID = id;
+    });
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return GuestsSearchScreen();
+    return (!clubSelected)
+        ? GuestsSearchScreen(checkClubSelected: checkClubSelected)
+        : ClubProfile(
+            checkClubSelected: checkClubSelected,
+            clubID: clubID,
+          );
   }
 }
 
