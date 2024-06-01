@@ -46,21 +46,21 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
     _searchController.addListener(_performSearch);
   }
 
-  markersCheck() {
-    markers.clear();
-    print(_filteredData);
-    setState(() {
-      for (int index = 0; index < _filteredData.length; index++) {
-        markers.add(
-          Marker(
-              markerId: MarkerId(_filteredData[index][1]),
-              infoWindow: InfoWindow(title: _filteredData[index][1]),
-              position:
-                  LatLng(_filteredData[index][2], _filteredData[index][3])),
-        );
-      }
-    });
-  }
+  // markersCheck() {
+  //   markers.clear();
+  //   print(_filteredData);
+  //   setState(() {
+  //     for (int index = 0; index < _filteredData.length; index++) {
+  //       markers.add(
+  //         Marker(
+  //             markerId: MarkerId(_filteredData[index][1]),
+  //             infoWindow: InfoWindow(title: _filteredData[index][1]),
+  //             position:
+  //                 LatLng(_filteredData[index][2], _filteredData[index][3])),
+  //       );
+  //     }
+  //   });
+  // }
 
   Future<void> _performSearch() async {
     setState(() {
@@ -80,8 +80,8 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       if (_filteredData.isEmpty) {
         noResults = true;
       }
+      // markersCheck();
     });
-    markersCheck();
     isLoading = false;
   }
 
@@ -105,8 +105,8 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       if (_filteredData.isEmpty) {
         noResults = true;
       }
+//markersCheck();
     });
-    markersCheck();
     isLoading = false;
   }
 
