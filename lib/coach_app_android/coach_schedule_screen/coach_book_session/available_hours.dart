@@ -44,6 +44,10 @@ class AvailableHours extends State<Available_Hours> {
                     selectedHour = i;
                     widget.checkHour(selected, widget.id, formattedTime);
                   }
+                  if (selected && !widget.isVisible) {
+                    selectedHour = i;
+                    widget.checkHour(selected, widget.id, formattedTime);
+                  }
                 });
               },
             );
@@ -54,10 +58,10 @@ class AvailableHours extends State<Available_Hours> {
   }
 
   double calculateHeight() {
-    final double rowHeight = 48.0; // Height of each row
-    final int numChipsPerRow = 4; // Number of chips per row
+    const double rowHeight = 48.0; // Height of each row
+    const int numChipsPerRow = 4; // Number of chips per row
     final int numRows = (widget.availableHours.length / numChipsPerRow).ceil();
-    final double verticalSpacing = 4.0; // Vertical spacing between rows
+    const double verticalSpacing = 4.0; // Vertical spacing between rows
     return rowHeight * numRows + (numRows - 1) * verticalSpacing;
   }
 }
