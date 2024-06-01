@@ -70,18 +70,18 @@ class UploadFiles extends State<Upload_Files> {
                 child: OutlinedButton(
                     onPressed: () async {
                       result = await FilePicker.platform.pickFiles(
-                          type: FileType.custom, allowedExtensions: ['pdf'], withData: true);
+                          type: FileType.custom,
+                          allowedExtensions: ['pdf'],
+                          withData: true);
 
                       if (result == null) {
                       } else {
-                        setState(() {
-                          var element = result!.files.first;
-                          uploads[0] = true;
-                          widget.checkEachUpload(
-                              uploads[0], uploads[1], uploads[2]);
-                          id = element.name;
-                          widget.getID(element);
-                        });
+                        var element = result!.files.first;
+                        uploads[0] = true;
+                        widget.checkEachUpload(
+                            uploads[0], uploads[1], uploads[2]);
+                        id = element.name;
+                        widget.getID(element);
                       }
                     },
                     child: const Text('Upload')),
@@ -125,7 +125,8 @@ class UploadFiles extends State<Upload_Files> {
                           onPressed: () async {
                             result = await FilePicker.platform.pickFiles(
                                 type: FileType.custom,
-                                allowedExtensions: ['pdf'], withData: true);
+                                allowedExtensions: ['pdf'],
+                                withData: true);
 
                             if (result == null) {
                             } else {
@@ -181,7 +182,8 @@ class UploadFiles extends State<Upload_Files> {
                           onPressed: () async {
                             result = await FilePicker.platform.pickFiles(
                                 type: FileType.custom,
-                                allowedExtensions: ['pdf'], withData: true);
+                                allowedExtensions: ['pdf'],
+                                withData: true);
                             if (result == null) {
                             } else {
                               setState(() {});

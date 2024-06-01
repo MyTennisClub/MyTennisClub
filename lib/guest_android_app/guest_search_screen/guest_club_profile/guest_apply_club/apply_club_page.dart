@@ -10,13 +10,26 @@ enum Person { you, kid }
 enum Type { member, athlete }
 
 class ApplyClub_Main extends StatefulWidget {
-  const ApplyClub_Main({super.key});
+  final List guestInfo;
+  final int courtID;
+  final int guestID;
+  const ApplyClub_Main(
+      {required this.courtID,
+      required this.guestInfo,
+      required this.guestID,
+      super.key});
 
   @override
   State<ApplyClub_Main> createState() => ApplyClub();
 }
 
+@override
 class ApplyClub extends State<ApplyClub_Main> {
+  @override
+  void initState() {
+    super.initState();
+  }
+
   Person personSelected = Person.you;
   Type typeSelected = Type.member;
 
@@ -26,12 +39,11 @@ class ApplyClub extends State<ApplyClub_Main> {
   bool submitEnabled = false;
   List<bool> uploads = [false, false, false];
 
-  String name = 'Nikolaos Voulgaris';
-  String phone = '6971662770';
-  String address = 'Agiou Andreou 16';
-  String email = 'nickvoul3@gmail.com';
-  DateTime birthDate = DateTime.parse('2024-08-04');
-  String formattedDate = '2024-08-04';
+  late String name = widget.guestInfo[0];
+  late String phone = widget.guestInfo[3];
+  late String address = widget.guestInfo[1];
+  late String email = widget.guestInfo[2];
+  late DateTime birthDate = widget.guestInfo[4];
 
   String kidName = '';
   String kidPhone = '';
@@ -39,10 +51,9 @@ class ApplyClub extends State<ApplyClub_Main> {
   String kidEmail = '';
   DateTime kidDate = DateTime.now();
 
-  Uint8List? p_identification;
+  Uint8List? solemn;
   Uint8List? doctorsNote;
   Uint8List? identification;
-
 
   getNewValues(newName, newPhone, newAddress, newEmail, newDate) {
     setState(() {
@@ -55,16 +66,16 @@ class ApplyClub extends State<ApplyClub_Main> {
     });
   }
 
-
   getID(id) {
     setState(() {
       print('id bytes ' + id.bytes.toString());
       identification = id.bytes;
     });
   }
+
   getSolemn(solemn) {
     setState(() {
-      p_identification = solemn.bytes;
+      solemn = solemn.bytes;
     });
   }
 
@@ -303,26 +314,43 @@ class ApplyClub extends State<ApplyClub_Main> {
                             onPressed: () async {
                               if (personSelected.name == 'you' &&
                                   typeSelected.name == 'member') {
-                                // String name = 'Nikolaos Voulgaris';
-                                // String phone = '6971662770';
-                                // String address = 'Agiou Andreou 16';
-                                // String email = 'nickvoul3@gmail.com';
-                                // String date = 'March 9, 2024';
-                                await Guest.youMemberApply(
-                                    name,
-                                    phone,
-                                    address,
-                                    email,
-                                    formattedDate,
-                                    identification,
-                                    1,
-                                    2);
+                                await Guest.guestApply(identification, null,
+                                    'MEMBER', widget.courtID, widget.guestID);
                               } else if (personSelected.name == 'you' &&
                                   typeSelected.name == 'athlete') {
+                                await Guest.guestApply(identification, null,
+                                    'ATHLETE', widget.courtID, widget.guestID);
                               } else if (personSelected.name == 'kid' &&
                                   typeSelected.name == 'member') {
+                                await Guest.kidApply(
+                                    identification,
+                                    doctorsNote,
+                                    solemn,
+                                    'MEMBER',
+                                    widget.courtID,
+                                    widget.guestID,
+                                    kidName.split('')[0],
+                                    kidName.split('')[1],
+                                    kidDate,
+                                    kidEmail,
+                                    kidPhone,
+                                    kidAddress);
                               } else if (personSelected.name == 'kid' &&
-                                  typeSelected.name == 'athlete') {}
+                                  typeSelected.name == 'athlete') {
+                                await Guest.kidApply(
+                                    identification,
+                                    doctorsNote,
+                                    solemn,
+                                    'ATHLETE',
+                                    widget.courtID,
+                                    widget.guestID,
+                                    kidName.split('')[0],
+                                    kidName.split('')[1],
+                                    kidDate,
+                                    kidEmail,
+                                    kidPhone,
+                                    kidAddress);
+                              }
                               Navigator.push(
                                 context,
                                 MaterialPageRoute(

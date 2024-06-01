@@ -6,8 +6,7 @@ import 'package:mytennisclub/models/clubList.dart';
 import 'package:mytennisclub/models/tennis_club.dart';
 
 class GuestHomePage extends StatefulWidget {
-  final int guestID;
-  const GuestHomePage({required this.guestID, super.key});
+  const GuestHomePage({super.key});
 
   @override
   State<GuestHomePage> createState() => _GuestHomePage();
@@ -103,6 +102,7 @@ class SearchScreen extends StatefulWidget {
 class _SearchScreenState extends State<SearchScreen> {
   bool clubSelected = false;
   int clubID = 0;
+  int guestID = 1;
   checkClubSelected(check, id) {
     setState(() {
       clubSelected = check;
@@ -138,9 +138,9 @@ class _SearchScreenState extends State<SearchScreen> {
               } else {
                 // final clubList = snapshot.data!;
                 return ClubProfile(
-                  checkClubSelected: checkClubSelected,
-                  clubInfo: snapshot.data!,
-                );
+                    checkClubSelected: checkClubSelected,
+                    clubInfo: snapshot.data!,
+                    guestID: guestID);
               }
             },
           );

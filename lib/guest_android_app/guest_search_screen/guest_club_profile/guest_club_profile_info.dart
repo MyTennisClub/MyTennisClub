@@ -1,11 +1,13 @@
 import 'package:flutter/material.dart';
+import 'package:mytennisclub/models/guest.dart';
 import 'clubtext.dart';
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_apply_club/apply_club_page.dart';
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_book_court/book_court_page.dart';
 
 class ClubInfo extends StatefulWidget {
   final List info;
-  const ClubInfo({required this.info, super.key});
+  final int guestID;
+  const ClubInfo({required this.info, required this.guestID, super.key});
 
   @override
   State<ClubInfo> createState() => _ClubInfoState();
@@ -54,7 +56,31 @@ class _ClubInfoState extends State<ClubInfo> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (_) => const ApplyClub_Main(),
+                                builder: (BuildContext context) =>
+                                    FutureBuilder<List<dynamic>>(
+                                        future:
+                                            Guest.getUserInfo(widget.guestID),
+                                        builder: (context, snapshot) {
+                                          if (snapshot.connectionState ==
+                                              ConnectionState.waiting) {
+                                            return const Center(
+                                                child:
+                                                    CircularProgressIndicator());
+                                          } else if (!snapshot.hasData ||
+                                              snapshot.data!.isEmpty) {
+                                            return const Center(
+                                                child:
+                                                    Text('No user retrieved'));
+                                          } else {
+                                            final guestInfo = snapshot.data!;
+
+                                            return ApplyClub_Main(
+                                              courtID: widget.info[0],
+                                              guestInfo: guestInfo,
+                                              guestID: widget.guestID,
+                                            );
+                                          }
+                                        }),
                               ),
                             );
                           });

@@ -36,11 +36,19 @@ class _PersonalInfo extends State<Personal_Info> {
   String address = '';
   String email = '';
   DateTime? date;
-  String _errorText = '';
+  String nameErrorText = '';
+  String emailErrorText = '';
   TextEditingController dateController = TextEditingController();
 
+  bool fullNameValidate(String fullName) {
+    final RegExp regExp = RegExp(r"^[a-zA-Z]+([ '-][a-zA-Z]+)+$");
+    bool isValid = regExp.hasMatch(fullName);
+    print(isValid);
+    return isValid;
+  }
+
   bool validate(String email) {
-    bool isvalid = EmailValidator.validate(email);
+    bool isvalid = EmailValidator.validate(email, false, true);
     return isvalid;
   }
 
@@ -88,10 +96,12 @@ class _PersonalInfo extends State<Personal_Info> {
                         ),
                       )
                     : TextFormField(
-                        decoration: const InputDecoration(
+                        decoration: InputDecoration(
                           hintText: 'Enter Name and Surname',
-                          border: OutlineInputBorder(),
+                          border: const OutlineInputBorder(),
                           labelText: 'Full Name',
+                          errorText:
+                              nameErrorText.isEmpty ? null : nameErrorText,
                         ),
                         keyboardType: TextInputType.name,
                         onChanged: (value) {
@@ -99,8 +109,13 @@ class _PersonalInfo extends State<Personal_Info> {
                             if (value.isEmpty) {
                               fields[0] = false;
                             } else {
-                              fields[0] = true;
-                              name = value;
+                              if (fullNameValidate(value)) {
+                                fields[0] = true;
+                                nameErrorText = '';
+                              } else {
+                                nameErrorText = 'Invalid Format';
+                                name = value;
+                              }
                             }
                             checkAllFields();
                           });
@@ -225,7 +240,8 @@ class _PersonalInfo extends State<Personal_Info> {
                             hintText: 'someone@example.com',
                             border: const OutlineInputBorder(),
                             labelText: 'Email Address',
-                            errorText: _errorText.isEmpty ? null : _errorText),
+                            errorText:
+                                emailErrorText.isEmpty ? null : emailErrorText),
                         initialValue: widget.email,
                         key: Key(email),
                       )
@@ -234,7 +250,8 @@ class _PersonalInfo extends State<Personal_Info> {
                             hintText: 'someone@example.com',
                             border: const OutlineInputBorder(),
                             labelText: 'Email Address',
-                            errorText: _errorText.isEmpty ? null : _errorText),
+                            errorText:
+                                emailErrorText.isEmpty ? null : emailErrorText),
                         keyboardType: TextInputType.emailAddress,
                         onChanged: (value) {
                           setState(() {
@@ -243,9 +260,9 @@ class _PersonalInfo extends State<Personal_Info> {
                             } else {
                               if (validate(value)) {
                                 fields[3] = true;
-                                _errorText = '';
+                                emailErrorText = '';
                               } else {
-                                _errorText = 'Invalid Format';
+                                emailErrorText = 'Invalid Format';
                                 email = value;
                               }
                             }
@@ -291,14 +308,14 @@ class _PersonalInfo extends State<Personal_Info> {
                         onTap: () async {
                           DateTime? pickeddate = await showDatePicker(
                               context: context,
-                              initialDate: DateTime.now(),
+                              initialDate: DateTime(2024),
                               firstDate: DateTime(2000),
-                              lastDate: DateTime(2025));
+                              lastDate: DateTime.now());
                           if (pickeddate != null) {
                             setState(() {
                               dateController.text =
                                   DateFormat.yMMMMd().format(pickeddate);
-                              date = pickeddate;
+                              date = pickeddate.toUtc();
 
                               fields[4] = true;
                               checkAllFields();

@@ -26,9 +26,7 @@ class Main_Class extends State<MainClass> {
     return MaterialApp(
         initialRoute: '/',
         routes: {
-          '/guest_home': (context) => const GuestHomePage(
-                guestID: 1,
-              ),
+          '/guest_home': (context) => const GuestHomePage(),
           '/athlete_home': (context) => const AthleteHomePage(),
           '/coach_home': (context) => const CoachHomePage(),
           '/member_home': (context) => const MemberHomePage()
