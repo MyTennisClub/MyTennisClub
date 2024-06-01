@@ -41,31 +41,23 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
   void initState() {
     super.initState();
     _filteredData = clubList;
-    print(_filteredData);
 
     _searchController.text = '';
     _searchController.addListener(_performSearch);
   }
 
   markersCheck() {
+    markers.clear();
+    print(_filteredData);
     setState(() {
-      for (int index = 0; index < clubList.length; index++) {
-        if (_filteredData.contains(clubList[index]) &&
-            !markers.contains(clubList[index][1])) {
-          print('add $index');
-          markers.add(
-            Marker(
-                markerId: MarkerId(clubList[index][1]),
-                infoWindow: InfoWindow(title: clubList[index][1]),
-                position: LatLng(clubList[index][2], clubList[index][3])),
-          );
-        }
-        if (!_filteredData.contains(clubList[index]) &&
-            !markers.contains(clubList[index][1])) {
-          print('remove $index');
-          markers.removeWhere(
-              (marker) => marker.markerId.value == clubList[index][1]);
-        }
+      for (int index = 0; index < _filteredData.length; index++) {
+        markers.add(
+          Marker(
+              markerId: MarkerId(_filteredData[index][1]),
+              infoWindow: InfoWindow(title: _filteredData[index][1]),
+              position:
+                  LatLng(_filteredData[index][2], _filteredData[index][3])),
+        );
       }
     });
   }
@@ -88,8 +80,8 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       if (_filteredData.isEmpty) {
         noResults = true;
       }
-      markersCheck();
     });
+    markersCheck();
     isLoading = false;
   }
 
@@ -98,7 +90,6 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       noResults = false;
       isLoading = true;
     });
-    print('wrong');
     //Simulates waiting for an API call
     await Future.delayed(const Duration(milliseconds: 200));
     List<List<dynamic>> filterCheck =
@@ -114,8 +105,8 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       if (_filteredData.isEmpty) {
         noResults = true;
       }
-      markersCheck();
     });
+    markersCheck();
     isLoading = false;
   }
 
@@ -236,8 +227,6 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
                                       noResults = false;
                                       _performSearch();
                                     } else {
-                                      print(selectedFilters);
-
                                       noResults = false;
                                       setState(() {
                                         if (selectedFilters.contains(0)) {
@@ -256,7 +245,6 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
                                           filters[2] = null;
                                         }
                                       });
-                                      print(filters);
 
                                       performSearchwithFilters(
                                           filters[0], filters[1], filters[2]);

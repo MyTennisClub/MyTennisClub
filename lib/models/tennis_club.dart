@@ -72,7 +72,10 @@ class TennisClub {
           List<String> phones = [];
           List<String> fields = [];
           for (var row in clubFields) {
-            fields.add(capitalizeFields(row['field_type']) + ' Court');
+            if (!fields
+                .contains(capitalizeFields(row['field_type']) + ' Court')) {
+              fields.add(capitalizeFields(row['field_type']) + ' Court');
+            }
           }
           for (var row in clubPhones) {
             phones.add(row['club_phone']);
