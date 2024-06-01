@@ -143,7 +143,7 @@ DateTime getFirstAvailableDate(List<Court> courts) {
   while (!found) {
     bool flag = false;
     for (var i = 0; i < courts.length; i++) {
-      if (getAvailableHoursForCourt(courts[i], date, defaultDuration)
+      if (getAvailableHoursForCourt(courts[i], date, defaultDuration, [])
           .isNotEmpty) {
         found = true;
         flag = true;
@@ -163,10 +163,12 @@ List<DateTime> getAvailableHoursForCourt(
   Court court,
   DateTime date,
   String duration,
+  List<Member> members,
 ) {
   List<DateTime> availableHours = [];
   List<DateTime> hoursInRange = _generateHoursInRange(date);
 
+  // Parsing the duration to hours and minutes
   duration = duration.replaceAll(' h', '');
   List<String> parts = duration.split(':');
   int hours = int.parse(parts[0]);
@@ -178,6 +180,7 @@ List<DateTime> getAvailableHoursForCourt(
     DateTime endHour = startTime.add(durationObj);
     bool isAvailable = true;
 
+    // Check the court's availability
     for (Event event in court.calendar?.events ?? []) {
       if (event.startTime.isBefore(endHour) &&
           event.endTime.isAfter(startTime)) {
@@ -191,14 +194,29 @@ List<DateTime> getAvailableHoursForCourt(
       isAvailable = false;
     }
 
+    // Check if the date is today and the time is within an hour from now
     if ((date.year == DateTime.now().year) &&
         (date.month == DateTime.now().month) &&
         (date.day == DateTime.now().day)) {
-      print('${startTime.hour} <= ${date.add(const Duration(hours: 1)).hour}');
-      if (startTime.hour <= date.add(const Duration(hours: 1)).hour ||
-          date.add(const Duration(hours: 1)).hour == 0) {
+      if (startTime.hour <= DateTime.now().add(const Duration(hours: 1)).hour ||
+          DateTime.now().add(const Duration(hours: 1)).hour == 0) {
         isAvailable = false;
-        print('false');
+      }
+    }
+
+    if (members.isNotEmpty) {
+      // Check each member's availability
+      for (Member member in members) {
+        for (Event event in member.calendar?.events ?? []) {
+          if (event.startTime.isBefore(endHour) &&
+              event.endTime.isAfter(startTime)) {
+            isAvailable = false;
+            break;
+          }
+        }
+        if (!isAvailable) {
+          break;
+        }
       }
     }
 
@@ -207,6 +225,5 @@ List<DateTime> getAvailableHoursForCourt(
     }
   }
 
-  // List of Datetime objects
   return availableHours;
 }

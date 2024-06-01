@@ -56,6 +56,7 @@ class DetailsSection extends State<Details_Section> {
                 number: number,
                 selectedAthletes: selectedAthletes,
                 athletesList: widget.athletesList,
+                checkAthletes: widget.checkAthletes,
               ));
         });
   }

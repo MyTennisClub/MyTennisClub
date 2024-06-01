@@ -68,7 +68,7 @@ class BookSession extends State<BookSession_Main> {
     DateTime firstDate = getFirstAvailableDate(courtsList);
     date = firstDate;
 
-    populateCourts(courtsList, firstDate, duration!, number);
+    populateCourts(courtsList, firstDate, duration!, number, selectedAthletes);
 
     super.initState();
   }
@@ -78,12 +78,14 @@ class BookSession extends State<BookSession_Main> {
     DateTime date,
     String duration,
     int numAthletes,
+    List<Member> selectedAthletes,
   ) {
     availableCourts = [];
     for (var i = 0; i < courts.length; i++) {
       List<DateTime> availableHours = [];
       if (courts[i].athlete_capacity >= numAthletes) {
-        availableHours = getAvailableHoursForCourt(courts[i], date, duration);
+        availableHours = getAvailableHoursForCourt(
+            courts[i], date, duration, selectedAthletes);
         if (availableHours.isNotEmpty) {
           availableCourts.add(courts[i]);
           courtsAndHours[courts[i]] = availableHours;
@@ -115,7 +117,7 @@ class BookSession extends State<BookSession_Main> {
       date = date.add(
           Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute));
       print(date);
-      populateCourts(courtsList, date, duration!, number);
+      populateCourts(courtsList, date, duration!, number, selectedAthletes);
     });
   }
 
@@ -123,7 +125,7 @@ class BookSession extends State<BookSession_Main> {
     setState(() {
       durationCheck = check;
       duration = dur;
-      populateCourts(courtsList, date, duration!, number);
+      populateCourts(courtsList, date, duration!, number, selectedAthletes);
       checkVisible();
     });
   }
@@ -132,7 +134,7 @@ class BookSession extends State<BookSession_Main> {
     setState(() {
       numberCheck = check;
       number = numb;
-      populateCourts(courtsList, date, duration!, number);
+      populateCourts(courtsList, date, duration!, number, selectedAthletes);
       checkVisible();
     });
   }
@@ -143,7 +145,7 @@ class BookSession extends State<BookSession_Main> {
 
       print(
           'printing from checkAthlete:${selectedAthletes.length}\n-----Done Printing-----');
-
+      populateCourts(courtsList, date, duration!, number, selectedAthletes);
       checkVisible();
     });
   }
@@ -152,7 +154,7 @@ class BookSession extends State<BookSession_Main> {
     setState(() {
       paymentCheck = check;
       payment = pay;
-      populateCourts(courtsList, date, duration!, number);
+      populateCourts(courtsList, date, duration!, number, selectedAthletes);
       checkVisible();
     });
   }

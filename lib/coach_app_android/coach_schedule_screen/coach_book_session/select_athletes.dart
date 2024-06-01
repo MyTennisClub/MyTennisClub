@@ -6,10 +6,12 @@ class Select_Athletes extends StatefulWidget {
   final int number;
   final List<Member> selectedAthletes;
   final List<Member> athletesList;
+  final Function checkAthletes;
   const Select_Athletes({
     required this.athletesList,
     required this.selectedAthletes,
     required this.number,
+    required this.checkAthletes,
     super.key,
   });
 
@@ -59,7 +61,7 @@ class SelectAthletes extends State<Select_Athletes> {
     });
 
     //Simulates waiting for an API call
-    await Future.delayed(const Duration(milliseconds: 1000));
+    await Future.delayed(const Duration(milliseconds: 500));
 
     setState(() {
       _filteredData = athleteList
@@ -207,6 +209,7 @@ class SelectAthletes extends State<Select_Athletes> {
             )
           ])),
           onPressed: () {
+            widget.checkAthletes(widget.selectedAthletes);
             Navigator.of(context).pop(widget.selectedAthletes);
           },
         ),
