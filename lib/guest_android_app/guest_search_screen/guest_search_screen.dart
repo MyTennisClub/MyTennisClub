@@ -2,7 +2,6 @@ import 'dart:async';
 import 'package:flutter/foundation.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/material.dart';
-//import 'package:flutter_config/flutter_config.dart';
 import 'package:geolocator/geolocator.dart';
 import 'package:google_maps_flutter/google_maps_flutter.dart';
 import 'package:mytennisclub/models/clubList.dart';
@@ -91,15 +90,10 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       isLoading = true;
     });
 
-    print(covered);
-    print(type);
-    print(equipment);
     //Simulates waiting for an API call
     await Future.delayed(const Duration(milliseconds: 200));
     List<List<dynamic>> filterCheck =
         await Clublist.retrieveClubs(covered, type, equipment);
-
-    print(filterCheck);
 
     setState(() {
       _filteredData = filterCheck
@@ -107,7 +101,6 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
               .toLowerCase()
               .contains(_searchController.text.toLowerCase()))
           .toList();
-      print(_filteredData);
 
       if (_filteredData.isEmpty) {
         noResults = true;
