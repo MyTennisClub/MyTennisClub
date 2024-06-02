@@ -48,7 +48,7 @@ class _PersonalInfo extends State<Personal_Info> {
   }
 
   bool validate(String email) {
-    bool isvalid = EmailValidator.validate(email, false, true);
+    bool isvalid = EmailValidator.validate(email);
     return isvalid;
   }
 
@@ -112,9 +112,9 @@ class _PersonalInfo extends State<Personal_Info> {
                               if (fullNameValidate(value)) {
                                 fields[0] = true;
                                 nameErrorText = '';
+                                name = value;
                               } else {
                                 nameErrorText = 'Invalid Format';
-                                name = value;
                               }
                             }
                             checkAllFields();
@@ -259,11 +259,12 @@ class _PersonalInfo extends State<Personal_Info> {
                               fields[3] = false;
                             } else {
                               if (validate(value)) {
+                                print(value);
                                 fields[3] = true;
+                                email = value;
                                 emailErrorText = '';
                               } else {
                                 emailErrorText = 'Invalid Format';
-                                email = value;
                               }
                             }
                             checkAllFields();

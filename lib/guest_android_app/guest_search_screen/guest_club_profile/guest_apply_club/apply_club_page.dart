@@ -51,7 +51,7 @@ class ApplyClub extends State<ApplyClub_Main> {
   String kidEmail = '';
   DateTime kidDate = DateTime.now();
 
-  Uint8List? solemn;
+  Uint8List? solemnDec;
   Uint8List? doctorsNote;
   Uint8List? identification;
 
@@ -62,7 +62,9 @@ class ApplyClub extends State<ApplyClub_Main> {
       kidAddress = newAddress;
       kidEmail = newEmail;
       kidDate = newDate;
-      print('ok');
+      print(kidName.split(' ')[0]);
+      print(kidName.split(' ')[1]);
+      print(kidEmail);
     });
   }
 
@@ -75,13 +77,15 @@ class ApplyClub extends State<ApplyClub_Main> {
 
   getSolemn(solemn) {
     setState(() {
-      solemn = solemn.bytes;
+      solemnDec = solemn.bytes;
+      print('solemn bytes ' + solemn.bytes.toString());
     });
   }
 
   getDoctors(doctors) {
     setState(() {
       doctorsNote = doctors.bytes;
+      print('doctor ok');
     });
   }
 
@@ -318,19 +322,23 @@ class ApplyClub extends State<ApplyClub_Main> {
                                     'MEMBER', widget.courtID, widget.guestID);
                               } else if (personSelected.name == 'you' &&
                                   typeSelected.name == 'athlete') {
-                                await Guest.guestApply(identification, null,
-                                    'ATHLETE', widget.courtID, widget.guestID);
+                                await Guest.guestApply(
+                                    identification,
+                                    doctorsNote,
+                                    'ATHLETE',
+                                    widget.courtID,
+                                    widget.guestID);
                               } else if (personSelected.name == 'kid' &&
                                   typeSelected.name == 'member') {
                                 await Guest.kidApply(
                                     identification,
-                                    doctorsNote,
-                                    solemn,
+                                    null,
+                                    solemnDec,
                                     'MEMBER',
                                     widget.courtID,
                                     widget.guestID,
-                                    kidName.split('')[0],
-                                    kidName.split('')[1],
+                                    kidName.split(' ')[0],
+                                    kidName.split(' ')[1],
                                     kidDate,
                                     kidEmail,
                                     kidPhone,
@@ -340,7 +348,7 @@ class ApplyClub extends State<ApplyClub_Main> {
                                 await Guest.kidApply(
                                     identification,
                                     doctorsNote,
-                                    solemn,
+                                    solemnDec,
                                     'ATHLETE',
                                     widget.courtID,
                                     widget.guestID,

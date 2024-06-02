@@ -66,9 +66,10 @@ class Guest extends Person {
     try {
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
-        await conn.query('CALL kid_apply_to_club(?,?,?,?,?,?,?,?,?,?,?);', [
+        await conn.query('CALL kid_apply_to_club(?,?,?,?,?,?,?,?,?,?,?,?);', [
           p_identification,
           p_doctors_note,
+          p_solemn_decl,
           p_to_become,
           p_tennis_club_id,
           p_guardian_id,
