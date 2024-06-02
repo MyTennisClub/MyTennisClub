@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:flutter/services.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 import 'package:email_validator/email_validator.dart';
 import 'package:intl/intl.dart';
@@ -41,7 +42,7 @@ class _PersonalInfo extends State<Personal_Info> {
   TextEditingController dateController = TextEditingController();
 
   bool fullNameValidate(String fullName) {
-    final RegExp regExp = RegExp(r"^[a-zA-Z]+([ '-][a-zA-Z]+)+$");
+    final RegExp regExp = RegExp(r"^[a-zA-Z]+([ '-][a-zA-Z]+)+\s?$");
     bool isValid = regExp.hasMatch(fullName);
     print(isValid);
     return isValid;
@@ -53,7 +54,7 @@ class _PersonalInfo extends State<Personal_Info> {
   }
 
   var phoneFormatter = MaskTextInputFormatter(
-      mask: '###-####-###',
+      mask: '#-###-###',
       filter: {"#": RegExp(r'[0-9]')},
       type: MaskAutoCompletionType.lazy);
 
@@ -62,6 +63,7 @@ class _PersonalInfo extends State<Personal_Info> {
     widget.checkAllFields(checker);
     setState(() {
       if (checker) {
+        print(phone);
         widget.getNewValues(name, phone, address, email, date);
       }
     });
@@ -86,6 +88,10 @@ class _PersonalInfo extends State<Personal_Info> {
                 flex: 3,
                 child: (widget.personSelected == 'you')
                     ? TextFormField(
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp("[0-9a-zA-Z]"))
+                        ],
                         readOnly: true,
                         key: Key(name),
                         initialValue: widget.name,
@@ -151,9 +157,9 @@ class _PersonalInfo extends State<Personal_Info> {
                       )
                     : TextFormField(
                         decoration: const InputDecoration(
-                          hintText: 'Enter Phone Number',
                           border: OutlineInputBorder(),
                           labelText: 'Telephone',
+                          prefixText: '69',
                         ),
                         keyboardType: TextInputType.phone,
                         inputFormatters: [phoneFormatter],
@@ -163,7 +169,8 @@ class _PersonalInfo extends State<Personal_Info> {
                               fields[1] = false;
                             } else {
                               fields[1] = true;
-                              phone = value;
+                              phone = '69' + value;
+                              print(phone);
                             }
                             checkAllFields();
                           });
@@ -198,12 +205,16 @@ class _PersonalInfo extends State<Personal_Info> {
                         key: Key(address),
                       )
                     : TextFormField(
+                        inputFormatters: [
+                          FilteringTextInputFormatter.allow(
+                              RegExp("[0-9a-zA-Z]"))
+                        ],
                         decoration: const InputDecoration(
                           hintText: 'Enter Home Address',
                           border: OutlineInputBorder(),
                           labelText: 'Address',
                         ),
-                        keyboardType: TextInputType.streetAddress,
+                        keyboardType: TextInputType.name,
                         onChanged: (value) {
                           setState(() {
                             if (value.isEmpty) {
