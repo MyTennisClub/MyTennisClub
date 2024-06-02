@@ -7,7 +7,7 @@ class DeleteConfirmationDialog {
       builder: (BuildContext context) {
         return AlertDialog(
           title: const Text('Delete Reservation'),
-          content: const Text('Are you sure you want to delete this reservation?'),
+          content: const Text('Are you sure you want to cancel this reservation?'),
           actions: <Widget>[
             TextButton(
               child: const Text('No'),

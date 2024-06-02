@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'athlete_home_screen/athlete_home_screen.dart';
 import 'athlete_schedule_screen/athlete_schedule_screen.dart';
-import 'Reservation.dart';
 
 class AthleteHomePage extends StatefulWidget {
   const AthleteHomePage({Key? key}) : super(key: key);

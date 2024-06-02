@@ -14,8 +14,7 @@ class Clublist {
     try {
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
-        var results = await conn
-            .query("call getClubs(?,?,?)", [covered, field, equipment]);
+        var results = await conn.query("call getClubs(?,?,?)", [covered, field, equipment]);
 
         if (results.isNotEmpty) {
           for (var row in results) {

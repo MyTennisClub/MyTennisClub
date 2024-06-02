@@ -47,8 +47,6 @@ class Reservation {
         if (reservation.isNotEmpty) {
           var row = reservation.first;
 
-          print(reservation);
-
           reservationMap = {
             'id': row['id'],
             'title': row['title'],
@@ -64,10 +62,48 @@ class Reservation {
           throw Exception('No reservation found with the given ID');
         }
       }
-    } catch (e) {
+    }
+    catch (e) {
       throw Exception('Error fetching reservation: $e');
     }
 
     return reservationMap;
   }
+
+  static Future<Map<int, dynamic>> getUpcomingRes(int user_id) async {
+    Map<int, dynamic> reservationMap = {};
+    try {
+      final conn = await MySQLConnector.createConnection();
+      if (conn != null) {
+        var reservations = await conn.query("call GetCoachPendingReservationsAndSessions(?)", [user_id]);
+        for (var row in reservations) {
+          reservationMap[row['res_id']] = {
+            'id': row['res_id'],
+            'court_name': row['court_name'],
+            'start_time': row['start_time'],
+            'end_time': row['end_time'],
+          };
+        }
+        await conn.close();
+      }
+    } catch (e) {
+      throw Exception('Error fetching reservations: $e');
+    }
+
+    return reservationMap;
+  }
+
+  static Future<void> calcelRes(int res_id) async {
+    Map<int, dynamic> reservationMap = {};
+    try {
+      final conn = await MySQLConnector.createConnection();
+      if (conn != null) {
+        await conn.query("call cancel_reservation(?)", [res_id]);
+        await conn.close();
+      }
+    } catch (e) {
+      throw Exception('Error fetching reservations: $e');
+    }
+  }
+
 }
