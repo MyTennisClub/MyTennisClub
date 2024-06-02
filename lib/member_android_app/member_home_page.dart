@@ -104,11 +104,17 @@ class FeedScreen extends StatelessWidget {
   }
 }
 
-class ProfileScreen extends StatelessWidget {
+class ProfileScreen extends StatefulWidget {
   const ProfileScreen({super.key});
 
   @override
+  State<ProfileScreen> createState() => _ProfileScreenState();
+}
+
+class _ProfileScreenState extends State<ProfileScreen> {
+  int guestID = 1;
+  @override
   Widget build(BuildContext context) {
-    return const MemberProfileScreen();
+    return MemberProfileScreen(guestID: guestID);
   }
 }

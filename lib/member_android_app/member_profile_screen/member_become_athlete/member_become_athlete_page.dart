@@ -4,7 +4,8 @@ import 'package:mytennisclub/member_android_app/member_profile_screen/member_bec
 import 'package:mytennisclub/member_android_app/member_profile_screen/member_become_athlete/personal_info.dart';
 
 class MemberBecomeAthlete extends StatefulWidget {
-  const MemberBecomeAthlete({super.key});
+  final List memberInfo;
+  const MemberBecomeAthlete({required this.memberInfo, super.key});
 
   @override
   State<MemberBecomeAthlete> createState() => _MemberBecomeAthleteState();
