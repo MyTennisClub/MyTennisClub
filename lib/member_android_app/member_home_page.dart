@@ -112,9 +112,9 @@ class ProfileScreen extends StatefulWidget {
 }
 
 class _ProfileScreenState extends State<ProfileScreen> {
-  int guestID = 1;
+  int memberID = 4;
   @override
   Widget build(BuildContext context) {
-    return MemberProfileScreen(guestID: guestID);
+    return MemberProfileScreen(memberID: memberID);
   }
 }

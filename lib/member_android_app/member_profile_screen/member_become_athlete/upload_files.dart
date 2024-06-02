@@ -3,7 +3,9 @@ import 'package:file_picker/file_picker.dart';
 
 class UploadFiles extends StatefulWidget {
   final Function checkUpload;
-  const UploadFiles({required this.checkUpload, super.key});
+  final Function getDoctors;
+  const UploadFiles(
+      {required this.checkUpload, required this.getDoctors, super.key});
 
   @override
   State<UploadFiles> createState() => _UploadFilesState();
@@ -53,16 +55,18 @@ class _UploadFilesState extends State<UploadFiles> {
                 child: OutlinedButton(
                     onPressed: () async {
                       result = await FilePicker.platform.pickFiles(
-                          type: FileType.custom, allowedExtensions: ['pdf']);
+                          type: FileType.custom,
+                          allowedExtensions: ['pdf'],
+                          withData: true);
 
                       if (result == null) {
                       } else {
-                        setState(() {});
-                        for (var element in result!.files) {
-                          upload = true;
-                          widget.checkUpload(upload);
+                        setState(() {
+                          var element = result!.files.first;
+                          widget.checkUpload(true);
                           doctorNote = element.name;
-                        }
+                          widget.getDoctors(element);
+                        });
                       }
                     },
                     child: const Text('Upload')),

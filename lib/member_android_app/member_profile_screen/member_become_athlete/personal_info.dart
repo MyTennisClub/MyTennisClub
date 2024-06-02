@@ -1,19 +1,21 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mask_text_input_formatter/mask_text_input_formatter.dart';
 
 class PersonalInfo extends StatefulWidget {
-  const PersonalInfo({super.key});
+  final List memberInfo;
+  const PersonalInfo({required this.memberInfo, super.key});
 
   @override
   State<PersonalInfo> createState() => _PersonalInfoState();
 }
 
 class _PersonalInfoState extends State<PersonalInfo> {
-  String name = 'Nikolaos Voulgaris';
-  String phone = '6971662770';
-  String address = 'Agiou Andreou 16';
-  String email = 'nickvoul3@gmail.com';
-  String date = 'March 9, 2024';
+  late String name = widget.memberInfo[0];
+  late String phone = widget.memberInfo[3];
+  late String address = widget.memberInfo[1];
+  late String email = widget.memberInfo[2];
+  late DateTime birthDate = widget.memberInfo[4];
 
   var phoneFormatter = MaskTextInputFormatter(
       mask: '###-####-###',
@@ -144,8 +146,8 @@ class _PersonalInfoState extends State<PersonalInfo> {
                       labelText: 'Birth Date',
                     ),
                     keyboardType: TextInputType.datetime,
-                    key: Key(date),
-                    initialValue: date,
+                    key: Key(DateFormat.yMMMMd().format(birthDate)),
+                    initialValue: DateFormat.yMMMMd().format(birthDate),
                   )),
               const Spacer(),
             ],

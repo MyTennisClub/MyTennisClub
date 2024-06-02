@@ -3,8 +3,8 @@ import 'package:mytennisclub/member_android_app/member_profile_screen/member_bec
 import 'package:mytennisclub/models/member.dart';
 
 class MemberProfileScreen extends StatefulWidget {
-  final int guestID;
-  const MemberProfileScreen({required this.guestID, super.key});
+  final int memberID;
+  const MemberProfileScreen({required this.memberID, super.key});
 
   @override
   State<MemberProfileScreen> createState() => _MemberProfileScreenState();
@@ -23,7 +23,7 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
                   MaterialPageRoute(
                     builder: (BuildContext context) =>
                         FutureBuilder<List<dynamic>>(
-                      future: Member.getMemberInfo(widget.guestID),
+                      future: Member.getMemberInfo(widget.memberID),
                       builder: (context, snapshot) {
                         if (snapshot.connectionState ==
                             ConnectionState.waiting) {
@@ -31,11 +31,14 @@ class _MemberProfileScreenState extends State<MemberProfileScreen> {
                               child: CircularProgressIndicator());
                         } else if (!snapshot.hasData ||
                             snapshot.data!.isEmpty) {
-                          return const Center(child: Text('No user retrieved'));
+                          return const Center(
+                              child: Text('No member retrieved'));
                         } else {
                           final memberInfo = snapshot.data!;
 
-                          return MemberBecomeAthlete(memberInfo: memberInfo);
+                          return MemberBecomeAthlete(
+                              memberID: widget.memberID,
+                              memberInfo: memberInfo);
                         }
                       },
                     ),
