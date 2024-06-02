@@ -167,18 +167,26 @@ class Guest extends Person {
     }
   }
 
-  // static Future<void> fet(String fullName , String phone, String address, String email, DateTime birthDate, Uint8List identification, Uint8List p_identification,Uint8List  doctorsNote, int tennisClubId, int guestId) async {
-  //   try {
-  //     final conn = await MySQLConnector.createConnection();
-  //     if (conn != null) {
-  //       await conn.query(
-  //         'CALL you_member_apply(?,?,?,?,?,?,?,?,?);',
-  //         [fullName, phone, address ,email ,birthDate ,identification ,p_identification ,doctorsNote,tennisClubId ,guestId]  ,
-  //       );
-  //
-  //     }
-  //   } catch (e) {
-  //     throw Exception('Error fetching reservation: $e');
-  //   }
-  // }
+  static Future<bool> checkMembership(
+      int p_user_id, int p_tennis_club_id) async {
+    bool isMember = false;
+
+    try {
+      final conn = await MySQLConnector.createConnection();
+      if (conn != null) {
+        print('in connection');
+
+        var result = await conn.query(
+          'CALL CheckUserClubMembership(?,?);',
+          [p_user_id, p_tennis_club_id],
+        );
+        isMember = (result.first['p_is_member'] == 1) ? true : false;
+
+        await conn.close();
+      }
+    } catch (e) {
+      throw Exception('Error getting user: $e');
+    }
+    return isMember;
+  }
 }

@@ -15,7 +15,7 @@ class ClubReview extends StatefulWidget {
 
 class _ClubReviewState extends State<ClubReview> {
   Future<void> _openReview(context) async {
-    var result = showModalBottomSheet<List<String>>(
+    showModalBottomSheet<List<String>>(
       isDismissible: false,
       useSafeArea: true,
       isScrollControlled: true,
@@ -29,6 +29,7 @@ class _ClubReviewState extends State<ClubReview> {
 
   @override
   Widget build(BuildContext context) {
+    bool canSubmit = true;
     return FutureBuilder<List<dynamic>>(
         future: TennisClub.getClubReviews(widget.clubID),
         builder: (context, snapshot) {
@@ -40,15 +41,18 @@ class _ClubReviewState extends State<ClubReview> {
             final clubReviews = snapshot.data!;
             late List<int> likes = List<int>.generate(
                 clubReviews.length, (int index) => clubReviews[index][2]);
-            late List<bool> likePressed = List<bool>.generate(
-                clubReviews.length, (int index) => false,
-                growable: true);
 
+            for (var row in clubReviews) {
+              if (row[1] == widget.guestID) {
+                canSubmit = false;
+              }
+            }
             return SingleChildScrollView(
               child: Column(
                 children: [
                   ListView.builder(
                     shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
                     padding: const EdgeInsets.all(8),
                     itemCount: clubReviews.length,
                     itemBuilder: (BuildContext context, int index) {
@@ -117,37 +121,36 @@ class _ClubReviewState extends State<ClubReview> {
                                 padding: const EdgeInsets.all(8.0),
                                 child: Row(
                                   children: [
-                                    (likePressed[index] == false)
-                                        ? GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                Guest.addLike(
-                                                    clubReviews[index][1],
-                                                    widget.clubID);
-                                                likePressed[index] = true;
-                                                likes[index]++;
-                                              });
-                                            },
-                                            child: const Icon(
-                                                Icons.favorite_border_outlined,
-                                                size: 20),
-                                          )
-                                        : GestureDetector(
-                                            onTap: () {
-                                              setState(() {
-                                                Guest.removeLike(
-                                                    clubReviews[index][1],
-                                                    widget.clubID);
+                                    //(likePressed[index] == false)
+                                    GestureDetector(
+                                      onTap: () {
+                                        setState(() {
+                                          Guest.addLike(clubReviews[index][1],
+                                              widget.clubID);
+                                          // likePressed[index] = true;
+                                          likes[index]++;
+                                        });
+                                      },
+                                      child: const Icon(
+                                          Icons.favorite_border_outlined,
+                                          size: 20),
+                                    ),
+                                    // : GestureDetector(
+                                    //     onTap: () {
+                                    //       setState(() {
+                                    //         Guest.removeLike(
+                                    //             clubReviews[index][1],
+                                    //             widget.clubID);
 
-                                                likePressed[index] = false;
-                                                likes[index]--;
-                                              });
-                                            },
-                                            child: const Icon(
-                                              Icons.favorite,
-                                              size: 20,
-                                            ),
-                                          ),
+                                    //         likePressed[index] = false;
+                                    //         likes[index]--;
+                                    //       });
+                                    //     },
+                                    //   child: const Icon(
+                                    //     Icons.favorite,
+                                    //     size: 20,
+                                    //   ),
+                                    // ),
                                     Padding(
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8.0),
@@ -176,11 +179,20 @@ class _ClubReviewState extends State<ClubReview> {
                   Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: SizedBox(
-                        child: FilledButton(
-                            onPressed: () async {
-                              _openReview(context);
-                            },
-                            child: const Text('Review Club'))),
+                        child: (canSubmit)
+                            ? FilledButton(
+                                onPressed: () async {
+                                  bool isMember = await Guest.checkMembership(
+                                      widget.guestID, widget.clubID);
+
+                                  isMember
+                                      ? _openReview(context)
+                                      : _showErrorDialog(context,
+                                          'You Are Not Allowed To Review This Club');
+                                },
+                                child: const Text('Review Club'))
+                            : const Text(
+                                'You Have Already Reviewed This Club')),
                   ),
                 ],
               ),
@@ -188,4 +200,24 @@ class _ClubReviewState extends State<ClubReview> {
           }
         });
   }
+}
+
+void _showErrorDialog(BuildContext context, String message) {
+  showDialog(
+    context: context,
+    builder: (BuildContext context) {
+      return AlertDialog(
+        title: const Text('Error'),
+        content: Text(message),
+        actions: [
+          TextButton(
+            onPressed: () {
+              Navigator.of(context).pop();
+            },
+            child: const Text('OK'),
+          ),
+        ],
+      );
+    },
+  );
 }
