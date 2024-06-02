@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:mytennisclub/models/reservation.dart';
 import '../../../models/court.dart';
 import 'success_page.dart';
 import 'available_hours.dart';
@@ -51,6 +52,8 @@ class BookSession extends State<BookSession_Main> {
   String? court = '';
   List<Map<String, dynamic>> selectedAthletes = [];
   bool _futureExec = true;
+  int? courtId;
+  String idsString = '';
 
   Future<void> getFirstDate() async {
     DateTime innerDate = DateTime.now();
@@ -72,7 +75,6 @@ class BookSession extends State<BookSession_Main> {
 
   Future<void> fetchCourtsAndHours() async {
     List<int> athleteIds = [];
-    String idsString = '';
     if (selectedAthletes.isNotEmpty) {
       selectedAthletes.forEach((athlete) {
         athleteIds.add(athlete['user_id']);
@@ -172,7 +174,8 @@ class BookSession extends State<BookSession_Main> {
       for (var key = 0; key < availableCourts.length; key++) {
         if (hourCheck[key] && durationCheck && numberCheck && paymentCheck) {
           visible[key] = true;
-          court = 'Court ${availableCourts[key]}';
+          court = 'Court $courtId';
+
           calcuateDuration(hour, duration);
         } else {
           visible[key] = false;
@@ -331,7 +334,7 @@ class BookSession extends State<BookSession_Main> {
                                   itemCount: availableCourts.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
-                                    int courtId =
+                                    courtId =
                                         availableCourts.keys.elementAt(index);
                                     Map<String, dynamic> courtData =
                                         availableCourts[courtId]!;
@@ -424,7 +427,16 @@ class BookSession extends State<BookSession_Main> {
                                                                         83,
                                                                         135,
                                                                         1)),
-                                                        onPressed: () {
+                                                        onPressed: () async {
+                                                          // await Reservation
+                                                          //     .createPrivateCoachSession(
+                                                          //         2,
+                                                          //         courtId!,
+                                                          //         hour!,
+                                                          //         endhour!,
+                                                          //         number,
+                                                          //         1,
+                                                          //         idsString);
                                                           Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
