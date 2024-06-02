@@ -52,6 +52,24 @@ class BookSession extends State<BookSession_Main> {
   List<Map<String, dynamic>> selectedAthletes = [];
   bool _futureExec = true;
 
+  Future<void> getFirstDate() async {
+    DateTime innerDate = DateTime.now();
+    bool found = false;
+    while (!found) {
+      Map<int, Map<String, dynamic>> availableCourts =
+          await Court.fetchCourtsAndHours(
+              2, innerDate, duration!, '1', number, '');
+
+      if (availableCourts.isNotEmpty) {
+        found = true;
+        date = innerDate;
+        break;
+      } else {
+        innerDate.add(const Duration(days: 1));
+      }
+    }
+  }
+
   Future<void> fetchCourtsAndHours() async {
     List<int> athleteIds = [];
     String idsString = '';
