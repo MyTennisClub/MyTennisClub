@@ -1,35 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import 'package:mysql1/mysql1.dart';
-import 'package:mytennisclub/Database/ConnectionDatabase.dart';
-import 'package:qr_flutter/qr_flutter.dart';
-
-enum ResType { private, public }
-
-class Reservation {
-  final int id;
-  final String title;
-  final String court;
-  final DateTime startTime;
-  final DateTime endTime;
-  late Widget qrCode; // Variable to store the QR code
-  final ResType resType;
-
-  Reservation({
-    required this.id,
-    required this.title,
-    required this.court,
-    required this.startTime,
-    required this.endTime,
-    required this.resType,
-  }) {
-    qrCode = QrImageView(
-      data: id.toString(),
-      version: QrVersions.auto,
-      gapless: false,
-    ); // Call function to generate QR code
-  }
-}
+import 'package:mytennisclub/models/reservation.dart';
 
 class CalendarWidget extends StatefulWidget {
   const CalendarWidget({Key? key}) : super(key: key);
@@ -39,59 +10,14 @@ class CalendarWidget extends StatefulWidget {
 }
 
 class _CalendarWidgetState extends State<CalendarWidget> {
-  late Future<Map<int, Reservation>> _reservationsFuture;
-  MySqlConnection? _connection;
-  Map<int, Reservation> _reservations = {};
+  late Future<Map<int, dynamic>> _reservationsFuture;
+  Map<int, dynamic> _reservations = {};
+
 
   @override
   void initState() {
     super.initState();
-    _reservationsFuture = _fetchReservationsFromDatabase();
-    _databaseConnection();
-  }
-
-  Future<Map<int, Reservation>> _fetchReservationsFromDatabase() async {
-    final Map<int, Reservation> reservationsMap = {};
-    try {
-      final conn = await MySQLConnector.createConnection();
-      if (conn != null) {
-        var results = await conn.query('SELECT * FROM reservations');
-        for (var row in results) {
-          var reservation = Reservation(
-            id: row['id'], // Convert to integer
-            title: row['title'],
-            court: row['court'],
-            startTime:row['start_time'],
-            endTime: row['end_time'],
-            resType: row['res_type'] == 'private' ? ResType.private : ResType.public,
-          );
-          reservationsMap[reservation.id] = reservation;
-        }
-        await conn.close();
-      }
-    } catch (e) {
-      print('An error occurred while fetching reservations: $e');
-    }
-    setState(() {
-      _reservations = reservationsMap;
-    });
-    return reservationsMap;
-  }
-
-  Future<void> _databaseConnection() async {
-    try {
-      final conn = await MySQLConnector.createConnection();
-      if (conn != null) {
-        setState(() {
-          _connection = conn;
-        });
-        print('Connected to database');
-      } else {
-        print('Failed to connect to the database');
-      }
-    } catch (e) {
-      print('An error occurred while connecting to the database: $e');
-    }
+    _reservationsFuture = Reservation.getUpcomingResCalendar(1);
   }
 
   DateTime _currentDate = DateTime.now();
@@ -218,7 +144,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     child: GestureDetector(
                       onTap: () {
                         if (containerColor != Colors.white &&
-                            reservationInfo['type'] != ResType.private) {
+                            reservationInfo['type'] != 'SESSION') {
                           showDialog(
                             context: context,
                             builder: (context) {
@@ -329,39 +255,39 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     bool firstBox = false;
     bool lastBox = false;
     String title = '';
-    ResType type = ResType.public;
+    String type = 'RESERVATION';
     String start = '';
     String end = '';
     String court = '';
 
     for (var reservation in _reservations.values) {
-      if (reservation.startTime.isBefore(endOfHour) &&
-          reservation.endTime.isAfter(startOfHour)) {
-        title = reservation.title;
-        type = reservation.resType;
-        court = reservation.court;
+      DateTime startTime = reservation['start_time'];
+      DateTime endTime = reservation['end_time'];
+      String resType = reservation['type'];
 
-        if (reservation.startTime.isAtSameMomentAs(startOfHour)) {
+      if (startTime.isBefore(endOfHour) && endTime.isAfter(startOfHour)) {
+        title = reservation['court_name'];
+        type = resType;
+        court = reservation['club_name'];
+
+        if (startTime.isAtSameMomentAs(startOfHour)) {
           firstBox = true;
           start = 'start';
-        } else if (reservation.startTime.isAtSameMomentAs(halfHour)) {
+        } else if (startTime.isAtSameMomentAs(halfHour)) {
           firstBox = true;
           start = 'half';
         }
 
-        if (reservation.endTime.isAtSameMomentAs(endOfHour)) {
+        if (endTime.isAtSameMomentAs(endOfHour)) {
           end = 'end';
-        } else if (reservation.endTime.isAtSameMomentAs(halfHour)) {
+        } else if (endTime.isAtSameMomentAs(halfHour)) {
           end = 'half';
         }
 
-        if ((reservation.startTime.isBefore(halfHour) &&
-            reservation.endTime.isAfter(startOfHour)) ||
-            (reservation.startTime.isBefore(endOfHour) &&
-                reservation.endTime.isAfter(halfHour)) ||
-            (reservation.endTime.hour == hour &&
-                reservation.endTime.minute == 30)) {
-          if (reservation.resType == ResType.public) {
+        if ((startTime.isBefore(halfHour) && endTime.isAfter(startOfHour)) ||
+            (startTime.isBefore(endOfHour) && endTime.isAfter(halfHour)) ||
+            (endTime.hour == hour && endTime.minute == 30)) {
+          if (resType == 'RESERVATION') {
             color = const Color.fromRGBO(0, 83, 135, 1);
           } else {
             color = const Color.fromRGBO(0, 83, 120, 50);
@@ -381,6 +307,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       }
     }
 
+
     return {
       'title': title,
       'color': color,
@@ -399,7 +326,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       child: Column(
         children: [
           Expanded(
-            child: FutureBuilder<Map<int, Reservation>>(
+            child: FutureBuilder<Map<int, dynamic>>(
               future: _reservationsFuture,
               builder: (context, snapshot) {
                 if (snapshot.connectionState == ConnectionState.waiting) {
