@@ -62,15 +62,11 @@ class ApplyClub extends State<ApplyClub_Main> {
       kidAddress = newAddress;
       kidEmail = newEmail;
       kidDate = newDate;
-      print(kidName.split(' ')[0]);
-      print(kidName.split(' ')[1]);
-      print(kidEmail);
     });
   }
 
   getID(id) {
     setState(() {
-      print('id bytes ' + id.bytes.toString());
       identification = id.bytes;
     });
   }
@@ -78,14 +74,12 @@ class ApplyClub extends State<ApplyClub_Main> {
   getSolemn(solemn) {
     setState(() {
       solemnDec = solemn.bytes;
-      print('solemn bytes ' + solemn.bytes.toString());
     });
   }
 
   getDoctors(doctors) {
     setState(() {
       doctorsNote = doctors.bytes;
-      print('doctor ok');
     });
   }
 
