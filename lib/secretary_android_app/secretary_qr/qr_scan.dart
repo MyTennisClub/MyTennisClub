@@ -77,6 +77,7 @@ class QRScan extends State<QR_Scan> {
         if (_isInteger(result!.code!)) {
           try {
             int scannedId = int.parse(result!.code!);
+            print('----------- $scannedId ---------');
             _controller!.pauseCamera(); // Pause the camera to stop scanning
 
             var reservation =

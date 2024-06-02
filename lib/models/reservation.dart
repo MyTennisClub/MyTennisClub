@@ -41,7 +41,7 @@ class Reservation {
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
         var reservation = await conn.query(
-          'SELECT * FROM reservations WHERE id = ?',
+          'SELECT * FROM courtreservations WHERE res_id = ?',
           [id],
         );
 
@@ -51,12 +51,12 @@ class Reservation {
           print(reservation);
 
           reservationMap = {
-            'id': row['id'],
-            'title': row['title'],
-            'court': row['court'],
-            'start_time': row['start_time'],
-            'end_time': row['end_time'],
+            'id': row['res_id'],
+            'court': row['res_court_id'],
+            'start_time': row['res_start_date'],
+            'end_time': row['res_end_date'],
             'res_type': row['res_type'],
+            'status': row['res_status'],
           };
 
           await conn.close();

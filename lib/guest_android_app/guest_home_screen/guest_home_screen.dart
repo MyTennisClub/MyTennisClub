@@ -2,42 +2,38 @@ import 'package:flutter/material.dart';
 import 'reservations_ui.dart';
 import 'Reservation.dart';
 
-
-
 List<Reservation> reservations = [
   Reservation(
-    id: 1,
+    id: 1000002,
     title: 'ATH Tennis',
     court: 'Court A',
     startTime: DateTime.parse('2024-08-04 12:00:00'),
     endTime: DateTime.parse('2024-08-04 13:00:00'),
   ),
   Reservation(
-    id: 2,
+    id: 1000004,
     title: 'ATH Tennis',
     court: 'Court B',
     startTime: DateTime.parse('2024-08-04 14:00:00'),
     endTime: DateTime.parse('2024-08-04 15:00:00'),
   ),
   Reservation(
-    id: 3,
+    id: 1000006,
     title: 'ATH Tennis',
     court: 'Court C',
     startTime: DateTime.now().add(const Duration(hours: 1)),
-    endTime: DateTime.now().add(const Duration(hours: 2)), // Example of upcoming reservation
+    endTime: DateTime.now()
+        .add(const Duration(hours: 2)), // Example of upcoming reservation
   ),
   // Add more reservations here
 ];
 
 // Sort reservations by start time
 
-
 // Sort reservations by start time
 
 class GuestHomeScreen extends StatelessWidget {
   const GuestHomeScreen({super.key});
-
-
 
   @override
   Widget build(BuildContext context) {
@@ -62,7 +58,7 @@ class GuestHomeScreen extends StatelessWidget {
           Expanded(
             child: Container(
               color: Colors.grey.shade300,
-              child:  UpcomingReservations(
+              child: UpcomingReservations(
                 reservations: reservations,
               ),
               // child: const Text("data")

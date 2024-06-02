@@ -15,7 +15,7 @@ class QRInfo extends State<QR_Info> {
   late String lastName;
   late int people = 4;
   late String equipment;
-  late String court;
+  late int court;
   late String resDate;
   late String startTime;
   late String endTime;
@@ -173,7 +173,7 @@ class QRInfo extends State<QR_Info> {
                                             style: TextStyle(
                                                 fontWeight: FontWeight.w500)),
                                       ),
-                                      Expanded(child: Text(court)),
+                                      Expanded(child: Text('$court')),
                                       const Spacer(),
                                     ],
                                   ),
