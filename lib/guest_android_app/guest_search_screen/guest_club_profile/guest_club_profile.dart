@@ -63,23 +63,10 @@ class _ClubProfileState extends State<ClubProfile>
           const Center(
             child: Text("Announcements"),
           ),
-          FutureBuilder<List<dynamic>>(
-              future: TennisClub.getClubReviews(widget.clubInfo[0]),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return const Center(child: CircularProgressIndicator());
-                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
-                  return const Center(child: Text('No club retrieved'));
-                } else {
-                  final clubReviews = snapshot.data!;
-
-                  return ClubReview(
-                    clubReviews: clubReviews,
-                    clubID: widget.clubInfo[0],
-                    guestID: widget.guestID,
-                  );
-                }
-              })
+          ClubReview(
+            clubID: widget.clubInfo[0],
+            guestID: widget.guestID,
+          )
         ],
       ),
     );
