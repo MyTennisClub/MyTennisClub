@@ -118,6 +118,55 @@ class Guest extends Person {
     return guestInfo;
   }
 
+  static Future<void> addLike(int userID, int clubID) async {
+    try {
+      final conn = await MySQLConnector.createConnection();
+      if (conn != null) {
+        await conn.query(
+          'CALL add_like(?,?);',
+          [userID, clubID],
+        );
+        print('ok');
+        await conn.close();
+      }
+    } catch (e) {
+      throw Exception('Error getting user: $e');
+    }
+  }
+
+  static Future<void> removeLike(int userID, int clubID) async {
+    try {
+      final conn = await MySQLConnector.createConnection();
+      if (conn != null) {
+        await conn.query(
+          'CALL remove_like(?,?);',
+          [userID, clubID],
+        );
+        print('ok');
+        await conn.close();
+      }
+    } catch (e) {
+      throw Exception('Error getting user: $e');
+    }
+  }
+
+  static Future<void> makeReview(int p_user_id, int p_tennis_club_id,
+      int p_review_stars, String p_review_text) async {
+    try {
+      final conn = await MySQLConnector.createConnection();
+      if (conn != null) {
+        await conn.query(
+          'CALL add_guest_review(?,?,?,?);',
+          [p_user_id, p_tennis_club_id, p_review_stars, p_review_text],
+        );
+        print('review_added');
+        await conn.close();
+      }
+    } catch (e) {
+      throw Exception('Error getting user: $e');
+    }
+  }
+
   // static Future<void> fet(String fullName , String phone, String address, String email, DateTime birthDate, Uint8List identification, Uint8List p_identification,Uint8List  doctorsNote, int tennisClubId, int guestId) async {
   //   try {
   //     final conn = await MySQLConnector.createConnection();

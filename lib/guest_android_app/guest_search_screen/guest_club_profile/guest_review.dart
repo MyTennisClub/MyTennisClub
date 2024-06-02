@@ -1,9 +1,12 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_rating_bar/flutter_rating_bar.dart';
 import 'package:flutter/services.dart';
+import 'package:mytennisclub/models/guest.dart';
 
 class GuestReview extends StatefulWidget {
-  const GuestReview({super.key});
+  final int guestID;
+  final int clubID;
+  const GuestReview({required this.clubID, required this.guestID, super.key});
 
   @override
   State<GuestReview> createState() => _GuestReviewState();
@@ -12,7 +15,7 @@ class GuestReview extends StatefulWidget {
 class _GuestReviewState extends State<GuestReview> {
   String _errorText = '';
   String review = '';
-  String userRating = '';
+  double userRating = 0;
 
   @override
   Widget build(BuildContext context) {
@@ -51,11 +54,14 @@ class _GuestReviewState extends State<GuestReview> {
                                 itemSize: 19,
                                 initialRating: 3,
                                 itemCount: 5,
-                                allowHalfRating: true,
+                                allowHalfRating: false,
                                 itemBuilder: (context, _) => const Icon(
                                     Icons.star,
                                     color: Color.fromRGBO(255, 195, 116, 1)),
-                                onRatingUpdate: (rating) {}),
+                                onRatingUpdate: (rating) {
+                                  print(rating);
+                                  userRating = rating;
+                                }),
                           ],
                         ),
                       ),
@@ -97,8 +103,15 @@ class _GuestReviewState extends State<GuestReview> {
                   ? Padding(
                       padding: const EdgeInsets.all(60.0),
                       child: FilledButton(
-                        onPressed: () {
-                          Navigator.of(context).pop(['Nikos', review]);
+                        onPressed: () async {
+                          print(widget.guestID);
+                          print(widget.clubID);
+                          print(userRating.toInt());
+                          print(review);
+                          await Guest.makeReview(widget.guestID, widget.clubID,
+                              userRating.toInt(), review);
+
+                          Navigator.of(context).pop();
                         },
                         // ignore: prefer_const_constructors
                         child: Text('Submit'),

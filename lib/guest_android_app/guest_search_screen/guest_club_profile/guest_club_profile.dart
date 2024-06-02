@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_club_profile_review.dart';
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_club_profile_info.dart';
+import 'package:mytennisclub/models/tennis_club.dart';
 
 class ClubProfile extends StatefulWidget {
   final Function checkClubSelected;
@@ -62,7 +63,23 @@ class _ClubProfileState extends State<ClubProfile>
           const Center(
             child: Text("Announcements"),
           ),
-          const ClubReview(),
+          FutureBuilder<List<dynamic>>(
+              future: TennisClub.getClubReviews(widget.clubInfo[0]),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(child: CircularProgressIndicator());
+                } else if (!snapshot.hasData || snapshot.data!.isEmpty) {
+                  return const Center(child: Text('No club retrieved'));
+                } else {
+                  final clubReviews = snapshot.data!;
+
+                  return ClubReview(
+                    clubReviews: clubReviews,
+                    clubID: widget.clubInfo[0],
+                    guestID: widget.guestID,
+                  );
+                }
+              })
         ],
       ),
     );

@@ -1,41 +1,59 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/widgets.dart';
 import 'package:intl/intl.dart';
 import 'package:mytennisclub/guest_android_app/guest_search_screen/guest_club_profile/guest_review.dart';
+import 'package:mytennisclub/models/guest.dart';
 
 class ClubReview extends StatefulWidget {
-  const ClubReview({super.key});
+  final List clubReviews;
+  final int guestID;
+  final int clubID;
+  const ClubReview(
+      {required this.clubReviews,
+      required this.clubID,
+      required this.guestID,
+      super.key});
 
   @override
   State<ClubReview> createState() => _ClubReviewState();
 }
 
 class _ClubReviewState extends State<ClubReview> {
-  List<String> names = ['Daniel', 'Alex', 'Monica'];
-  List<int> likes = [1, 5, 6];
-  List<String> dates = [
-    DateFormat.yMMMMd().format(DateTime.now()),
-    DateFormat.yMMMMd().format(DateTime.utc(2024, 3, 5)),
-    DateFormat.yMMMMd().format(DateTime.utc(2024, 5, 3))
-  ];
-  List<String> review = [
-    "Body text for a post. Since it’s a social app, sometimes it’s a hot take, and sometimes it’s a question.",
-    "Body text for a post. Since it’s a social app, sometimes it’s a hot take, and sometimes it’s a question.",
-    "Body text for a post. Since it’s a social app, sometimes it’s a hot take, and sometimes it’s a question."
-  ];
+  late List<int> likes = [];
 
-  List<bool> likePressed = [false, false, false];
+  @override
+  void initState() {
+    print(widget.guestID);
+    for (int index = 0; index < widget.clubReviews.length; index++) {
+      likes.add(widget.clubReviews[index][2]);
+    }
+  }
+  // List<String> dates = [
+  //   DateFormat.yMMMMd().format(DateTime.now()),
+  //   DateFormat.yMMMMd().format(DateTime.utc(2024, 3, 5)),
+  //   DateFormat.yMMMMd().format(DateTime.utc(2024, 5, 3))
+  // ];
+  // List<String> review = [
+  //   "Body text for a post. Since it’s a social app, sometimes it’s a hot take, and sometimes it’s a question.",
+  //   "Body text for a post. Since it’s a social app, sometimes it’s a hot take, and sometimes it’s a question.",
+  //   "Body text for a post. Since it’s a social app, sometimes it’s a hot take, and sometimes it’s a question."
+  // ];
+
+  late List<bool> likePressed = List<bool>.generate(
+      widget.clubReviews.length, (int index) => false,
+      growable: true);
   List<String>? newReview = [];
 
-  Future<List<String>?> _openReview(context) async {
+  Future<void> _openReview(context) async {
     var result = showModalBottomSheet<List<String>>(
       isDismissible: false,
       useSafeArea: true,
       isScrollControlled: true,
       context: context,
-      builder: (context) => const GuestReview(),
+      builder: (context) => GuestReview(
+        guestID: widget.guestID,
+        clubID: widget.clubID,
+      ),
     );
-    return result;
   }
 
   @override
@@ -52,11 +70,11 @@ class _ClubReviewState extends State<ClubReview> {
                   child: ListView.builder(
                     shrinkWrap: true,
                     padding: const EdgeInsets.all(8),
-                    itemCount: names.length,
+                    itemCount: widget.clubReviews.length,
                     itemBuilder: (BuildContext context, int index) {
                       return Container(
                         key: ObjectKey(
-                          names[index],
+                          widget.clubReviews[index],
                         ), // Using the item's value as the key.
                         color: const Color.fromRGBO(244, 246, 251, 1),
                         child: Padding(
@@ -72,7 +90,7 @@ class _ClubReviewState extends State<ClubReview> {
                                     backgroundColor:
                                         const Color.fromRGBO(50, 121, 180, 1),
                                     child: Text(
-                                      names[index][0],
+                                      widget.clubReviews[index][0][0],
                                       style:
                                           const TextStyle(color: Colors.white),
                                     ),
@@ -85,13 +103,17 @@ class _ClubReviewState extends State<ClubReview> {
                                           CrossAxisAlignment.start,
                                       children: [
                                         Text(
-                                          names[index],
+                                          (widget.clubReviews[index][1] !=
+                                                  widget.guestID)
+                                              ? widget.clubReviews[index][0]
+                                              : 'Your review',
                                           style: const TextStyle(
                                               fontWeight: FontWeight.w500,
                                               fontSize: 14),
                                         ),
                                         Text(
-                                          dates[index],
+                                          DateFormat.yMMMMd().format(
+                                              widget.clubReviews[index][5]),
                                           style: const TextStyle(
                                               color: Color.fromRGBO(
                                                   130, 130, 130, 1),
@@ -105,7 +127,7 @@ class _ClubReviewState extends State<ClubReview> {
                               Padding(
                                 padding: const EdgeInsets.all(8.0),
                                 child: Text(
-                                  review[index],
+                                  widget.clubReviews[index][3].toString(),
                                   style: const TextStyle(
                                     color: Color.fromRGBO(29, 27, 32, 0.7),
                                   ),
@@ -119,7 +141,10 @@ class _ClubReviewState extends State<ClubReview> {
                                         ? GestureDetector(
                                             onTap: () {
                                               setState(() {
-                                                print('false');
+                                                Guest.addLike(
+                                                    widget.clubReviews[index]
+                                                        [1],
+                                                    widget.clubID);
                                                 likePressed[index] = true;
                                                 likes[index]++;
                                               });
@@ -131,7 +156,11 @@ class _ClubReviewState extends State<ClubReview> {
                                         : GestureDetector(
                                             onTap: () {
                                               setState(() {
-                                                print('true');
+                                                Guest.removeLike(
+                                                    widget.clubReviews[index]
+                                                        [1],
+                                                    widget.clubID);
+
                                                 likePressed[index] = false;
                                                 likes[index]--;
                                               });
@@ -145,7 +174,7 @@ class _ClubReviewState extends State<ClubReview> {
                                       padding: const EdgeInsets.symmetric(
                                           horizontal: 8.0),
                                       child: Text(
-                                        '${likes[index].toString()} Likes',
+                                        '${likes[index]} Likes',
                                         style: const TextStyle(
                                           color:
                                               Color.fromRGBO(29, 27, 32, 0.7),
@@ -170,20 +199,19 @@ class _ClubReviewState extends State<ClubReview> {
                 Padding(
                   padding: const EdgeInsets.all(8.0),
                   child: SizedBox(
-                    width: constraints.maxWidth * 0.50,
-                    child: FilledButton(
-                        onPressed: () async {
-                          newReview = await _openReview(context);
-                          print(newReview![0]);
-                          print(newReview![1]);
-                          names.add(newReview![0]);
-                          review.add(newReview![1]);
-                          dates.add(DateFormat.yMMMMd().format(DateTime.now()));
-                          likePressed.add(false);
-                          likes.add(0);
-                        },
-                        child: const Text('Review Club')),
-                  ),
+                      width: constraints.maxWidth * 0.50,
+                      child: FilledButton(
+                          onPressed: () async {
+                            _openReview(context);
+                            // print(newReview![0]);
+                            // print(newReview![1]);
+                            // names.add(newReview![0]);
+                            // review.add(newReview![1]);
+                            // dates.add(DateFormat.yMMMMd().format(DateTime.now()));
+                            // likePressed.add(false);
+                            // likes.add(0);
+                          },
+                          child: const Text('Review Club'))),
                 ),
               ],
             ),

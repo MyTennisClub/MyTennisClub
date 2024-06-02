@@ -106,9 +106,7 @@ class _SearchScreenState extends State<SearchScreen> {
   checkClubSelected(check, id) {
     setState(() {
       clubSelected = check;
-      print(clubSelected);
       clubID = id;
-      print(clubID);
     });
   }
 

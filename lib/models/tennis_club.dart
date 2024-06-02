@@ -98,4 +98,42 @@ class TennisClub {
 
     return clubInfoList;
   }
+
+  static Future<List<dynamic>> getClubReviews(int id) async {
+    List<dynamic> clubReviews = [];
+    try {
+      final conn = await MySQLConnector.createConnection();
+      if (conn != null) {
+        var reviews = await conn.query(
+          "call load_review_data(?)",
+          [id],
+        );
+
+        if (reviews.isNotEmpty) {
+          for (var row in reviews) {
+            clubReviews.add([
+              row['user_first_name'],
+              row['user_id'],
+              row['review_likes'],
+              row['review_description'],
+              row['review_check'],
+              row['review_date'],
+              row['review_stars'],
+            ]);
+          }
+
+          print(clubReviews);
+
+          await conn.close();
+        } else {
+          await conn.close();
+          throw Exception('No club found with the given ID');
+        }
+      }
+    } catch (e) {
+      throw Exception('Error fetching reviews: $e');
+    }
+
+    return clubReviews;
+  }
 }
