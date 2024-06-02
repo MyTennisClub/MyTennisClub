@@ -15,7 +15,7 @@ class _UpcomingReservationsState extends State<UpcomingReservations> {
   @override
   void initState() {
     super.initState();
-    _reservationsFuture = Reservation.getUpcomingRes(3);
+    _reservationsFuture = Reservation.getUpcomingRes(1);
   }
 
 
@@ -67,9 +67,10 @@ class _UpcomingReservationsState extends State<UpcomingReservations> {
                                       child: Container(
                                         child: Column(
                                           children: <Widget>[
-                                            Text(reservation['court_name']),
-                                            Text(DateFormat('dd-MM-yyyy').format(reservation['start_time'])),
-                                            Text('${DateFormat('HH:mm').format(reservation['start_time'])} - ${DateFormat('HH:mm').format(reservation['end_time'])}'),
+                                            Text(reservation['club_name'], style: const TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                                            Text(reservation['court_name'],style: const TextStyle(fontSize: 18)),
+                                            Text(DateFormat('dd-MM-yyyy').format(reservation['start_time']),style: const TextStyle(fontSize: 18)),
+                                            Text('${DateFormat('HH:mm').format(reservation['start_time'])} - ${DateFormat('HH:mm').format(reservation['end_time'])}',style: const TextStyle(fontSize: 18)),
                                           ],
                                         ),
                                       ),
@@ -87,7 +88,7 @@ class _UpcomingReservationsState extends State<UpcomingReservations> {
                                             onPressed: () async {
                                               String? result = await _confirmDelete(context);
                                               if (result == 'Yes') {
-                                                Reservation.calcelRes(entry.key);
+                                                Reservation.cancelRes(entry.key);
                                                 Navigator.pop(context);
                                               }
                                             },
@@ -141,10 +142,18 @@ class ItemWidget extends StatelessWidget {
                     crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
                       Text(
-                        reservation['court_name'],
+                        reservation['club_name'],
                         textAlign: TextAlign.start,
                         style: const TextStyle(
                           fontSize: 15,
+                          fontWeight: FontWeight.bold,
+                        ),
+                      ),
+                      Text(
+                        reservation['court_name'],
+                        textAlign: TextAlign.start,
+                        style: const TextStyle(
+                          fontSize: 12,
                           fontWeight: FontWeight.bold,
                         ),
                       ),

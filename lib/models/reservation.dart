@@ -75,13 +75,14 @@ class Reservation {
     try {
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
-        var reservations = await conn.query("call GetCoachPendingReservationsAndSessions(?)", [user_id]);
+        var reservations = await conn.query("call GetCoachPendingReservations(?)", [user_id]);
         for (var row in reservations) {
           reservationMap[row['res_id']] = {
             'id': row['res_id'],
             'court_name': row['court_name'],
             'start_time': row['start_time'],
             'end_time': row['end_time'],
+            'club_name': row['club_name']
           };
         }
         await conn.close();
@@ -93,7 +94,7 @@ class Reservation {
     return reservationMap;
   }
 
-  static Future<void> calcelRes(int res_id) async {
+  static Future<void> cancelRes(int res_id) async {
     Map<int, dynamic> reservationMap = {};
     try {
       final conn = await MySQLConnector.createConnection();
@@ -104,6 +105,31 @@ class Reservation {
     } catch (e) {
       throw Exception('Error fetching reservations: $e');
     }
+  }
+
+  static Future<Map<int, dynamic>> getUpcomingResCalendar(int user_id) async {
+    Map<int, dynamic> reservationMap = {};
+    try {
+      final conn = await MySQLConnector.createConnection();
+      if (conn != null) {
+        var reservations = await conn.query("call GetCoachPendingReservationsAndSessions(?)", [user_id]);
+        for (var row in reservations) {
+          reservationMap[row['res_id']] = {
+            'id': row['res_id'],
+            'court_name': row['court_name'],
+            'start_time': row['start_time'],
+            'end_time': row['end_time'],
+            'club_name': row['club_name'],
+            'type': row['res_type']
+          };
+        }
+        await conn.close();
+      }
+    } catch (e) {
+      throw Exception('Error fetching reservations: $e');
+    }
+
+    return reservationMap;
   }
 
 }
