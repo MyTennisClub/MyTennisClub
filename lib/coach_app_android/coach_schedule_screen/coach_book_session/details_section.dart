@@ -3,6 +3,8 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter/gestures.dart';
 import 'package:flutter/services.dart';
+import '../../../Database/ConnectionDatabase.dart';
+import '../../../models/athlete.dart';
 import '../../../models/member.dart';
 import 'select_athletes.dart';
 
@@ -10,13 +12,11 @@ class Details_Section extends StatefulWidget {
   final Function checkNumber;
   final Function checkAthletes;
   final double constraints;
-  final List<Member> athletesList;
 
   const Details_Section(
       {required this.checkNumber,
       required this.checkAthletes,
       required this.constraints,
-      required this.athletesList,
       super.key});
 
   @override
@@ -27,15 +27,37 @@ class DetailsSection extends State<Details_Section> {
   late TextEditingController _controller;
   bool numberCheck = true;
   int number = 1;
-  int allowedMemberNumber = 4;
-  List<Member> selectedAthletes = [];
+  int allowedMemberNumber = 0;
+  List<Map<String, dynamic>> selectedAthletes = [];
+  late List<Map<String, dynamic>> athletesList = [];
 
   String _errorText = ('');
+
+  Future<void> _fetchAllowedMemberNumber() async {
+    final conn = await MySQLConnector.createConnection();
+    var result = await conn!.query('CALL GetMaxPeopleCourtByClub(2)');
+
+    allowedMemberNumber = result.first['max_people_court'];
+
+    await conn.close();
+    setState(() {});
+  }
+
+  Future<void> fetchAndDisplayAthletes() async {
+    athletesList = await Athletes.fetchAthletesFromClub(2);
+    // Display the fetched athletes
+    athletesList.forEach((athlete) {
+      print('User ID: ${athlete['user_id']}');
+      print('First Name: ${athlete['user_first_name']}');
+      print('Last Name: ${athlete['user_last_name']}');
+    });
+  }
 
   @override
   void initState() {
     super.initState();
     _controller = TextEditingController(text: '1');
+    _fetchAllowedMemberNumber();
   }
 
   @override
@@ -45,20 +67,31 @@ class DetailsSection extends State<Details_Section> {
   }
 
   Future<void> _openSelectAthletes(BuildContext context) {
-    return showModalBottomSheet<List<Member>>(
-        useSafeArea: true,
-        isScrollControlled: true,
-        context: context,
-        builder: (BuildContext context) {
-          return SizedBox(
-              height: widget.constraints,
-              child: Select_Athletes(
-                number: number,
-                selectedAthletes: selectedAthletes,
-                athletesList: widget.athletesList,
-                checkAthletes: widget.checkAthletes,
-              ));
-        });
+    return showModalBottomSheet<void>(
+      useSafeArea: true,
+      isScrollControlled: true,
+      context: context,
+      builder: (BuildContext context) {
+        return FutureBuilder<void>(
+          future: selectedAthletes.isEmpty ? fetchAndDisplayAthletes() : null,
+          builder: (BuildContext context, AsyncSnapshot<void> snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const CircularProgressIndicator(); // You can show a loading indicator while waiting for the future
+            } else {
+              return SizedBox(
+                height: widget.constraints,
+                child: Select_Athletes(
+                  number: number,
+                  selectedAthletes: selectedAthletes,
+                  athletesList: athletesList,
+                  checkAthletes: widget.checkAthletes,
+                ),
+              );
+            }
+          },
+        );
+      },
+    );
   }
 
   @override

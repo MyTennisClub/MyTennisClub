@@ -1,5 +1,6 @@
 import 'dart:ffi';
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:mytennisclub/Database/ConnectionDatabase.dart';
 
@@ -69,5 +70,57 @@ class Reservation {
     }
 
     return reservationMap;
+  }
+
+  static Future<void> createPrivateCoachSession(
+      int clubId,
+      int courtId,
+      String startTime,
+      String endTime,
+      int numPeople,
+      int coachId,
+      String memberIds) async {
+    try {
+      print(startTime);
+      print(endTime);
+      endTime = endTime.replaceAll(RegExp(r' [AP]M$'), '');
+      final conn = await MySQLConnector.createConnection();
+      if (conn != null) {
+        await conn.query(
+          'CALL CreatePrivateCoachSession(?, ?, ?, ?, ?, ?, ?)',
+          [
+            clubId, // Replace with actual club ID
+            courtId,
+            convertTimeStringToDateTime(startTime).toUtc(),
+            convertTimeStringToDateTime(endTime).toUtc(), // Calculated end date
+            numPeople,
+            coachId, // Replace with actual coach ID
+            memberIds, // Replace with actual member ID
+          ],
+        );
+
+        await conn.close();
+        throw Exception(
+            'Something went wrong with creating Private Reservation');
+      }
+    } catch (e) {
+      throw Exception(
+          'Something went wrong with creating Private Reservation: $e');
+    }
+  }
+
+  static convertTimeStringToDateTime(String timeString) {
+    // Parse the time string
+    List<String> parts = timeString.split(':');
+    int hours = int.parse(parts[0]);
+    int minutes = int.parse(parts[1]);
+
+    // Get the current date
+    DateTime now = DateTime.now();
+
+    // Create a DateTime object with the current date and parsed time
+    DateTime dateTime = DateTime(now.year, now.month, now.day, hours, minutes);
+
+    return dateTime;
   }
 }

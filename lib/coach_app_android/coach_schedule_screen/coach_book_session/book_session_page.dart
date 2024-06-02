@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
+import 'package:mytennisclub/models/reservation.dart';
 import '../../../models/court.dart';
-import '../../../models/member.dart';
 import 'success_page.dart';
 import 'available_hours.dart';
 import 'details_section.dart';
@@ -8,7 +8,6 @@ import 'payment_section.dart';
 import 'duration_section.dart';
 import 'date_section.dart';
 import 'package:intl/intl.dart';
-import 'package:mytennisclub/data/pbc_data.dart';
 
 extension TimeOfDayExtension on TimeOfDay {
   TimeOfDay plusMinutes(int minutes) {
@@ -42,10 +41,8 @@ class BookSession extends State<BookSession_Main> {
   bool durationCheck = true;
   List<bool> hourCheck = [];
   List<bool> visible = [];
-  late List<Member> membersList;
-  late List<Court> courtsList;
-  List<Court> availableCourts = [];
-  Map<Court, List<DateTime>> courtsAndHours = {};
+  late List<Map<String, dynamic>> athletesList = [];
+  late Map<int, Map<String, dynamic>> availableCourts = {};
   int number = 1;
   double payment = 5;
   String? duration = '1:00 h';
@@ -53,48 +50,53 @@ class BookSession extends State<BookSession_Main> {
   String? hour;
   String? endhour;
   String? court = '';
-  List<Member> selectedAthletes = [];
+  List<Map<String, dynamic>> selectedAthletes = [];
+  bool _futureExec = true;
+  int? courtId;
+  String idsString = '';
+
+  Future<void> getFirstDate() async {
+    DateTime innerDate = DateTime.now();
+    bool found = false;
+    while (!found) {
+      Map<int, Map<String, dynamic>> availableCourts =
+          await Court.fetchCourtsAndHours(
+              2, innerDate, duration!, '1', number, '');
+
+      if (availableCourts.isNotEmpty) {
+        found = true;
+        date = innerDate;
+        break;
+      } else {
+        innerDate.add(const Duration(days: 1));
+      }
+    }
+  }
+
+  Future<void> fetchCourtsAndHours() async {
+    List<int> athleteIds = [];
+    if (selectedAthletes.isNotEmpty) {
+      selectedAthletes.forEach((athlete) {
+        athleteIds.add(athlete['user_id']);
+      });
+      idsString = athleteIds.join(', ');
+    }
+    print('--------selected athletes--------');
+    print(idsString);
+
+    availableCourts = await Court.fetchCourtsAndHours(
+        2, DateTime.now(), duration!, '1', number, idsString);
+    _futureExec = false;
+    hourCheck = List.filled(availableCourts.length, false);
+    visible = List.filled(availableCourts.length, false);
+  }
 
   @override
   void initState() {
-    membersList = createMembers();
-    print('Initialization: ${membersList.length}');
-    courtsList = createCourts();
-    createReservations(membersList, courtsList);
-
-    hourCheck = List.filled(courtsList.length, false);
-    visible = List.filled(courtsList.length, false);
-
-    DateTime firstDate = getFirstAvailableDate(courtsList);
-    date = firstDate;
-
-    populateCourts(courtsList, firstDate, duration!, number, selectedAthletes);
-
+    date = DateTime.now();
+    // hourCheck = List.filled(availableCourts.length, false);
+    //visible = List.filled(availableCourts.length, false);
     super.initState();
-  }
-
-  void populateCourts(
-    List<Court> courts,
-    DateTime date,
-    String duration,
-    int numAthletes,
-    List<Member> selectedAthletes,
-  ) {
-    availableCourts = [];
-    for (var i = 0; i < courts.length; i++) {
-      List<DateTime> availableHours = [];
-      if (courts[i].athlete_capacity >= numAthletes) {
-        availableHours = getAvailableHoursForCourt(
-            courts[i], date, duration, selectedAthletes);
-        if (availableHours.isNotEmpty) {
-          availableCourts.add(courts[i]);
-          courtsAndHours[courts[i]] = availableHours;
-          if (i == 0) {
-            print(courtsAndHours[availableCourts[i]]);
-          }
-        }
-      }
-    }
   }
 
   checkHour(check, key, h) {
@@ -113,56 +115,56 @@ class BookSession extends State<BookSession_Main> {
 
   getDate(dat) {
     setState(() {
-      visible = List.filled(courtsList.length, false);
-      hourCheck = List.filled(courtsList.length, false);
+      _futureExec = true;
+      visible = List.filled(availableCourts.length, false);
+      hourCheck = List.filled(availableCourts.length, false);
       date = dat;
       date = date.add(
           Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute));
       print(date);
-      populateCourts(courtsList, date, duration!, number, selectedAthletes);
     });
   }
 
   checkDuration(check, dur) {
     setState(() {
-      visible = List.filled(courtsList.length, false);
-      hourCheck = List.filled(courtsList.length, false);
+      _futureExec = true;
+      visible = List.filled(availableCourts.length, false);
+      hourCheck = List.filled(availableCourts.length, false);
       durationCheck = check;
       duration = dur;
-      populateCourts(courtsList, date, duration!, number, selectedAthletes);
       checkVisible();
     });
   }
 
   checkNumber(check, numb) {
     setState(() {
-      visible = List.filled(courtsList.length, false);
-      hourCheck = List.filled(courtsList.length, false);
+      _futureExec = true;
+      visible = List.filled(availableCourts.length, false);
+      hourCheck = List.filled(availableCourts.length, false);
       numberCheck = check;
       number = numb;
-      populateCourts(courtsList, date, duration!, number, selectedAthletes);
       checkVisible();
     });
   }
 
   checkAthletes(list) {
     setState(() {
-      visible = List.filled(courtsList.length, false);
-      hourCheck = List.filled(courtsList.length, false);
+      _futureExec = true;
+      visible = List.filled(availableCourts.length, false);
+      hourCheck = List.filled(availableCourts.length, false);
       selectedAthletes = list;
 
       print(
           'printing from checkAthlete:${selectedAthletes.length}\n-----Done Printing-----');
-      populateCourts(courtsList, date, duration!, number, selectedAthletes);
       checkVisible();
     });
   }
 
   checkPayment(check, pay) {
     setState(() {
+      _futureExec = true;
       paymentCheck = check;
       payment = pay;
-      populateCourts(courtsList, date, duration!, number, selectedAthletes);
       checkVisible();
     });
   }
@@ -172,7 +174,8 @@ class BookSession extends State<BookSession_Main> {
       for (var key = 0; key < availableCourts.length; key++) {
         if (hourCheck[key] && durationCheck && numberCheck && paymentCheck) {
           visible[key] = true;
-          court = 'Court ${availableCourts[key]}';
+          court = 'Court $courtId';
+
           calcuateDuration(hour, duration);
         } else {
           visible[key] = false;
@@ -216,7 +219,6 @@ class BookSession extends State<BookSession_Main> {
                 padding: const EdgeInsetsDirectional.symmetric(horizontal: 15),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.stretch,
-                  // mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                   children: [
                     const Row(
                       children: [
@@ -233,7 +235,6 @@ class BookSession extends State<BookSession_Main> {
                         checkNumber: checkNumber,
                         checkAthletes: checkAthletes,
                         constraints: constraints.maxHeight,
-                        athletesList: membersList,
                       ),
                     ),
                     Padding(
@@ -293,22 +294,75 @@ class BookSession extends State<BookSession_Main> {
                         ),
                       ],
                     ),
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        availableCourts.isNotEmpty
-                            ? Expanded(
-                                child: ListView.builder(
+                    FutureBuilder<void>(
+                      future:
+                          _futureExec == true ? fetchCourtsAndHours() : null,
+                      builder:
+                          (BuildContext context, AsyncSnapshot<void> snapshot) {
+                        if (snapshot.connectionState ==
+                            ConnectionState.waiting) {
+                          return SizedBox(
+                            width: MediaQuery.of(context).size.width *
+                                0.5, // Adjust the width as needed
+                            height: MediaQuery.of(context).size.height *
+                                0.3, // Adjust the height as needed
+                            child: const Center(
+                              child: CircularProgressIndicator(),
+                            ),
+                          );
+                        } else if (snapshot.hasError) {
+                          return Center(
+                              child: Text('Error: ${snapshot.error}'));
+                        } else {
+                          // Print the map
+                          // print("Courts and their available time slots:");
+                          availableCourts.forEach((courtId, courtData) {
+                            // print(
+                            //     "Court ID: ${courtData['court_id']}, Court Title: ${courtData['court_title']}");
+                            List timeSlots = courtData['time_slots'];
+                            for (var slot in timeSlots) {
+                              // print(
+                              //     "  Start Time: ${slot['start_time']}, End Time: ${slot['end_time']}");
+                            }
+                          });
+
+                          return availableCourts.isNotEmpty
+                              ? ListView.builder(
                                   physics: const NeverScrollableScrollPhysics(),
                                   shrinkWrap: true,
                                   padding: const EdgeInsets.all(8),
                                   itemCount: availableCourts.length,
                                   itemBuilder:
                                       (BuildContext context, int index) {
+                                    courtId =
+                                        availableCourts.keys.elementAt(index);
+                                    Map<String, dynamic> courtData =
+                                        availableCourts[courtId]!;
+                                    List<DateTime> startTimes =
+                                        courtData['time_slots']
+                                            .map<DateTime>((slot) {
+                                      String timeString =
+                                          slot['start_time'].toString();
+                                      List<String> parts =
+                                          timeString.split(':');
+                                      int hours = int.parse(parts[0]);
+                                      int minutes = int.parse(parts[1]);
+                                      int seconds =
+                                          double.parse(parts[2]).floor();
+
+                                      return DateTime(
+                                        DateTime.now().year,
+                                        DateTime.now().month,
+                                        DateTime.now().day,
+                                        hours,
+                                        minutes,
+                                        seconds,
+                                      );
+                                    }).toList();
                                     return Card.outlined(
                                       key: ObjectKey(
-                                        availableCourts[index],
-                                      ), // Using the item's value as the key.
+                                        courtData,
+                                      ),
                                       color: const Color.fromRGBO(
                                           244, 246, 251, 1),
                                       child: Padding(
@@ -324,7 +378,7 @@ class BookSession extends State<BookSession_Main> {
                                                         .spaceBetween,
                                                 children: [
                                                   Text(
-                                                    'Court: ${availableCourts[index].name}',
+                                                    'Court: ${courtData['court_title']}',
                                                     style: const TextStyle(
                                                         fontWeight:
                                                             FontWeight.bold,
@@ -360,21 +414,29 @@ class BookSession extends State<BookSession_Main> {
                                                   checkHour: checkHour,
                                                   id: index,
                                                   isVisible: visible[index],
-                                                  availableHours:
-                                                      courtsAndHours[
-                                                          availableCourts[
-                                                              index]]!,
+                                                  availableHours: startTimes,
                                                 ),
                                                 visible[index]
                                                     ? FilledButton(
-                                                        style: FilledButton.styleFrom(
-                                                            backgroundColor:
-                                                                const Color
-                                                                    .fromRGBO(0,
-                                                                    83, 135, 1)
-                                                            // This is what you need!
-                                                            ),
-                                                        onPressed: () {
+                                                        style: FilledButton
+                                                            .styleFrom(
+                                                                backgroundColor:
+                                                                    const Color
+                                                                        .fromRGBO(
+                                                                        0,
+                                                                        83,
+                                                                        135,
+                                                                        1)),
+                                                        onPressed: () async {
+                                                          // await Reservation
+                                                          //     .createPrivateCoachSession(
+                                                          //         2,
+                                                          //         courtId!,
+                                                          //         hour!,
+                                                          //         endhour!,
+                                                          //         number,
+                                                          //         1,
+                                                          //         idsString);
                                                           Navigator.push(
                                                             context,
                                                             MaterialPageRoute(
@@ -405,13 +467,10 @@ class BookSession extends State<BookSession_Main> {
                                       ),
                                     );
                                   },
-                                ),
-                              )
-                            : Expanded(
-                                child: Container(
+                                )
+                              : Container(
                                   padding:
                                       const EdgeInsets.symmetric(vertical: 100),
-                                  // Set background color to blue
                                   child: const Align(
                                     alignment: Alignment.center,
                                     child: Column(
@@ -420,30 +479,24 @@ class BookSession extends State<BookSession_Main> {
                                           textAlign: TextAlign.center,
                                           'There are no available courts',
                                           style: TextStyle(
-                                            fontWeight: FontWeight
-                                                .w400, // Make the text bold
-                                            fontSize:
-                                                20, // Optional: adjust font size as needed
-                                            // Optional: change text color to white for better visibility
+                                            fontWeight: FontWeight.w400,
+                                            fontSize: 20,
                                           ),
                                         ),
                                         Text(
                                           textAlign: TextAlign.center,
                                           'Please change your requirements',
                                           style: TextStyle(
-                                            fontWeight: FontWeight
-                                                .normal, // Make the text bold
-                                            fontSize:
-                                                16, // Optional: adjust font size as needed
-                                            // Optional: change text color to white for better visibility
+                                            fontWeight: FontWeight.normal,
+                                            fontSize: 16,
                                           ),
                                         ),
                                       ],
                                     ),
                                   ),
-                                ),
-                              ),
-                      ],
+                                );
+                        }
+                      },
                     ),
                   ],
                 ),
