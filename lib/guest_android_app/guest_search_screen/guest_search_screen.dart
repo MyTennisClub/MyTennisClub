@@ -90,10 +90,16 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
       noResults = false;
       isLoading = true;
     });
+
+    print(covered);
+    print(type);
+    print(equipment);
     //Simulates waiting for an API call
     await Future.delayed(const Duration(milliseconds: 200));
     List<List<dynamic>> filterCheck =
         await Clublist.retrieveClubs(covered, type, equipment);
+
+    print(filterCheck);
 
     setState(() {
       _filteredData = filterCheck
@@ -101,6 +107,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
               .toLowerCase()
               .contains(_searchController.text.toLowerCase()))
           .toList();
+      print(_filteredData);
 
       if (_filteredData.isEmpty) {
         noResults = true;
@@ -218,42 +225,37 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
                                     const Color.fromRGBO(210, 230, 255, 1),
                                 label: Text(filterNames[i]),
                                 selected: selectedFilters.contains(i),
-                                onSelected: (bool selected) {
+                                onSelected: (bool selected) async {
                                   setState(() {
-                                    selectedFilters.contains(i)
-                                        ? selectedFilters.remove(i)
-                                        : selectedFilters.add(i);
-                                    if (selectedFilters.isEmpty) {
-                                      noResults = false;
-                                      _performSearch();
+                                    if (selectedFilters.contains(i)) {
+                                      selectedFilters.remove(i);
                                     } else {
-                                      noResults = false;
-                                      setState(() {
-                                        if (selectedFilters.contains(0)) {
-                                          filters[0] = true;
-                                        } else {
-                                          filters[0] = null;
-                                        }
-                                        if (selectedFilters.contains(1)) {
-                                          filters[1] = 'GRASS';
-                                        } else {
-                                          filters[1] = null;
-                                        }
-                                        if (selectedFilters.contains(2)) {
-                                          filters[2] = true;
-                                        } else {
-                                          filters[2] = null;
-                                        }
-                                      });
-
-                                      performSearchwithFilters(
-                                          filters[0], filters[1], filters[2]);
-
-                                      if (_filteredData.isEmpty) {
-                                        noResults = true;
-                                      }
+                                      selectedFilters.add(i);
                                     }
+
+                                    noResults = false;
                                   });
+
+                                  if (selectedFilters.isEmpty) {
+                                    await _performSearch();
+                                  } else {
+                                    filters[0] = selectedFilters.contains(0)
+                                        ? true
+                                        : null;
+                                    filters[1] = selectedFilters.contains(1)
+                                        ? 'GRASS'
+                                        : null;
+                                    filters[2] = selectedFilters.contains(2)
+                                        ? true
+                                        : null;
+
+                                    await performSearchwithFilters(
+                                        filters[0], filters[1], filters[2]);
+
+                                    setState(() {
+                                      noResults = _filteredData.isEmpty;
+                                    });
+                                  }
                                 },
                               );
                             },
@@ -310,7 +312,7 @@ class _GuestsSearchScreenState extends State<GuestsSearchScreen>
                                           color: const Color.fromRGBO(
                                               236, 238, 243, 1),
                                           elevation: 1,
-                                          key: ObjectKey(clubList[index]),
+                                          key: ObjectKey(_filteredData[index]),
                                           child: Column(
                                             mainAxisSize: MainAxisSize.min,
                                             children: <Widget>[
