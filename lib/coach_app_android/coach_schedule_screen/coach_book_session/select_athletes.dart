@@ -1,11 +1,9 @@
 import 'package:flutter/material.dart';
 
-import '../../../models/member.dart';
-
 class Select_Athletes extends StatefulWidget {
   final int number;
-  final List<Member> selectedAthletes;
-  final List<Member> athletesList;
+  final List<Map<String, dynamic>> selectedAthletes;
+  final List<Map<String, dynamic>> athletesList;
   final Function checkAthletes;
   const Select_Athletes({
     required this.athletesList,
@@ -21,24 +19,8 @@ class Select_Athletes extends StatefulWidget {
 
 class SelectAthletes extends State<Select_Athletes> {
   final TextEditingController _searchController = TextEditingController();
-  // final List<String> athleteList = [
-  //   'Cataleya Ho',
-  //   'Melissa Roth',
-  //   'Morgan Reyes',
-  //   'Elliot Quinn',
-  //   'Estrella Escobar',
-  //   'Ace Terell',
-  //   'Carter Spencer',
-  //   'Patrick Dyer',
-  //   'Jonas Wiley',
-  //   "Voulgaris Nikolaos",
-  //   "Bakalis Athanasios",
-  //   "Baknis Georgios",
-  //   "Skandalos Athanasios Spiridon",
-  //   "Stamelos Charilaos Panagiotis"
-  // ];
-  late List<Member> athleteList;
-  List<Member> _filteredData = [];
+  late List<Map<String, dynamic>> athleteList;
+  List<Map<String, dynamic>> _filteredData = [];
   bool _isLoading = false;
 
   @override
@@ -60,14 +42,18 @@ class SelectAthletes extends State<Select_Athletes> {
       _isLoading = true;
     });
 
-    //Simulates waiting for an API call
+    // Simulates waiting for an API call
     await Future.delayed(const Duration(milliseconds: 500));
 
     setState(() {
       _filteredData = athleteList
-          .where((element) => element.fullname
-              .toLowerCase()
-              .contains(_searchController.text.toLowerCase()))
+          .where((element) =>
+              element['user_first_name']
+                  .toLowerCase()
+                  .contains(_searchController.text.toLowerCase()) ||
+              element['user_last_name']
+                  .toLowerCase()
+                  .contains(_searchController.text.toLowerCase()))
           .toList();
       _isLoading = false;
     });
@@ -155,7 +141,8 @@ class SelectAthletes extends State<Select_Athletes> {
                                   widget.selectedAthletes.length <
                                       widget.number) {
                                 setState(() {
-                                  Member athlete = _filteredData[index];
+                                  Map<String, dynamic> athlete =
+                                      _filteredData[index];
                                   _filteredData.removeAt(index);
                                   _filteredData.insert(0, athlete);
 
@@ -172,7 +159,7 @@ class SelectAthletes extends State<Select_Athletes> {
                               child: (!widget.selectedAthletes
                                       .contains(_filteredData[index]))
                                   ? Text(
-                                      '${athleteList[index].fullname[0]}${athleteList[index].fullname[1].toUpperCase()}',
+                                      '${athleteList[index]['user_first_name'][0]}${athleteList[index]['user_last_name'][0].toUpperCase()}',
                                       style:
                                           const TextStyle(color: Colors.white),
                                     )
@@ -180,7 +167,7 @@ class SelectAthletes extends State<Select_Athletes> {
                                       size: 20, color: Colors.white),
                             ),
                             title: Text(
-                              _filteredData[index].fullname,
+                              '${_filteredData[index]['user_first_name']} ${_filteredData[index]['user_last_name']}',
                               style: const TextStyle(
                                   fontSize: 16,
                                   fontWeight: FontWeight.w400,
