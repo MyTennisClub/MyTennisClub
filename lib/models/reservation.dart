@@ -1,6 +1,5 @@
 import 'dart:ffi';
 import 'package:flutter/material.dart';
-import 'package:intl/intl.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:mytennisclub/Database/ConnectionDatabase.dart';
 
@@ -128,7 +127,7 @@ class Reservation {
     try {
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
-        var reservations = await conn.query("call GetCoachPendingReservations(?)", [user_id]);
+        var reservations = await conn.query("call userUpcomingReservations(?)", [user_id]);
         for (var row in reservations) {
           reservationMap[row['res_id']] = {
             'id': row['res_id'],
@@ -165,15 +164,16 @@ class Reservation {
     try {
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
-        var reservations = await conn.query("call GetCoachPendingReservationsAndSessions(?)", [user_id]);
+        var reservations = await conn.query("call userUpcomingCalendar(?)", [user_id]);
         for (var row in reservations) {
           reservationMap[row['res_id']] = {
             'id': row['res_id'],
-            'court_name': row['court_name'],
+            'court': row['court_name'],
             'start_time': row['start_time'],
             'end_time': row['end_time'],
             'club_name': row['club_name'],
-            'type': row['res_type']
+            'type': row['res_type'],
+            'absence': row['absence'],
           };
         }
         await conn.close();

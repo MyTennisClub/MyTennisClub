@@ -13,7 +13,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   late Future<Map<int, dynamic>> _reservationsFuture;
   Map<int, dynamic> _reservations = {};
 
-
   @override
   void initState() {
     super.initState();
@@ -134,106 +133,88 @@ class _CalendarWidgetState extends State<CalendarWidget> {
               child: Row(
                 children: List.generate(7, (dayIndex) {
                   DateTime day = startOfWeek.add(Duration(days: dayIndex));
-                  Map<String, dynamic> reservationInfo =
-                  _getReservationInfo(day, hour);
+                  Map<String, dynamic> reservationInfo = _getReservationInfo(day, hour);
                   Color containerColor = reservationInfo['color'];
-                  bool checkFirst = checkBorder(
-                      reservationInfo['color'], reservationInfo['firstBox']);
+                  bool checkFirst = checkBorder(reservationInfo['color'], reservationInfo['firstBox']);
 
-                  return Expanded(
+                  Widget container = Column(
+                    children: reservationInfo['start'] == 'start'
+                        ? [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: containerColor,
+                          border: Border(
+                            top: BorderSide(
+                                color: checkFirst == true
+                                    ? Colors.black
+                                    : containerColor),
+                          ),
+                        ),
+                        height: 80,
+                        child: Center(
+                          child: Text(
+                            checkFirst == true ? reservationInfo['title'] : '',
+                            style: TextStyle(
+                                color: containerColor == Colors.white
+                                    ? Colors.black
+                                    : Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ]
+                        : [
+                      Container(
+                        decoration: BoxDecoration(
+                          color: checkFirst == true
+                              ? Colors.white
+                              : containerColor,
+                          border: Border(
+                            top: BorderSide(
+                                color: checkFirst == true
+                                    ? Colors.black
+                                    : containerColor),
+                          ),
+                        ),
+                        height: 40,
+                        child: const Center(
+                          child: Text(''),
+                        ),
+                      ),
+                      Container(
+                        decoration: BoxDecoration(
+                          color: reservationInfo['end'] == 'half'
+                              ? Colors.white
+                              : containerColor,
+                        ),
+                        height: 40,
+                        child: Center(
+                          child: Text(
+                            checkFirst == true ? reservationInfo['title'] : '',
+                            style: TextStyle(
+                                color: containerColor == Colors.white
+                                    ? Colors.black
+                                    : Colors.white,
+                                fontWeight: FontWeight.bold),
+                          ),
+                        ),
+                      ),
+                    ],
+                  );
+
+                  return reservationInfo['type'] == 'SESSION'
+                      ? Expanded(
                     child: GestureDetector(
-                      onTap: () {
-                        if (containerColor != Colors.white &&
-                            reservationInfo['type'] != 'SESSION') {
-                          showDialog(
-                            context: context,
-                            builder: (context) {
-                              return AlertDialog(
-                                title: const Text('Reservation Details'),
-                                content: Text('Inform of absence to be continued'),
-                                actions: [
-                                  TextButton(
-                                    onPressed: () {
-                                      Navigator.pop(context);
-                                    },
-                                    child: const Text('Close'),
-                                  ),
-                                ],
-                              );
-                            },
-                          );
+                      onTap: () async {
+                        if (reservationInfo['resType'] != 'RESERVATION') {
+                          print('Reservation Info: $reservationInfo');
+                          showReservationModal(context, reservationInfo);
                         }
                       },
-                      child: Column(
-                        children: reservationInfo['start'] == 'start'
-                            ? [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: containerColor,
-                              border: Border(
-                                top: BorderSide(
-                                    color: checkFirst == true
-                                        ? Colors.black
-                                        : containerColor),
-                              ),
-                            ),
-                            height: 80,
-                            child: Center(
-                              child: Text(
-                                checkFirst == true
-                                    ? reservationInfo['title']
-                                    : '',
-                                style: TextStyle(
-                                    color: containerColor == Colors.white
-                                        ? Colors.black
-                                        : Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        ]
-                            : [
-                          Container(
-                            decoration: BoxDecoration(
-                              color: checkFirst == true
-                                  ? Colors.white
-                                  : containerColor,
-                              border: Border(
-                                top: BorderSide(
-                                    color: checkFirst == true
-                                        ? Colors.black
-                                        : containerColor),
-                              ),
-                            ),
-                            height: 40,
-                            child: const Center(
-                              child: Text(''),
-                            ),
-                          ),
-                          Container(
-                            decoration: BoxDecoration(
-                              color: reservationInfo['end'] == 'half'
-                                  ? Colors.white
-                                  : containerColor,
-                            ),
-                            height: 40,
-                            child: Center(
-                              child: Text(
-                                checkFirst == true
-                                    ? reservationInfo['title']
-                                    : '',
-                                style: TextStyle(
-                                    color: containerColor == Colors.white
-                                        ? Colors.black
-                                        : Colors.white,
-                                    fontWeight: FontWeight.bold),
-                              ),
-                            ),
-                          ),
-                        ],
-                      ),
+                      child: container,
                     ),
-                  );
+                  )
+                      : Expanded(child: container);
                 }),
               ),
             ),
@@ -254,21 +235,23 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     Color color = Colors.white;
     bool firstBox = false;
     bool lastBox = false;
-    String title = '';
-    String type = 'RESERVATION';
+    String clubName = '';
+    String courtName = '';
+    String resType = '';
     String start = '';
     String end = '';
-    String court = '';
+    int reservationId;
 
     for (var reservation in _reservations.values) {
       DateTime startTime = reservation['start_time'];
       DateTime endTime = reservation['end_time'];
-      String resType = reservation['type'];
-
+      String resType = reservation['type'].toString();
+      print(resType);
+      reservationId = reservation['id'];
       if (startTime.isBefore(endOfHour) && endTime.isAfter(startOfHour)) {
-        title = reservation['court_name'];
-        type = resType;
-        court = reservation['club_name'];
+        courtName = reservation['court'];
+        clubName = reservation['club_name'];
+        print(clubName);
 
         if (startTime.isAtSameMomentAs(startOfHour)) {
           firstBox = true;
@@ -287,19 +270,22 @@ class _CalendarWidgetState extends State<CalendarWidget> {
         if ((startTime.isBefore(halfHour) && endTime.isAfter(startOfHour)) ||
             (startTime.isBefore(endOfHour) && endTime.isAfter(halfHour)) ||
             (endTime.hour == hour && endTime.minute == 30)) {
-          if (resType == 'RESERVATION') {
-            color = const Color.fromRGBO(0, 83, 135, 1);
+          if (resType == 'SESSION') {
+            if (reservation['absence'] == 1)
+              color = const Color.fromRGBO(0, 83, 135, 50);
+            else
+              color = const Color.fromRGBO(0, 83, 135, 1);
           } else {
             color = const Color.fromRGBO(0, 83, 120, 50);
-            title = 'Private Session';
+            clubName = 'Booked';
           }
         }
 
         return {
-          'title': title,
+          'title': clubName,
           'color': color,
-          'court': court,
-          'type': type,
+          'court': courtName,
+          'type': resType,
           'start': start,
           'end': end,
           'firstBox': firstBox,
@@ -307,12 +293,11 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       }
     }
 
-
     return {
-      'title': title,
+      'title': clubName,
       'color': color,
-      'court': court,
-      'type': type,
+      'court': courtName,
+      'type': resType,
       'start': start,
       'end': end,
       'firstBox': firstBox,
@@ -360,4 +345,74 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       ),
     );
   }
+}
+
+void showReservationModal(BuildContext context, Map<String, dynamic> reservationInfo) {
+  showModalBottomSheet<void>(
+    isScrollControlled: true,
+    context: context,
+    builder: (BuildContext context) {
+      return FractionallySizedBox(
+        heightFactor: 0.9,
+        child: Container(
+          child: LayoutBuilder(
+            builder: (BuildContext context, BoxConstraints constraints) {
+              double modalHeight = constraints.maxHeight;
+              return Padding(
+                padding: const EdgeInsets.symmetric(vertical: 20),
+                child: Column(
+                  mainAxisAlignment: MainAxisAlignment.center,
+                  mainAxisSize: MainAxisSize.min,
+                  children: <Widget>[
+                    const Expanded(
+                      child: Text(
+                        'Session Info',
+                        style: TextStyle(fontSize: 25),
+                      ),
+                    ),
+                    SizedBox(
+                      height: modalHeight - modalHeight / 3,
+                      child: Container(
+                        child: Column(
+                          children: <Widget>[
+                            Text(reservationInfo['title'],
+                                style: const TextStyle(
+                                    fontSize: 20, fontWeight: FontWeight.bold)),
+                            Text(reservationInfo['court'],
+                                style: const TextStyle(fontSize: 18)),
+                          ],
+                        ),
+                      ),
+                    ),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceAround,
+                        children: <Widget>[
+                          ElevatedButton(
+                            child: const Text('Close'),
+                            onPressed: () => Navigator.pop(context),
+                          ),
+                          ElevatedButton(
+                            child: const Text('Cancel'),
+                            onPressed: () async {
+                              String result = 'yes';
+                              // String? result = await _confirmDelete(context);
+                              if (result == 'Yes') {
+                                // Reservation.cancelRes(entry.key);
+                                Navigator.pop(context);
+                              }
+                            },
+                          ),
+                        ],
+                      ),
+                    ),
+                  ],
+                ),
+              );
+            },
+          ),
+        ),
+      );
+    },
+  );
 }
