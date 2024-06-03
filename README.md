@@ -69,11 +69,11 @@ For further assistance, please refer to the documentation or contact the project
 
 ## Project Owners
 
-- **Charilaos P.Stamelos**: [Name], [Contact]
-- **Nikolaos Voulgaris**: [Name], [Contact]
-- **Athanasios Bakslis**: [Name], [Contact]
-- **Georgios Baknis**: [Name], [Contact]
-- **Ahtanasios Sp.Skandalos**: [Name], [Contact]
+- **Charilaos P.Stamelos**:  [www.linkedin.com/in/stamelosxp]
+- **Nikolaos Voulgaris**: [Contact]
+- **Athanasios Bakslis**: [Contact]
+- **Georgios Baknis**: [Contact]
+- **Ahtanasios Sp.Skandalos**: [Contact]
 
 ## Technology Stack
 
