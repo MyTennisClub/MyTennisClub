@@ -79,15 +79,14 @@ class Reservation {
       String endTime,
       int numPeople,
       int coachId,
-      String memberIds) async {
+      String memberIds,
+      DateTime enteredDate,
+      ) async {
     String errorCode = '';
     try {
       // print(startTime);
       // print(endTime);
       endTime = endTime.replaceAll(RegExp(r' [AP]M$'), '');
-
-      // DateTime startTime1 = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss').format(startTime));
-      // DateTime endTime1 = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss').format(reservation['end_time']));
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
         final results = await conn.query(
@@ -95,8 +94,8 @@ class Reservation {
           [
             clubId, // Replace with actual club ID
             courtId,
-            convertTimeStringToDateTime(startTime).toUtc(),
-            convertTimeStringToDateTime(endTime).toUtc(),
+            DateFormat('yyyy-MM-dd HH:mm:ss').format(convertTimeStringToDateTime(startTime, enteredDate)),
+            DateFormat('yyyy-MM-dd HH:mm:ss').format(convertTimeStringToDateTime(endTime, enteredDate)),
             numPeople,
             coachId, // Replace with actual coach ID
             memberIds, // Replace with actual member ID
@@ -118,19 +117,19 @@ class Reservation {
     return errorCode;
   }
 
-  static convertTimeStringToDateTime(String timeString) {
+  static convertTimeStringToDateTime(String timeString, DateTime date) {
     // Parse the time string
     List<String> parts = timeString.split(':');
     int hours = int.parse(parts[0]);
     int minutes = int.parse(parts[1]);
 
     // Get the current date
-    DateTime now = DateTime.now();
+    DateTime now = date;
 
     // Create a DateTime object with the current date and parsed time
     DateTime dateTime = DateTime(now.year, now.month, now.day, hours, minutes);
 
-    return dateTime;
+    return dateTime.toLocal();
   }
 
   static Future<Map<int, dynamic>> getUpcomingRes(int user_id) async {

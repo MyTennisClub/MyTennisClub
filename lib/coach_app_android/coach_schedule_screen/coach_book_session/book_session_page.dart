@@ -120,7 +120,7 @@ class BookSession extends State<BookSession_Main> {
       hourCheck = List.filled(availableCourts.length, false);
       date = dat;
       date = date.add(Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute));
-      // print(date);
+      print('Date get date function: $date');
     });
   }
 
@@ -427,6 +427,8 @@ class BookSession extends State<BookSession_Main> {
                                                                         135,
                                                                         1)),
                                                         onPressed: () async {
+                                                          print('hourtime: $hour');
+                                                          print('endhour: $endhour');
                                                           var success_check = await Reservation.createPrivateCoachSession(
                                                             2,
                                                             courtId!,
@@ -435,6 +437,7 @@ class BookSession extends State<BookSession_Main> {
                                                             number,
                                                             1,
                                                             idsString,
+                                                            date,
                                                           );
                                                           if(success_check == '1644'){
                                                             showDialog(
