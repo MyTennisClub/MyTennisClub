@@ -46,35 +46,34 @@ Our goal is to revolutionize tennis club operations by maximizing member satisfa
 - **Order Management**: Access features tailored to optimize daily tasks and manage inventory.
 - **Real-time Updates**: Receive updates on inventory levels and automated restocking notifications.
 
-## Use Cases
-
-| Use Case                      | Implemented |
-|-------------------------------|-------------|
-| Schedule Private Session      | ✔           |
-| View Club Profile             | ✔           |
-| Review Club                   | ✔           |
-| QR Validation                 | ✔           |
-| Book Court                    | ✔           |
-| Court Book Cancellation       | ✔           |
-| Athlete’s Inform of Absence   | ✔           |
-| Apply to Club                 | ✔           |
-| Member Becoming Athlete       | ✔           |
-| Schedule Monthly Group Session| ✘           |
-| Add Employee                  | ✘           |
-| Edit Club’s Profile Details   | ✘           |
-
 ## Folder Structure
 
 _To be added_
 
-## How to Run 
+## How to Run
 
+To use the Tennis Club Management Platform, follow these steps:
 
+1. **Download the APK**:
+   - Download the latest version of the APK file.
+
+2. **Install the APK**:
+   - Transfer the downloaded APK file to your Android device.
+   - On your Android device, go to the `Settings` menu, then `Security`, and enable `Unknown sources` to allow installation of apps from sources other than the Google Play Store.
+   - Open the APK file on your device and follow the on-screen instructions to install the app.
+
+3. **Run the App**:
+   - Once the installation is complete, open the app from your device's app drawer.
+
+For further assistance, please refer to the documentation or contact the project owners.
 
 ## Project Owners
 
-- **Owner 1**: [Name], [Contact]
-- **Owner 2**: [Name], [Contact]
+- **Charilaos P.Stamelos**: [Name], [Contact]
+- **Nikolaos Voulgaris**: [Name], [Contact]
+- **Athanasios Bakslis**: [Name], [Contact]
+- **Georgios Baknis**: [Name], [Contact]
+- **Ahtanasios Sp.Skandalos**: [Name], [Contact]
 
 ## Technology Stack
 
