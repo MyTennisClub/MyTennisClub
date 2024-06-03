@@ -147,7 +147,6 @@ class Reservation {
   }
 
   static Future<void> cancelRes(int res_id) async {
-    Map<int, dynamic> reservationMap = {};
     try {
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
@@ -155,9 +154,21 @@ class Reservation {
         await conn.close();
       }
     } catch (e) {
-      throw Exception('Error fetching reservations: $e');
+      throw Exception('Something went wrong: $e');
     }
   }
+  static Future<void> markAsAbsent(int res_id,int user_id) async {
+    try {
+      final conn = await MySQLConnector.createConnection();
+      if (conn != null) {
+        await conn.query("call athlete_session_absence(?,?)", [res_id,user_id]);
+        await conn.close();
+      }
+    } catch (e) {
+      throw Exception('Something went wrong: $e');
+    }
+  }
+
 
   static Future<Map<int, dynamic>> getUpcomingResCalendar(int user_id) async {
     Map<int, dynamic> reservationMap = {};

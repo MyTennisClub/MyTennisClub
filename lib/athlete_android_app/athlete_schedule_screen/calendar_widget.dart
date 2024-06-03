@@ -1,6 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
+import 'package:mytennisclub/coach_app_android/coach_home_screen/coach_sessions/current_card_coach.dart';
 import 'package:mytennisclub/models/reservation.dart';
+
+
+int id = 1;
+
 
 class CalendarWidget extends StatefulWidget {
   const CalendarWidget({Key? key}) : super(key: key);
@@ -16,8 +21,9 @@ class _CalendarWidgetState extends State<CalendarWidget> {
   @override
   void initState() {
     super.initState();
-    _reservationsFuture = Reservation.getUpcomingResCalendar(1);
+    _reservationsFuture = Reservation.getUpcomingResCalendar(id);
   }
+
 
   DateTime _currentDate = DateTime.now();
   final DateTime _initialDate = DateTime.now();
@@ -207,7 +213,6 @@ class _CalendarWidgetState extends State<CalendarWidget> {
                     child: GestureDetector(
                       onTap: () async {
                         if (reservationInfo['resType'] != 'RESERVATION') {
-                          print('Reservation Info: $reservationInfo');
                           showReservationModal(context, reservationInfo);
                         }
                       },
@@ -241,17 +246,19 @@ class _CalendarWidgetState extends State<CalendarWidget> {
     String start = '';
     String end = '';
     int reservationId;
+    var absence;
 
     for (var reservation in _reservations.values) {
-      DateTime startTime = reservation['start_time'];
-      DateTime endTime = reservation['end_time'];
-      String resType = reservation['type'].toString();
-      print(resType);
+
+      DateTime startTime = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss').format(reservation['start_time']));
+      DateTime endTime = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss').format(reservation['end_time']));
       reservationId = reservation['id'];
+      String resType = reservation['type'].toString();
+      reservationId = reservation['id'];
+      absence = reservation['absence'];
       if (startTime.isBefore(endOfHour) && endTime.isAfter(startOfHour)) {
         courtName = reservation['court'];
         clubName = reservation['club_name'];
-        print(clubName);
 
         if (startTime.isAtSameMomentAs(startOfHour)) {
           firstBox = true;
@@ -272,7 +279,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
             (endTime.hour == hour && endTime.minute == 30)) {
           if (resType == 'SESSION') {
             if (reservation['absence'] == 1)
-              color = const Color.fromRGBO(0, 83, 135, 50);
+              color = Color.fromRGBO(0, 83, 135, 0.5);
             else
               color = const Color.fromRGBO(0, 83, 135, 1);
           } else {
@@ -289,6 +296,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
           'start': start,
           'end': end,
           'firstBox': firstBox,
+          'res_id': reservationId,
+          'user_absence': absence
         };
       }
     }
@@ -300,7 +309,7 @@ class _CalendarWidgetState extends State<CalendarWidget> {
       'type': resType,
       'start': start,
       'end': end,
-      'firstBox': firstBox,
+      'firstBox': firstBox
     };
   }
 
@@ -348,6 +357,8 @@ class _CalendarWidgetState extends State<CalendarWidget> {
 }
 
 void showReservationModal(BuildContext context, Map<String, dynamic> reservationInfo) {
+  int reservationId = reservationInfo['res_id']; // Assuming you need reservation ID to fetch additional data
+
   showModalBottomSheet<void>(
     isScrollControlled: true,
     context: context,
@@ -380,6 +391,42 @@ void showReservationModal(BuildContext context, Map<String, dynamic> reservation
                                     fontSize: 20, fontWeight: FontWeight.bold)),
                             Text(reservationInfo['court'],
                                 style: const TextStyle(fontSize: 18)),
+                            SizedBox(
+                              height: constraints.maxHeight/ 3,
+                            ),
+                            reservationInfo['user_absence'] == 1
+                                ? const Text('Υου have already marked as absent!',style: TextStyle(fontSize: 20))
+                                : OutlinedButton(
+                              onPressed: () async {                                showDialog(
+                                  context: context,
+                                  builder: (BuildContext context) {
+                                    return AlertDialog(
+                                      title: Text('Absence Confirmation'),
+                                      content: Text('Are you sure you want to mark as absent?'),
+                                      actions: <Widget>[
+                                        TextButton(
+                                          onPressed: () {
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('No'),
+                                        ),
+                                        TextButton(
+                                          onPressed: () {
+                                            Reservation.markAsAbsent(reservationId, id);
+                                            Navigator.of(context).pop();
+                                          },
+                                          child: Text('Yes'),
+                                        ),
+                                      ],
+                                    );
+                                  },
+                                );
+                              },
+                              style: ButtonStyle(
+                                backgroundColor: MaterialStateProperty.all<Color>(Color.fromRGBO(0, 83, 135, 1)),
+                              ),
+                              child: Text('Absence', style: TextStyle(color: Colors.white)),
+                            )
                           ],
                         ),
                       ),
@@ -391,17 +438,6 @@ void showReservationModal(BuildContext context, Map<String, dynamic> reservation
                           ElevatedButton(
                             child: const Text('Close'),
                             onPressed: () => Navigator.pop(context),
-                          ),
-                          ElevatedButton(
-                            child: const Text('Cancel'),
-                            onPressed: () async {
-                              String result = 'yes';
-                              // String? result = await _confirmDelete(context);
-                              if (result == 'Yes') {
-                                // Reservation.cancelRes(entry.key);
-                                Navigator.pop(context);
-                              }
-                            },
                           ),
                         ],
                       ),
@@ -416,3 +452,5 @@ void showReservationModal(BuildContext context, Map<String, dynamic> reservation
     },
   );
 }
+
+
