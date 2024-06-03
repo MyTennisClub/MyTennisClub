@@ -85,6 +85,7 @@ class Reservation {
       // print(startTime);
       // print(endTime);
       endTime = endTime.replaceAll(RegExp(r' [AP]M$'), '');
+
       // DateTime startTime1 = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss').format(startTime));
       // DateTime endTime1 = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss').format(reservation['end_time']));
       final conn = await MySQLConnector.createConnection();
@@ -94,8 +95,8 @@ class Reservation {
           [
             clubId, // Replace with actual club ID
             courtId,
-            DateFormat('yyyy-MM-dd HH:mm:ss').format(convertTimeStringToDateTime(startTime)),
-            DateFormat('yyyy-MM-dd HH:mm:ss').format(convertTimeStringToDateTime(endTime)),
+            convertTimeStringToDateTime(startTime).toUtc(),
+            convertTimeStringToDateTime(endTime).toUtc(),
             numPeople,
             coachId, // Replace with actual coach ID
             memberIds, // Replace with actual member ID
