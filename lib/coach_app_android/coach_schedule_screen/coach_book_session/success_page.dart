@@ -1,17 +1,20 @@
 import 'package:flutter/material.dart';
-
+import 'package:mytennisclub/models/reservation.dart';
 class Success_Main extends StatefulWidget {
   final String? date;
   final String? duration;
   final String? hour;
   final String? court;
   final String? endhour;
+  final String? resId;
+
   const Success_Main(
       {this.date,
       this.duration,
       this.hour,
       this.court,
       this.endhour,
+      this.resId,
       super.key});
 
   @override
@@ -177,7 +180,8 @@ class SuccessMain extends State<Success_Main> {
                     onPressed: () async {
                       String? result = await _confirmDelete(context);
                       if (result == 'Yes') {
-                        //delete_reservation
+                        int resId = int.parse(widget.resId!);
+                        Reservation.cancelRes(resId);
                         Navigator.of(context)
                             .popUntil(ModalRoute.withName('/coach_home'));
                       }

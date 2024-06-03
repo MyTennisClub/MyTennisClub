@@ -1,5 +1,6 @@
 import 'dart:ffi';
 import 'package:flutter/material.dart';
+import 'package:mysql1/mysql1.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:mytennisclub/Database/ConnectionDatabase.dart';
 import 'package:intl/intl.dart';
@@ -71,7 +72,7 @@ class Reservation {
     return reservationMap;
   }
 
-  static Future<bool> createPrivateCoachSession(
+  static Future<String> createPrivateCoachSession(
       int clubId,
       int courtId,
       String startTime,
@@ -79,7 +80,7 @@ class Reservation {
       int numPeople,
       int coachId,
       String memberIds) async {
-    bool success = false;
+    String errorCode = '';
     try {
       // print(startTime);
       // print(endTime);
@@ -88,7 +89,7 @@ class Reservation {
       // DateTime endTime1 = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss').format(reservation['end_time']));
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
-        await conn.query(
+        final results = await conn.query(
           'CALL CreatePrivateCoachSession(?, ?, ?, ?, ?, ?, ?)',
           [
             clubId, // Replace with actual club ID
@@ -100,16 +101,20 @@ class Reservation {
             memberIds, // Replace with actual member ID
           ],
         );
-
+        var row = results.first;
+        errorCode= row['res_id'].toString();
         await conn.close();
       }
-      success = true;
+    }
+    on MySqlException catch (msqle) {
+      errorCode = msqle.errorNumber.toString();
     } catch (e) {
-      throw Exception(
-          'Something went wrong with creating Private Reservation: $e');
+      // Handle other exceptions
+      print('Error: $e');
+      throw Exception('Error: $e');
     }
 
-    return success;
+    return errorCode;
   }
 
   static convertTimeStringToDateTime(String timeString) {

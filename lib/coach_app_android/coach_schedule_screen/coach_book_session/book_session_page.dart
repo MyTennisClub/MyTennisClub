@@ -85,7 +85,7 @@ class BookSession extends State<BookSession_Main> {
     // print(idsString);
 
     availableCourts = await Court.fetchCourtsAndHours(
-        2, DateTime.now(), duration!, '1', number, idsString);
+        2, date, duration!, '1', number, idsString);
     _futureExec = false;
     hourCheck = List.filled(availableCourts.length, false);
     visible = List.filled(availableCourts.length, false);
@@ -119,8 +119,7 @@ class BookSession extends State<BookSession_Main> {
       visible = List.filled(availableCourts.length, false);
       hourCheck = List.filled(availableCourts.length, false);
       date = dat;
-      date = date.add(
-          Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute));
+      date = date.add(Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute));
       // print(date);
     });
   }
@@ -428,31 +427,49 @@ class BookSession extends State<BookSession_Main> {
                                                                         135,
                                                                         1)),
                                                         onPressed: () async {
-                                                         bool? success_check = await Reservation
-                                                              .createPrivateCoachSession(
-                                                                  2,
-                                                                  courtId!,
-                                                                  hour!,
-                                                                  endhour!,
-                                                                  number,
-                                                                  1,
-                                                                  idsString);
-                                                         print('object: success check: $success_check');
-                                                         Navigator.push(
-                                                            context,
-                                                            MaterialPageRoute( builder: (_) =>
-                                                                success_check == true ? Success_Main( date: DateFormat .yMMMMd() .format( date),
-                                                                duration:
-                                                                    duration,
-                                                                hour: hour,
-                                                                court: court,
-                                                                endhour:
-                                                                    endhour,
-                                                              ) : Container(
-                                                                  child: Text('Error in booking session')
-                                                                )
-                                                            )
+                                                          var success_check = await Reservation.createPrivateCoachSession(
+                                                            2,
+                                                            courtId!,
+                                                            hour!,
+                                                            endhour!,
+                                                            number,
+                                                            1,
+                                                            idsString,
                                                           );
+                                                          if(success_check == '1644'){
+                                                            showDialog(
+                                                                context: context,
+                                                                builder: (BuildContext context) {
+                                                                  return AlertDialog(
+                                                                    title: Text('Error'),
+                                                                    content: Text('This slot already Reserved!'),
+                                                                    actions: <Widget>[
+                                                                      TextButton(
+                                                                        onPressed: () {
+                                                                          Navigator.of(context).pop();
+                                                                        },
+                                                                        child: Text('OK'),
+                                                                      ),
+                                                                    ],
+                                                                  );
+                                                                }
+                                                                );
+                                                          }
+                                                          else{
+                                                            Navigator.push(
+                                                              context,
+                                                              MaterialPageRoute(
+                                                                builder: (_) => Success_Main(
+                                                                  date: DateFormat.yMMMMd().format(date),
+                                                                  duration: duration,
+                                                                  hour: hour,
+                                                                  court: court,
+                                                                  endhour: endhour,
+                                                                  resId: success_check,
+                                                                ),
+                                                              ),
+                                                            );
+                                                          };
                                                         },
                                                         child: const Text(
                                                             'Book Session'),

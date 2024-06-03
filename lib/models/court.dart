@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:mytennisclub/models/calendar.dart';
 
 import '../Database/ConnectionDatabase.dart';
@@ -51,20 +52,22 @@ class Court {
 
     // Extracting hours and minutes from the duration string
     String formattedDuration = duration.split(' ')[0]; // Extracts '1:00'
-    print('clubId $clubId, date $date, formattedDuration  $formattedDuration, coachId $coachId, numAthletes $numAthletes, memberIds $memberIds');
+    // print(date);
+    // print('clubId $clubId, date $date, formattedDuration  $formattedDuration, coachId $coachId, numAthletes $numAthletes, memberIds $memberIds');
+    // print(DateFormat('yyyy-MM-dd').format(date));
     try {
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
         var results = (await conn
             .query('CALL getAvailableCourts(?, DATE(?), ?, ?, ?, ?);', [
           clubId,
-          date.toUtc().toString().split(' ')[0],
+          DateFormat('yyyy-MM-dd').format(date),
           formattedDuration,
           coachId,
           numAthletes,
           memberIds,
         ]));
-
+        print(results);
         for (var row in results) {
           int courtId = row[0];
           if (!courtsMap.containsKey(courtId)) {
