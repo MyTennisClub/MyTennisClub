@@ -51,7 +51,7 @@ class Court {
 
     // Extracting hours and minutes from the duration string
     String formattedDuration = duration.split(' ')[0]; // Extracts '1:00'
-
+    print('clubId $clubId, date $date, formattedDuration  $formattedDuration, coachId $coachId, numAthletes $numAthletes, memberIds $memberIds');
     try {
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
@@ -80,7 +80,8 @@ class Court {
             'end_time': row[3],
           });
         }
-        print(courtsMap.keys.toList());
+        // print(courtsMap.keys.toList());
+        // print(courtsMap.values.toList());
 
         await conn.close();
       }

@@ -81,8 +81,8 @@ class BookSession extends State<BookSession_Main> {
       });
       idsString = athleteIds.join(', ');
     }
-    print('--------selected athletes--------');
-    print(idsString);
+    // print('--------selected athletes--------');
+    // print(idsString);
 
     availableCourts = await Court.fetchCourtsAndHours(
         2, DateTime.now(), duration!, '1', number, idsString);
@@ -108,7 +108,7 @@ class BookSession extends State<BookSession_Main> {
         if (i != key) hourCheck[i] = false;
       }
 
-      print('$check - $key - $h');
+      // print('$check - $key - $h');
       checkVisible();
     });
   }
@@ -121,7 +121,7 @@ class BookSession extends State<BookSession_Main> {
       date = dat;
       date = date.add(
           Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute));
-      print(date);
+      // print(date);
     });
   }
 
@@ -153,9 +153,9 @@ class BookSession extends State<BookSession_Main> {
       visible = List.filled(availableCourts.length, false);
       hourCheck = List.filled(availableCourts.length, false);
       selectedAthletes = list;
-
-      print(
-          'printing from checkAthlete:${selectedAthletes.length}\n-----Done Printing-----');
+      //
+      // print(
+      //     'printing from checkAthlete:${selectedAthletes.length}\n-----Done Printing-----');
       checkVisible();
     });
   }
@@ -428,32 +428,30 @@ class BookSession extends State<BookSession_Main> {
                                                                         135,
                                                                         1)),
                                                         onPressed: () async {
-                                                          // await Reservation
-                                                          //     .createPrivateCoachSession(
-                                                          //         2,
-                                                          //         courtId!,
-                                                          //         hour!,
-                                                          //         endhour!,
-                                                          //         number,
-                                                          //         1,
-                                                          //         idsString);
-                                                          Navigator.push(
+                                                         bool? success_check = await Reservation
+                                                              .createPrivateCoachSession(
+                                                                  2,
+                                                                  courtId!,
+                                                                  hour!,
+                                                                  endhour!,
+                                                                  number,
+                                                                  1,
+                                                                  idsString);
+                                                         print('object: success check: $success_check');
+                                                         Navigator.push(
                                                             context,
-                                                            MaterialPageRoute(
-                                                              builder: (_) =>
-                                                                  Success_Main(
-                                                                date: DateFormat
-                                                                        .yMMMMd()
-                                                                    .format(
-                                                                        date),
+                                                            MaterialPageRoute( builder: (_) =>
+                                                                success_check == true ? Success_Main( date: DateFormat .yMMMMd() .format( date),
                                                                 duration:
                                                                     duration,
                                                                 hour: hour,
                                                                 court: court,
                                                                 endhour:
                                                                     endhour,
-                                                              ),
-                                                            ),
+                                                              ) : Container(
+                                                                  child: Text('Error in booking session')
+                                                                )
+                                                            )
                                                           );
                                                         },
                                                         child: const Text(

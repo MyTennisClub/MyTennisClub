@@ -2,6 +2,7 @@ import 'dart:ffi';
 import 'package:flutter/material.dart';
 import 'package:qr_flutter/qr_flutter.dart';
 import 'package:mytennisclub/Database/ConnectionDatabase.dart';
+import 'package:intl/intl.dart';
 
 enum Type {
   valid,
@@ -70,7 +71,7 @@ class Reservation {
     return reservationMap;
   }
 
-  static Future<void> createPrivateCoachSession(
+  static Future<bool> createPrivateCoachSession(
       int clubId,
       int courtId,
       String startTime,
@@ -78,10 +79,13 @@ class Reservation {
       int numPeople,
       int coachId,
       String memberIds) async {
+    bool success = false;
     try {
-      print(startTime);
-      print(endTime);
+      // print(startTime);
+      // print(endTime);
       endTime = endTime.replaceAll(RegExp(r' [AP]M$'), '');
+      // DateTime startTime1 = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss').format(startTime));
+      // DateTime endTime1 = DateTime.parse(DateFormat('yyyy-MM-dd HH:mm:ss').format(reservation['end_time']));
       final conn = await MySQLConnector.createConnection();
       if (conn != null) {
         await conn.query(
@@ -89,8 +93,8 @@ class Reservation {
           [
             clubId, // Replace with actual club ID
             courtId,
-            convertTimeStringToDateTime(startTime).toUtc(),
-            convertTimeStringToDateTime(endTime).toUtc(), // Calculated end date
+            DateFormat('yyyy-MM-dd HH:mm:ss').format(convertTimeStringToDateTime(startTime)),
+            DateFormat('yyyy-MM-dd HH:mm:ss').format(convertTimeStringToDateTime(endTime)),
             numPeople,
             coachId, // Replace with actual coach ID
             memberIds, // Replace with actual member ID
@@ -98,13 +102,14 @@ class Reservation {
         );
 
         await conn.close();
-        throw Exception(
-            'Something went wrong with creating Private Reservation');
       }
+      success = true;
     } catch (e) {
       throw Exception(
           'Something went wrong with creating Private Reservation: $e');
     }
+
+    return success;
   }
 
   static convertTimeStringToDateTime(String timeString) {
