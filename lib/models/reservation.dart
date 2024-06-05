@@ -84,10 +84,8 @@ class Reservation {
       ) async {
     String errorCode = '';
     try {
-      // print(startTime);
-      // print(endTime);
-      endTime = endTime.replaceAll(RegExp(r' [AP]M$'), '');
       final conn = await MySQLConnector.createConnection();
+
       if (conn != null) {
         final results = await conn.query(
           'CALL CreatePrivateCoachSession(?, ?, ?, ?, ?, ?, ?)',
@@ -109,8 +107,6 @@ class Reservation {
     on MySqlException catch (msqle) {
       errorCode = msqle.errorNumber.toString();
     } catch (e) {
-      // Handle other exceptions
-      print('Error: $e');
       throw Exception('Error: $e');
     }
 

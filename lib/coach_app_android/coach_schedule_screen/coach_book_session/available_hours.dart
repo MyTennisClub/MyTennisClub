@@ -33,7 +33,7 @@ class AvailableHours extends State<Available_Hours> {
           widget.availableHours.length,
           (int i) {
             final dateTime = widget.availableHours[i];
-            final formattedTime = DateFormat('H:mm').format(dateTime);
+            final formattedTime = DateFormat('HH:mm').format(dateTime);
             return ChoiceChip(
               selectedColor: const Color.fromRGBO(210, 230, 255, 1),
               label: Text(formattedTime),

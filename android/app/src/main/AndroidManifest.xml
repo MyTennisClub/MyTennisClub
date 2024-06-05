@@ -7,9 +7,9 @@
 
 
     <application
-        android:label="mytennisclub"
+        android:label="MyTennisClub"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@mipmap/tennis_icon">
         <meta-data android:name="com.google.android.geo.API_KEY"
                android:value="@string/GOOGLE_MAPS_API_KEY"/>
 

@@ -21,10 +21,15 @@ extension TimeOfDayExtension on TimeOfDay {
       } else {
         int newHour = newMofd ~/ 60;
         int newMinute = newMofd % 60;
-        if (newHour >= 12) newHour += 12;
         return TimeOfDay(hour: newHour, minute: newMinute);
       }
     }
+  }
+
+  String format24Hour() {
+    final hour = this.hour.toString().padLeft(2, '0');
+    final minute = this.minute.toString().padLeft(2, '0');
+    return '$hour:$minute';
   }
 }
 
@@ -81,9 +86,6 @@ class BookSession extends State<BookSession_Main> {
       });
       idsString = athleteIds.join(', ');
     }
-    // print('--------selected athletes--------');
-    // print(idsString);
-
     availableCourts = await Court.fetchCourtsAndHours(
         2, date, duration!, '1', number, idsString);
     _futureExec = false;
@@ -108,7 +110,6 @@ class BookSession extends State<BookSession_Main> {
         if (i != key) hourCheck[i] = false;
       }
 
-      // print('$check - $key - $h');
       checkVisible();
     });
   }
@@ -120,7 +121,7 @@ class BookSession extends State<BookSession_Main> {
       hourCheck = List.filled(availableCourts.length, false);
       date = dat;
       date = date.add(Duration(hours: DateTime.now().hour, minutes: DateTime.now().minute));
-      print('Date get date function: $date');
+
     });
   }
 
@@ -152,9 +153,7 @@ class BookSession extends State<BookSession_Main> {
       visible = List.filled(availableCourts.length, false);
       hourCheck = List.filled(availableCourts.length, false);
       selectedAthletes = list;
-      //
-      // print(
-      //     'printing from checkAthlete:${selectedAthletes.length}\n-----Done Printing-----');
+
       checkVisible();
     });
   }
@@ -187,12 +186,11 @@ class BookSession extends State<BookSession_Main> {
     TimeOfDay startTime = TimeOfDay(
         hour: int.parse(hour.split(":")[0]),
         minute: int.parse(hour.split(":")[1]));
-
     List<String> durationValues = duration.split(':');
     int dur = int.parse(durationValues[0]) * 60 +
         int.parse(durationValues[1].substring(0, durationValues[1].length - 1));
 
-    endhour = startTime.plusMinutes(dur).format(context);
+    endhour = startTime.plusMinutes(dur).format24Hour();
   }
 
   @override
@@ -313,15 +311,12 @@ class BookSession extends State<BookSession_Main> {
                           return Center(
                               child: Text('Error: ${snapshot.error}'));
                         } else {
-                          // Print the map
-                          // print("Courts and their available time slots:");
+
                           availableCourts.forEach((courtId, courtData) {
-                            // print(
-                            //     "Court ID: ${courtData['court_id']}, Court Title: ${courtData['court_title']}");
+
                             List timeSlots = courtData['time_slots'];
                             for (var slot in timeSlots) {
-                              // print(
-                              //     "  Start Time: ${slot['start_time']}, End Time: ${slot['end_time']}");
+
                             }
                           });
 
@@ -414,6 +409,7 @@ class BookSession extends State<BookSession_Main> {
                                                   id: index,
                                                   isVisible: visible[index],
                                                   availableHours: startTimes,
+
                                                 ),
                                                 visible[index]
                                                     ? FilledButton(
@@ -427,8 +423,7 @@ class BookSession extends State<BookSession_Main> {
                                                                         135,
                                                                         1)),
                                                         onPressed: () async {
-                                                          print('hourtime: $hour');
-                                                          print('endhour: $endhour');
+
                                                           var success_check = await Reservation.createPrivateCoachSession(
                                                             2,
                                                             courtId!,

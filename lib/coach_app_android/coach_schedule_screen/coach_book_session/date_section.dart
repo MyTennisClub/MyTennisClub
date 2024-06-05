@@ -50,7 +50,6 @@ class DateSection extends State<Date_Section> {
     if (picked != null && picked != selectedDate) {
       setState(() {
         selectedDate = picked;
-        print('picked date: $selectedDate');
         widget.getDate(selectedDate);
       });
     }
